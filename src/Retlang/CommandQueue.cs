@@ -5,6 +5,7 @@ using System.Threading;
 namespace Retlang
 {
     public delegate void OnCommand();
+    public delegate void OnException(OnCommand command, Exception failure);
 
     public interface ICommandQueue
     {
@@ -13,6 +14,7 @@ namespace Retlang
 
     public interface ICommandRunner: ICommandQueue
     {
+        event OnException ExceptionEvent;
         bool ExecuteNext();
         void Run();
         void Stop();
@@ -24,7 +26,7 @@ namespace Retlang
         private bool _running = true;
 
         private readonly Queue<OnCommand> _commands = new Queue<OnCommand>();
-
+        public event OnException ExceptionEvent;
 
         public void Enqueue(OnCommand command)
         {
@@ -56,7 +58,22 @@ namespace Retlang
             OnCommand comm = Dequeue();
             if (comm != null)
             {
-                comm();
+                try
+                {
+                    comm();
+                }
+                catch (Exception exc)
+                {
+                    OnException onExc = ExceptionEvent;
+                    if (onExc != null)
+                    {
+                        onExc(comm, exc);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return true;
             }
             return false;
