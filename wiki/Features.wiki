@@ -1,0 +1,11 @@
+#labels Featured
+  * Message Based Concurrency
+  * Asynchronous Event Processing
+  * No polling or event loops required
+  * Multithreaded for full utilization of multi-core machines.
+  * Request/Reply support
+  * Lightweight design suitable for client or server applications
+  * Supports Any Message Type - object, value types, structs, delegates.
+  * Generics Support - Subscriptions are typed - no casting necessary.
+  * Event Scheduling - Schedule an event for one time execution or on a regular interval.
+
