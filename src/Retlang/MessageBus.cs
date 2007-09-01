@@ -6,11 +6,8 @@ namespace Retlang
 {
     public delegate void OnMessage<T>(IMessageHeader header, T msg); 
 
-    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
-    {     
-        void Publish(object topic, object message);
-        void Publish(object topic, object message, object replyTopic);
-
+    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController, IObjectPublisher
+    {  
         void Subscribe(ISubscriber subscriber);
         void Unsubscribe(ISubscriber subscriber);
     }

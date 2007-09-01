@@ -4,11 +4,9 @@ using System.Text;
 
 namespace Retlang
 {
-    public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler
+    public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler, IObjectPublisher
     {
-        void Publish(object topic, object msg);
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
-
         IRequestReply<T> SendRequest<T>(object topic, object msg);
     }
 
@@ -62,6 +60,11 @@ namespace Retlang
         public void Enqueue(OnCommand command)
         {
             _processThread.Enqueue(command);
+        }
+
+        public void Publish(object topic, object msg, object replyToTopic)
+        {
+            _bus.Publish(topic, msg, replyToTopic);
         }
 
         public void Publish(object topic, object msg)
