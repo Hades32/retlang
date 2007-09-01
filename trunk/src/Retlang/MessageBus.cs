@@ -6,27 +6,36 @@ namespace Retlang
 {
     public delegate void OnMessage<T>(IMessageHeader header, T msg); 
 
-    public interface IMessageBus
-    {
-        IProcessThread Thread { get; }
-
+    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
+    {     
         void Publish(object topic, object message);
         void Publish(object topic, object message, object replyTopic);
 
         void Subscribe(ISubscriber subscriber);
         void Unsubscribe(ISubscriber subscriber);
-
     }
-
+     
     public class MessageBus: IMessageBus
     {
         private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
 
         private readonly IProcessThread _thread;
+        private readonly CommandQueue _commandQueue;
 
         public MessageBus()
         {
-            _thread = new ProcessThread(new CommandQueue());
+            _commandQueue = new CommandQueue();
+            _thread = new ProcessThread(_commandQueue);
+        }
+
+        public void AddExceptionHandler(OnException onExc)
+        {
+            _commandQueue.ExceptionEvent += onExc;
+        }
+
+        public void RemoveExceptionHandler(OnException onExc)
+        {
+            _commandQueue.ExceptionEvent -= onExc;
         }
 
         public void Start()
@@ -44,9 +53,9 @@ namespace Retlang
             _thread.Join();
         }
 
-        public IProcessThread Thread
+        public void Enqueue(OnCommand command)
         {
-            get { return _thread; }
+            _thread.Enqueue(command);
         }
 
         public void Publish(object topic, object message, object replyTo)

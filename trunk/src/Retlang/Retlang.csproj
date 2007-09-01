@@ -35,6 +35,8 @@
   <ItemGroup>
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandTimer.cs" />
+    <Compile Include="ICommandExceptionHandler.cs" />
+    <Compile Include="IThreadController.cs" />
     <Compile Include="ProcessThread.cs" />
     <Compile Include="ITopic.cs" />
     <Compile Include="MessageBus.cs" />

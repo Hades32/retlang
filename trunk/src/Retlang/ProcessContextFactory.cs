@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Retlang
 {
-    public interface IProcessContextFactory
+    public interface IProcessContextFactory: IThreadController
     {
         IProcessContext Create();
     }
