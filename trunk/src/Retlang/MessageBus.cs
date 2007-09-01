@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Retlang
 {
+    public delegate void On<T>(T msg);
     public delegate void OnMessage<T>(IMessageHeader header, T msg); 
+
 
     public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController, IObjectPublisher
     {  
