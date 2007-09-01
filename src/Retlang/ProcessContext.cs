@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Retlang
 {
-    public interface IProcessContext
+    public interface IProcessContext: ICommandTimer
     {
         void Start();
         void Stop();
@@ -41,6 +41,16 @@ namespace Retlang
         public void Join()
         {
             _queue.Join();
+        }
+
+        public void Schedule(OnCommand command, int intervalInMs)
+        {
+            _queue.Schedule(command, intervalInMs);
+        }
+
+        public void ScheduleOnInterval(OnCommand command, int firstIntervalInMs, int regularIntervalInMs)
+        {
+            _queue.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
 
         public void Enqueue(OnCommand command)
