@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang;
+using System.Threading;
 
 namespace RetlangTests
 {
@@ -21,7 +22,7 @@ namespace RetlangTests
 
         private void OnReply(IMessageHeader header, int num)
         {
-            Console.WriteLine("Reply: " + num);
+            Console.WriteLine("Received Reply: " + num);
         }
 
         public void Send(int num)
@@ -41,7 +42,6 @@ namespace RetlangTests
                 {
                     _process.Stop();
                 }
-                Console.WriteLine("Received reply: " + num + " count: " + count);
             };
             _process.Subscribe<int>(new TopicMatcher(_uniqueTopic), shutdown);
         }

@@ -6,6 +6,7 @@ namespace Retlang
 {
     public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler, IObjectPublisher
     {
+        IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs);
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
         IRequestReply<T> SendRequest<T>(object topic, object msg);
     }
@@ -70,6 +71,12 @@ namespace Retlang
         public void Publish(object topic, object msg)
         {
             _bus.Publish(topic, msg);
+        }
+
+        public IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs)
+        {
+            BatchSubscriber<T> batch = new BatchSubscriber<T>(msg, this, minBatchIntervalInMs);
+            return Subscribe<T>(topic, batch.ReceiveMessage);
         }
 
         public IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg)
