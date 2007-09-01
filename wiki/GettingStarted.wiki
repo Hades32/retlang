@@ -97,19 +97,16 @@ The service will receive messages, calculate the result, and publish the result 
 
 == The Output ==
 
+The output demonstrates the asynchronous nature of Retlang. The console messages are not sequential since each ProcessContext runs on its own thread.
 {{{
 Published Reply: 50
-Reply: 50
-Received reply: 4 count: 1
+Received Reply: 50
 Sent: 5
 Sent: 100
-Reply: -5
-Received reply: 4 count: 2
-Reply: 1000
-Received reply: 4 count: 3
+Received Reply: -5
 Published Reply: -5
-Reply: -100
-Published Reply: 1000
-Received reply: 4 count: 4
+Received Reply: -100
 Published Reply: -100
+Received Reply: 1000
+Published Reply: 1000
 }}}
