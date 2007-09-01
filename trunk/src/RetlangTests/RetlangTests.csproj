@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProcessContextTests.cs" />
     <Compile Include="ProcessThreadTests.cs" />
     <Compile Include="MessageBusTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
