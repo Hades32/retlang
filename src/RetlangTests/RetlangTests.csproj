@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BatchSubscriberTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
+    <Compile Include="KeyedBatchSubscriberTests.cs" />
     <Compile Include="GettingStartedTests.cs" />
     <Compile Include="ProcessContextTests.cs" />
     <Compile Include="ProcessThreadTests.cs" />

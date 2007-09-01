@@ -6,6 +6,7 @@ namespace Retlang
 {
     public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler, IObjectPublisher
     {
+        IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver, On<IDictionary<K, IMessageEnvelope<V>>> target, int minBatchIntervalInMs);
         IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs);
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
         IRequestReply<T> SendRequest<T>(object topic, object msg);
@@ -71,6 +72,12 @@ namespace Retlang
         public void Publish(object topic, object msg)
         {
             _bus.Publish(topic, msg);
+        }
+
+        public IUnsubscriber SubscribeToKeyedBatch<K,V>(ITopicMatcher topic, ResolveKey<K,V> keyResolver, On<IDictionary<K,IMessageEnvelope<V>>> target, int minBatchIntervalInMs)
+        {
+            KeyedBatchSubscriber<K, V> batch = new KeyedBatchSubscriber<K, V>(keyResolver, target, this, minBatchIntervalInMs);
+            return Subscribe<V>(topic, batch.ReceiveMessage);
         }
 
         public IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs)
