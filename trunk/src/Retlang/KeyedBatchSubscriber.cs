@@ -4,26 +4,33 @@ using System.Text;
 
 namespace Retlang
 {
-    public class BatchSubscriber<T>
+    public delegate K ResolveKey<K,V>(V value);
+
+    public class KeyedBatchSubscriber<K, V>
     {
         private readonly IProcessContext _context;
-        private readonly On<IList<IMessageEnvelope<T>>> _target;
+        private readonly On<IDictionary<K, IMessageEnvelope<V>>> _target;
         private readonly int _flushIntervalInMs;
+        private readonly ResolveKey<K,V> _keyResolver;
 
-        private List<IMessageEnvelope<T>> _pending = null;
+        private Dictionary<K, IMessageEnvelope<V>> _pending = null;
 
-        public BatchSubscriber(On<IList<IMessageEnvelope<T>>> target, IProcessContext context, int flushIntervalInMs)
+        public KeyedBatchSubscriber(
+            ResolveKey<K,V> keyResolver,
+            On<IDictionary<K, IMessageEnvelope<V>>> target, 
+            IProcessContext context, int flushIntervalInMs)
         {
+            _keyResolver = keyResolver;
             _context = context;
             _target = target;
             _flushIntervalInMs = flushIntervalInMs;
         }
 
-        public void ReceiveMessage(IMessageHeader header, T msg)
+        public void ReceiveMessage(IMessageHeader header, V msg)
         {
             if (_pending == null)
             {
-                _pending = new List<IMessageEnvelope<T>>();
+                _pending = new Dictionary<K, IMessageEnvelope<V>>();
                 if (_flushIntervalInMs <= 0)
                 {
                     _context.Enqueue(Flush);
@@ -33,7 +40,8 @@ namespace Retlang
                     _context.Schedule(Flush, _flushIntervalInMs);
                 }
             }
-            _pending.Add(new MessageEnvelope<T>(header, msg));
+            K key = _keyResolver(msg);
+            _pending[key] = new MessageEnvelope<V>(header,msg);
         }
 
         public void Flush()
@@ -43,7 +51,7 @@ namespace Retlang
                 _pending = null;
                 return;
             }
-            IList<IMessageEnvelope<T>> toReturn = _pending;
+            IDictionary<K, IMessageEnvelope<V>> toReturn = _pending;
             _pending = null;
             _target(toReturn);
         }
