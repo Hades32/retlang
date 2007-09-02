@@ -45,6 +45,7 @@
     <Compile Include="BatchSubscriberTests.cs" />
     <Compile Include="BinaryTransferEnvelopeTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
+    <Compile Include="XmlTransferEnvelopeTests.cs" />
     <Compile Include="KeyedBatchSubscriberTests.cs" />
     <Compile Include="GettingStartedTests.cs" />
     <Compile Include="PerfTests.cs" />
