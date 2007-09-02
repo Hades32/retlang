@@ -46,6 +46,7 @@
     <Compile Include="CommandQueueTests.cs" />
     <Compile Include="KeyedBatchSubscriberTests.cs" />
     <Compile Include="GettingStartedTests.cs" />
+    <Compile Include="PerfTests.cs" />
     <Compile Include="ProcessContextTests.cs" />
     <Compile Include="ProcessThreadTests.cs" />
     <Compile Include="MessageBusTests.cs" />
