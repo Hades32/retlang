@@ -6,6 +6,8 @@ namespace Retlang
 {
     public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler, IObjectPublisher
     {
+        void Publish(ITransferEnvelope toPublish);
+
         IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver, On<IDictionary<K, IMessageEnvelope<V>>> target, int minBatchIntervalInMs);
         IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs);
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
@@ -75,6 +77,11 @@ namespace Retlang
         public void Publish(object topic, object msg, object replyToTopic)
         {
             _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));
+        }
+
+        public void Publish(ITransferEnvelope toPublish)
+        {
+            _bus.Publish(toPublish);
         }
 
         public void Publish(object topic, object msg)
