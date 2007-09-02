@@ -34,13 +34,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchSubscriber.cs" />
+    <Compile Include="BinaryTransferEnvelope.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandTimer.cs" />
+    <Compile Include="ITransferEnvelope.cs" />
+    <Compile Include="ITransferEnvelopeFactory.cs" />
     <Compile Include="KeyedBatchSubscriber.cs" />
     <Compile Include="ICommandExceptionHandler.cs" />
     <Compile Include="IObjectPublisher.cs" />
     <Compile Include="IThreadController.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="ObjectTransferEnvelope.cs" />
     <Compile Include="ProcessThread.cs" />
     <Compile Include="ITopic.cs" />
     <Compile Include="MessageBus.cs" />

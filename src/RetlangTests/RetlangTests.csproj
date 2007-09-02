@@ -43,11 +43,13 @@
   <ItemGroup>
     <Compile Include="BatchExampleTests.cs" />
     <Compile Include="BatchSubscriberTests.cs" />
+    <Compile Include="BinaryTransferEnvelopeTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
     <Compile Include="KeyedBatchSubscriberTests.cs" />
     <Compile Include="GettingStartedTests.cs" />
     <Compile Include="PerfTests.cs" />
     <Compile Include="ProcessContextTests.cs" />
+    <Compile Include="ProcessFactoryFixture.cs" />
     <Compile Include="ProcessThreadTests.cs" />
     <Compile Include="MessageBusTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

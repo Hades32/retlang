@@ -14,13 +14,21 @@ namespace Retlang
 
     public class ProcessContext: IProcessContext
     {
+        private ITransferEnvelopeFactory _envelopeFactory;
         private readonly IMessageBus _bus;
         private readonly IProcessThread _processThread;
 
-        public ProcessContext(IMessageBus messageBus, IProcessThread runner )
+        public ProcessContext(IMessageBus messageBus, IProcessThread runner, ITransferEnvelopeFactory factory )
         {
             _bus = messageBus;
             _processThread = runner;
+            _envelopeFactory = factory;
+        }
+
+        public ITransferEnvelopeFactory TransferEnvelopeFactory
+        {
+            get { return _envelopeFactory; }
+            set { _envelopeFactory = value; }
         }
 
         public void Start()
@@ -66,12 +74,12 @@ namespace Retlang
 
         public void Publish(object topic, object msg, object replyToTopic)
         {
-            _bus.Publish(topic, msg, replyToTopic);
+            _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));
         }
 
         public void Publish(object topic, object msg)
         {
-            _bus.Publish(topic, msg);
+            Publish(topic, msg, null);
         }
 
         public IUnsubscriber SubscribeToKeyedBatch<K,V>(ITopicMatcher topic, ResolveKey<K,V> keyResolver, On<IDictionary<K,IMessageEnvelope<V>>> target, int minBatchIntervalInMs)
@@ -100,7 +108,7 @@ namespace Retlang
             TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicMatcher(requestTopic), req.OnReply, _bus);
             _bus.Subscribe(subscriber);
             req.Unsubscriber = new Unsubscriber(subscriber, _bus);
-            _bus.Publish(topic, msg, requestTopic);
+            _bus.Publish(_envelopeFactory.Create(topic, msg, requestTopic));
             return req;
         }
 

@@ -13,9 +13,8 @@ namespace RetlangTests
         public void MessagesInFiftyMilliseconds()
         {
 
-            ProcessContextFactory factory = new ProcessContextFactory();
-            factory.Start();
-
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+     
             IProcessContext context = factory.CreateAndStart();
 
             IsMatch selector = delegate { return true; };
@@ -44,9 +43,8 @@ namespace RetlangTests
         public void UniqueMessagesByTopicInFiftyMilliseconds()
         {
 
-            ProcessContextFactory factory = new ProcessContextFactory();
-            factory.Start();
-
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+      
             IProcessContext context = factory.CreateAndStart();
 
             IsMatch selector = delegate { return true; };

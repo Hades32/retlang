@@ -16,8 +16,8 @@ namespace RetlangTests
         public void PubSub()
         {
             int totalMessages = 1000000;
-            ProcessContextFactory factory = new ProcessContextFactory();
-            factory.Start();
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+            
             IProcessContext pubContext = factory.CreateAndStart();
             IProcessContext receiveContext = factory.CreateAndStart();
 

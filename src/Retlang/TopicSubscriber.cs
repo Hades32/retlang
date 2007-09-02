@@ -6,7 +6,7 @@ namespace Retlang
 {
     public interface ISubscriber
     {
-        void Receive(IMessageHeader header, object msg);
+        void Receive(ITransferEnvelope envelope);
     }
 
     public class TopicSubscriber<T>: ISubscriber
@@ -32,19 +32,19 @@ namespace Retlang
             get { return typeof(T); }
         }
 
-        public void Receive(IMessageHeader header, object msg)
+        public void Receive(ITransferEnvelope envelope)
         {
-            if (!MessageType.IsAssignableFrom(msg.GetType()))
+            if (!MessageType.IsAssignableFrom(envelope.MessageType))
             {
                 return;
             }
-
-            T typedMsg = (T)msg;
-            if (_topic.Matches(header.Topic))
+      
+            if (_topic.Matches(envelope.Header.Topic))
             {
+                T typedMsg = (T)envelope.ResolveMessage;
                 OnCommand toExecute = delegate
                 {
-                    _onMessage(header, typedMsg);
+                    _onMessage(envelope.Header, typedMsg);
                 };
                 _queue.Enqueue(toExecute);
             }

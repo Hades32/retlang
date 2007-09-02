@@ -5,10 +5,11 @@ using System.Text;
 namespace Retlang
 {
     public delegate void On<T>(T msg);
-    public delegate void OnMessage<T>(IMessageHeader header, T msg); 
+    public delegate void OnMessage<T>(IMessageHeader header, T msg);
 
-    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController, IObjectPublisher
-    {  
+    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
+    {
+        void Publish(ITransferEnvelope envelope);
         void Subscribe(ISubscriber subscriber);
         void Unsubscribe(ISubscriber subscriber);
     }
@@ -56,22 +57,16 @@ namespace Retlang
             _thread.Enqueue(command);
         }
 
-        public void Publish(object topic, object message, object replyTo)
+        public void Publish(ITransferEnvelope envelope)
         {
-            IMessageHeader header = new MessageHeader(topic, replyTo);
             OnCommand pubCommand = delegate
             {
                 foreach (ISubscriber sub in _subscribers)
                 {
-                    sub.Receive(header, message);
+                    sub.Receive(envelope);
                 }
             };
             Enqueue(pubCommand);
-        }
-
-        public void Publish(object topic, object message)
-        {
-            Publish(topic, message, null);
         }
 
         public void Subscribe(ISubscriber subscriber)

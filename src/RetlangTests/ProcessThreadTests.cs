@@ -84,6 +84,8 @@ namespace RetlangTests
         public void RequestReplyWithCommands()
         {
             ProcessContextFactory fact = new ProcessContextFactory();
+            // commands are not serializable.
+            fact.TransferEnvelopeFactory = new ObjectTransferEnvelopeFactory();
             fact.Start();
 
             IProcessContext context = fact.CreateAndStart();
