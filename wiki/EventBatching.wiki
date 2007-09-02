@@ -1,4 +1,3 @@
-With asynchronous messages, batching can increase throughput significantly. 
 
 = Example: Receive All Events Batched Every Second =
 
@@ -15,7 +14,7 @@ context.SubscribeToBatch<object>(topicMatcher, messageCount, 1000);
 
 = Batching With Keys =
 
-Events can also be batched using keys so that duplicates are dropped. Here is the same example, but instead of all messages the messages are batched based on the topic.
+Events can also be batched using keys so that duplicates are dropped. Here is the same example, but the topic is used as a key for batching.
 
 {{{
 IsMatch selector = delegate { return true; };
