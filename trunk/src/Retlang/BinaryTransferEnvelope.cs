@@ -32,14 +32,11 @@ namespace Retlang
             get { return _messageType; }
         }
 
-        public object ResolveMessage
+        public object ResolveMessage()
         {
-            get 
-            {
-                MemoryStream stream = new MemoryStream(_msg);
-                BinaryFormatter formatter = new BinaryFormatter();
-                return formatter.Deserialize(stream);
-            }
+            MemoryStream stream = new MemoryStream(_msg);
+            BinaryFormatter formatter = new BinaryFormatter();
+            return formatter.Deserialize(stream);
         }
 
         public IMessageHeader Header

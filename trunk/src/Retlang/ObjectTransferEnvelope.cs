@@ -20,9 +20,9 @@ namespace Retlang
             get { return _obj.GetType(); }
         }
 
-        public object ResolveMessage
+        public object ResolveMessage()
         {
-            get { return _obj; }
+            return _obj;
         }
 
         public IMessageHeader Header
