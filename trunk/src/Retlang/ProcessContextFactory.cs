@@ -12,6 +12,7 @@ namespace Retlang
     public class ProcessContextFactory: IProcessContextFactory
     {
         private readonly MessageBus _bus = new MessageBus();
+        private ITransferEnvelopeFactory _envelopeFactory = new BinaryTransferEnvelopeFactory();
 
         public void Start()
         {
@@ -28,6 +29,12 @@ namespace Retlang
             _bus.Join();
         }
 
+        public ITransferEnvelopeFactory TransferEnvelopeFactory
+        {
+            get { return _envelopeFactory; }
+            set { _envelopeFactory = value; }
+        }
+
         public IProcessContext CreateAndStart()
         {
             IProcessContext context = Create();
@@ -37,7 +44,7 @@ namespace Retlang
 
         public IProcessContext Create()
         {
-            return new ProcessContext(_bus, new ProcessThread(new CommandQueue()));
+            return new ProcessContext(_bus, new ProcessThread(new CommandQueue()), _envelopeFactory);
         }
     }
 }
