@@ -11,7 +11,11 @@ namespace Retlang
         IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver, On<IDictionary<K, IMessageEnvelope<V>>> target, int minBatchIntervalInMs);
         IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs);
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
+
+        IRequestReply<T> SendRequest<T>(ITransferEnvelope env);
         IRequestReply<T> SendRequest<T>(object topic, object msg);
+
+        object CreateUniqueTopic();
     }
 
     public class ProcessContext: IProcessContext
@@ -108,15 +112,26 @@ namespace Retlang
             return new Unsubscriber(subscriber, _bus);
         }
 
-        public IRequestReply<T> SendRequest<T>(object topic, object msg)
+        public object CreateUniqueTopic()
         {
-            object requestTopic = new object();
+            return new object();
+        }
+
+        public IRequestReply<T> SendRequest<T>(ITransferEnvelope env)
+        {
+            object requestTopic = env.Header.ReplyTo;
             TopicRequestReply<T> req = new TopicRequestReply<T>();
             TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicMatcher(requestTopic), req.OnReply, _bus);
             _bus.Subscribe(subscriber);
             req.Unsubscriber = new Unsubscriber(subscriber, _bus);
-            _bus.Publish(_envelopeFactory.Create(topic, msg, requestTopic));
+            _bus.Publish(env);
             return req;
+        }
+
+
+        public IRequestReply<T> SendRequest<T>(object topic, object msg)
+        {
+            return SendRequest<T>(_envelopeFactory.Create(topic, msg, CreateUniqueTopic()));
         }
 
     }

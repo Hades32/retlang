@@ -24,5 +24,13 @@ namespace Retlang
             return new BinaryTransferEnvelope(topic, msg, replyTo);
         }
     }
+
+    public class XmlTransferEnvelopeFactory : ITransferEnvelopeFactory
+    {
+        public ITransferEnvelope Create(object topic, object msg, object replyTo)
+        {
+            return new XmlTransferEnvelope(topic, msg, replyTo);
+        }
+    }
 }
 
