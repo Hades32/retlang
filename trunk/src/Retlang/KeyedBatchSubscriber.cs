@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Retlang
 {
-    public delegate K ResolveKey<K,V>(V value);
+    public delegate K ResolveKey<K,V>(IMessageHeader header, V value);
 
     public class KeyedBatchSubscriber<K, V>
     {
@@ -40,7 +40,7 @@ namespace Retlang
                     _context.Schedule(Flush, _flushIntervalInMs);
                 }
             }
-            K key = _keyResolver(msg);
+            K key = _keyResolver(header, msg);
             _pending[key] = new MessageEnvelope<V>(header,msg);
         }
 
