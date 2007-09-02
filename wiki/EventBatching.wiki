@@ -1,0 +1,32 @@
+With asynchronous messages, batching can increase throughput significantly. 
+
+= Example: Receive All Events Batched Every Second =
+
+This example batches *_all_* events being published on any process in a second.
+{{{
+IsMatch selector = delegate { return true; };
+TopicSelector topicMatcher = new TopicSelector(selector);
+On<IList<IMessageEnvelope<object>>> messageCount = delegate(IList<IMessageEnvelope<object>> msgs)
+{
+  Console.WriteLine("Message Count: " + msgs.Count);
+};
+context.SubscribeToBatch<object>(topicMatcher, messageCount, 1000);
+}}}
+
+= Batching With Keys =
+
+Events can also be batched using keys so that duplicates are dropped. Here is the same example, but instead of all messages the messages are batched based on the topic.
+
+{{{
+IsMatch selector = delegate { return true; };
+TopicSelector topicMatcher = new TopicSelector(selector);
+On<IDictionary<object, IMessageEnvelope<object>>> messageCount = delegate(IDictionary<object, IMessageEnvelope<object>> msgs)
+            {
+                Console.WriteLine("Message Count: " + msgs.Values.Count);
+            };
+ResolveKey<object, object> keyResolver = delegate(IMessageHeader header, object msg){
+  return header.Topic;
+};
+context.SubscribeToKeyedBatch<object, object>(topicMatcher, keyResolver, messageCount, 1000);
+
+}}}
