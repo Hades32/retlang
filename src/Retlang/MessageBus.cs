@@ -7,7 +7,6 @@ namespace Retlang
     public delegate void On<T>(T msg);
     public delegate void OnMessage<T>(IMessageHeader header, T msg); 
 
-
     public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController, IObjectPublisher
     {  
         void Subscribe(ISubscriber subscriber);
@@ -60,13 +59,14 @@ namespace Retlang
         public void Publish(object topic, object message, object replyTo)
         {
             IMessageHeader header = new MessageHeader(topic, replyTo);
-            lock (_subscribers)
+            OnCommand pubCommand = delegate
             {
                 foreach (ISubscriber sub in _subscribers)
                 {
                     sub.Receive(header, message);
                 }
-            }
+            };
+            Enqueue(pubCommand);
         }
 
         public void Publish(object topic, object message)
@@ -76,18 +76,20 @@ namespace Retlang
 
         public void Subscribe(ISubscriber subscriber)
         {
-            lock (_subscribers)
+            OnCommand subCommand = delegate
             {
                 _subscribers.Add(subscriber);
-            }
+            };
+            Enqueue(subCommand);
         }
 
         public void Unsubscribe(ISubscriber sub)
         {
-            lock (_subscribers)
+            OnCommand unSub = delegate
             {
                 _subscribers.Remove(sub);
-            }
+            };
+            Enqueue(unSub);
         }
 
 

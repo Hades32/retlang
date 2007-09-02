@@ -56,8 +56,6 @@ namespace Retlang
 
     public class CommandTimer: IPendingCommandRegistry, ICommandTimer
     {
-        private readonly object _lock = new object();
-
         private readonly ICommandQueue _queue;
         private readonly List<IPendingCommand> _pending = new List<IPendingCommand>();
 
@@ -80,19 +78,21 @@ namespace Retlang
 
         public void Remove(IPendingCommand toRemove)
         {
-            lock (_lock)
+            OnCommand removeCommand = delegate
             {
                 _pending.Remove(toRemove);
-            }
+            };
+            _queue.Enqueue(removeCommand);
         }
 
         private void AddPending(PendingCommand pending)
         {
-            lock (_lock)
+            OnCommand addCommand = delegate
             {
                 _pending.Add(pending);
                 pending.Schedule(this);
-            }
+            };
+            _queue.Enqueue(addCommand);
 
         }
     }

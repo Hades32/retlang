@@ -30,31 +30,33 @@ namespace RetlangTests
         [Test]
         public void PubSub()
         {
-            CommandQueue queue = new CommandQueue();
-            ProcessThread thread = new ProcessThread(queue);
-            thread.Start();
-            ProcessContext proc = new ProcessContext(new MessageBus(), thread);
+            ProcessContextFactory factory = new ProcessContextFactory();
+            factory.Start();
+
+            IProcessContext proc = factory.CreateAndStart();
+
             object topic = new object();
             OnMessage<string> onMsg = delegate
             {
-                thread.Stop();
+                proc.Stop();
             };
             proc.Subscribe(new TopicMatcher(topic), onMsg);
             proc.Publish(topic, "stuff");
 
-            thread.Join();
+            proc.Join();
+            factory.Stop();
+            factory.Join();
         }
 
         [Test]
         public void PubSub2Thread()
         {
             ProcessContextFactory fact = new ProcessContextFactory();
+            fact.Start();
 
-            IProcessContext context = fact.Create();
-            context.Start();
-            IProcessContext context2 = fact.Create();
-            context2.Start();
-
+            IProcessContext context = fact.CreateAndStart();
+            IProcessContext context2 = fact.CreateAndStart();
+    
             object topic = new object();
             object stopTopic = new object();
             OnMessage<string> stopAll = delegate
@@ -74,6 +76,8 @@ namespace RetlangTests
 
             context.Join();
             context2.Join();
+            fact.Stop();
+            fact.Join();
         }
 
         [Test]
@@ -82,11 +86,9 @@ namespace RetlangTests
             ProcessContextFactory fact = new ProcessContextFactory();
             fact.Start();
 
-            IProcessContext context = fact.Create();
-            context.Start();
-            IProcessContext context2 = fact.Create();
-            context2.Start();
-
+            IProcessContext context = fact.CreateAndStart();
+            IProcessContext context2 = fact.CreateAndStart();
+      
             object topic = new object();
             OnMessage<OnMessage<IMessageHeader>> onMsg = delegate(IMessageHeader header, OnMessage<IMessageHeader> msg)
             {
@@ -117,11 +119,9 @@ namespace RetlangTests
             ProcessContextFactory fact = new ProcessContextFactory();
             fact.Start();
 
-            IProcessContext context = fact.Create();
-            context.Start();
-            IProcessContext context2 = fact.Create();
-            context2.Start();
-
+            IProcessContext context = fact.CreateAndStart();
+            IProcessContext context2 = fact.CreateAndStart();
+    
             object topic = new object();
             OnMessage<string> onMsg = delegate(IMessageHeader header, string msg)
             {

@@ -23,6 +23,7 @@ namespace RetlangTests
         {
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             MessageBus bus = new MessageBus();
+            bus.Start();
             string count = "";
             OnMessage<string> onInt = delegate(IMessageHeader header, string num){
                 count += num.ToString();
@@ -37,7 +38,8 @@ namespace RetlangTests
             bus.Unsubscribe(subscriber);
             bus.Publish(topic, "2");
             Assert.AreEqual("12", count);
-     
+            bus.Stop();
+            bus.Join();
         }
 
     }
