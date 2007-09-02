@@ -20,11 +20,13 @@ namespace Retlang
 
         protected byte[] ConvertToBytes(object obj)
         {
-            MemoryStream stream = new MemoryStream();
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, obj);
-            stream.Flush();
-            return stream.ToArray();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(stream, obj);
+                stream.Flush();
+                return stream.ToArray();
+            }
         }
 
         public Type MessageType
@@ -34,9 +36,11 @@ namespace Retlang
 
         public object ResolveMessage()
         {
-            MemoryStream stream = new MemoryStream(_msg);
-            BinaryFormatter formatter = new BinaryFormatter();
-            return formatter.Deserialize(stream);
+            using (MemoryStream stream = new MemoryStream(_msg))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                return formatter.Deserialize(stream);
+            }
         }
 
         public IMessageHeader Header
