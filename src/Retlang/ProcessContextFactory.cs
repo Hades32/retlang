@@ -6,6 +6,7 @@ namespace Retlang
 {
     public interface IProcessContextFactory: IThreadController
     {
+        IProcessContext CreateAndStart();
         IProcessContext Create();
     }
     public class ProcessContextFactory: IProcessContextFactory
@@ -25,6 +26,13 @@ namespace Retlang
         public void Join()
         {
             _bus.Join();
+        }
+
+        public IProcessContext CreateAndStart()
+        {
+            IProcessContext context = Create();
+            context.Start();
+            return context;
         }
 
         public IProcessContext Create()

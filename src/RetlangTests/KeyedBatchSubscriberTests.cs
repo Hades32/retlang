@@ -19,7 +19,7 @@ namespace RetlangTests
             IProcessContext context = repo.CreateMock<IProcessContext>();
             IMessageHeader header = repo.CreateMock<IMessageHeader>();
 
-            ResolveKey<string, int> resolver = delegate(int val)
+            ResolveKey<string, int> resolver = delegate(IMessageHeader head, int val)
             {
                 return val.ToString();
             };
