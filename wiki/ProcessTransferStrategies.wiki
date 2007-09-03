@@ -1,4 +1,4 @@
-Messages that are exchanged between processes can be serialized to ensure the thread safety of the object. Retlang supports xml and binary serialization. Objects don't have to be serialized. Retlang also supports exchanging objects directly without any serialization overhead.
+Messages that are exchanged between processes can be serialized to ensure the thread safety of the object. Retlang supports xml and binary serialization. Retlang also supports exchanging objects directly without any serialization overhead. Binary Serialization is the default.
 
 === Default Object Transfer ===
 {{{
@@ -30,4 +30,3 @@ context.Publish(new XmlTransferEnvelope(topic, message, replyTopic));
 context.Publish(new ObjectTransferEnvelope(topic, message, replyTopic));
 
 }}}
-
