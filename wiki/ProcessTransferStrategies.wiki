@@ -1,0 +1,33 @@
+Messages that are exchanged between processes can be serialized to ensure the thread safety of the object. Retlang supports xml and binary serialization. Objects don't have to be serialized. Retlang also supports exchanging objects directly without any serialization overhead.
+
+=== Default Object Transfer ===
+{{{
+ProcessContextFactory factory = new ProcessContextFactory();
+factory.TransferEnvelopeFactory = new ObjectTransferEnvelopeFactory();  
+}}}
+
+=== Default Binary Transfer ===
+{{{
+ProcessContextFactory factory = new ProcessContextFactory();
+factory.TransferEnvelopeFactory = new BinaryTransferEnvelopeFactory();  
+}}}
+
+=== Default Xml Transfer ===
+{{{
+ProcessContextFactory factory = new ProcessContextFactory();
+factory.TransferEnvelopeFactory = new XmlTransferEnvelopeFactory();  
+}}}
+
+=== Per publish configuration ===
+The transfer strategy can also be specified each time an object is published. This allows strategies to be mixed and matched depending on the use case and performance needs.
+{{{
+IProcessContext context = ... 
+object topic = new object();
+int messages = 1;
+object replyTopic = new object();
+context.Publish(new BinaryTransferEnvelope(topic, message, replyTopic));
+context.Publish(new XmlTransferEnvelope(topic, message, replyTopic));
+context.Publish(new ObjectTransferEnvelope(topic, message, replyTopic));
+
+}}}
+
