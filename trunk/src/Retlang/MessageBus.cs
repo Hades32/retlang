@@ -6,9 +6,12 @@ namespace Retlang
 {
     public delegate void On<T>(T msg);
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
-
+    public delegate void OnTransferEnvelope(ITransferEnvelope env);
+ 
     public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
     {
+        event OnTransferEnvelope UnhandledMessageEvent;
+
         void Publish(ITransferEnvelope envelope);
         void Subscribe(ISubscriber subscriber);
         void Unsubscribe(ISubscriber subscriber);
@@ -20,6 +23,8 @@ namespace Retlang
 
         private readonly IProcessThread _thread;
         private readonly CommandQueue _commandQueue;
+
+        public event OnTransferEnvelope UnhandledMessageEvent;
 
         public MessageBus()
         {
@@ -61,9 +66,21 @@ namespace Retlang
         {
             OnCommand pubCommand = delegate
             {
+                bool published = false;
                 foreach (ISubscriber sub in _subscribers)
                 {
-                    sub.Receive(envelope);
+                    if (sub.Receive(envelope))
+                    {
+                        published = true;
+                    }
+                }
+                if (!published)
+                {
+                    OnTransferEnvelope env = UnhandledMessageEvent;
+                    if (env != null)
+                    {
+                        env(envelope);
+                    }
                 }
             };
             Enqueue(pubCommand);

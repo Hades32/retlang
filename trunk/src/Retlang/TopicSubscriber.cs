@@ -6,7 +6,12 @@ namespace Retlang
 {
     public interface ISubscriber
     {
-        void Receive(ITransferEnvelope envelope);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="envelope"></param>
+        /// <returns>true if message is processed. false if ignored.</returns>
+        bool Receive(ITransferEnvelope envelope);
     }
 
     public class TopicSubscriber<T>: ISubscriber
@@ -32,11 +37,11 @@ namespace Retlang
             get { return typeof(T); }
         }
 
-        public void Receive(ITransferEnvelope envelope)
+        public bool Receive(ITransferEnvelope envelope)
         {
             if (!MessageType.IsAssignableFrom(envelope.MessageType))
             {
-                return;
+                return false;
             }
       
             if (_topic.Matches(envelope.Header.Topic))
@@ -47,7 +52,9 @@ namespace Retlang
                     _onMessage(envelope.Header, typedMsg);
                 };
                 _queue.Enqueue(toExecute);
+                return true;
             }
+            return false;
         }
     }
 }

@@ -19,6 +19,23 @@ namespace RetlangTests
         }
 
         [Test]
+        public void EmptyPublishWithHandler()
+        {
+            ITransferEnvelope unHandledMessage = null;
+            SynchronousCommandQueue queue = new SynchronousCommandQueue();
+            MessageBus bus = new MessageBus();
+            bus.Start();
+            bus.UnhandledMessageEvent += delegate(ITransferEnvelope env){
+                unHandledMessage = env;
+            };
+            object topic = new object();
+            bus.Publish(new ObjectTransferEnvelope(1, new MessageHeader(topic, null)));
+            Assert.IsNotNull(unHandledMessage);
+            bus.Stop();
+            bus.Join();
+        }
+
+        [Test]
         public void PubSub()
         {
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
