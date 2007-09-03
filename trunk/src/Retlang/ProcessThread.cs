@@ -10,6 +10,8 @@ namespace Retlang
 
     public class ProcessThread: IProcessThread
     {
+        private static int THREAD_COUNT = 0;
+
         private readonly Thread _thread;
         private readonly ICommandRunner _queue;
         private readonly CommandTimer _scheduler;
@@ -18,7 +20,12 @@ namespace Retlang
         {
             _queue = queue;
             _thread = new Thread(RunThread);
+            _thread.Name = "ProcessThread-" + GetNextThreadId();
             _scheduler = new CommandTimer(this);
+        }
+
+        private static int GetNextThreadId(){
+            return Interlocked.Increment(ref THREAD_COUNT);
         }
 
         private void RunThread()
