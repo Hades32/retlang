@@ -29,6 +29,11 @@ namespace Retlang
             _bus.Join();
         }
 
+        public IMessageBus MessageBus
+        {
+            get { return _bus; }
+        }
+
         public ITransferEnvelopeFactory TransferEnvelopeFactory
         {
             get { return _envelopeFactory; }
