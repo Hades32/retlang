@@ -1,0 +1,32 @@
+
+= Creating Topics =
+
+Any .NET object can be a publishable topic. 
+
+== Unique Topics ==
+Created a completely unique topic is just a matter of instantiating an object. The publisher and any subscribers will need a reference to this object for pub/sub.
+{{{
+object uniqueTopic = new object();
+}}}
+
+== String Topics ==
+String topics are easy to use and don't require the sharing of objects. This method should be familiar to anyone that has JMS.
+
+{{{
+string myTopic = "system.topic"
+}}}
+
+= Subscribing =
+
+== TopicMatcher ==
+A topic matcher simply matches topics based on equality.
+{{{
+TopicMatcher matcher = new TopicMatcher("my.topic");
+}}}
+
+== Topic Selector ==
+The topic selector matches topics based upon a delegate.
+{{{
+IsMatch selector = delegate(object obj){ return true; }
+TopicSelector topicSelector = new TopicSelector(selector);
+}}}
