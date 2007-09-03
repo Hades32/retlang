@@ -1,9 +1,2 @@
-== Data Transfer Objects ==
-
-Services exchange data asynchronously using data transfer objects. This means that the objects will most likely be accessed on different threads.  Developers need to be aware of a couple considerations.
-
-  * Immutable Objects - Probably the best option since the objects can safely be exchanged without worrying about concurrency issues.
-  * Serialized objects - Objects can be serialized to bytes then transferred to the other thread. Serialization can create a lot of overhead, but is generally safe and effective.
-  * Data Copy Objects - Data copy objects typically are mutable objects that are used to copy the state of a mutable domain object to another process. The object only exists to transfer the state between threads, so it is thread safe. The publishing service creates the object, copies state into the data copy object, then publishes it to other threads. The publishing service should not retain a reference and by convention the receiving service should only interpret the data and not mutate the data since there may be another thread accessing the same data.
 
 See ProcessTransferStrategies
