@@ -9,4 +9,4 @@
   * Generics Support - Subscriptions are typed - no casting necessary.
   * Event Scheduling - Schedule an event for one time execution or on a regular interval.
   * EventBatching
-  * Xml, Binary, or In-Memomory ProcessTransferStrategies
+  * Xml, Binary, or In-Memory ProcessTransferStrategies
