@@ -6,6 +6,7 @@
   * Request/Reply support
   * Lightweight design suitable for client or server applications
   * Supports Any Message Type - object, value types, structs, delegates.
+  * Publish and Subscribe model with ObjectTopics
   * Generics Support - Subscriptions are typed - no casting necessary.
   * Event Scheduling - Schedule an event for one time execution or on a regular interval.
   * EventBatching
