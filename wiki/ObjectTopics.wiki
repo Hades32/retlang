@@ -1,7 +1,6 @@
-
 = Creating Topics =
 
-Any .NET object can be a publishable topic. 
+Any .NET object can be a topic. 
 
 == Unique Topics ==
 Created a completely unique topic is just a matter of instantiating an object. The publisher and any subscribers will need a reference to this object for pub/sub.
@@ -10,13 +9,13 @@ object uniqueTopic = new object();
 }}}
 
 == String Topics ==
-String topics are easy to use and don't require the sharing of objects. This method should be familiar to anyone that has JMS.
+String topics are easy to use and don't require the sharing of objects. This method should be familiar to anyone that has used JMS.
 
 {{{
 string myTopic = "system.topic"
 }}}
 
-= Subscribing =
+= Topic Subscription =
 
 == TopicMatcher ==
 A topic matcher simply matches topics based on equality.
@@ -29,4 +28,24 @@ The topic selector matches topics based upon a delegate.
 {{{
 IsMatch selector = delegate(object obj){ return true; }
 TopicSelector topicSelector = new TopicSelector(selector);
+}}}
+
+= Message Type Matching through assignability =
+Subscription matches are resolved based upon topic matching and the generic type provided in the subscription. Specifically, code similar to the following is used to match a message types to subscription types. 
+{{{
+Type messageType = .. get message type
+Type subscriptionType = .. subscription type
+return messageType.IsAssignableFrom(subscriptionType)
+}}}
+This allows for interface based subscriptions if needed. As long as it is assignable, then the event will be matched and delivered.
+
+For instance, this code sets up a general subscription for all events.
+{{{
+IsMatch selector = delegate { return true; };
+TopicSelector topicMatcher = new TopicSelector(selector);
+OnMessage<object> allMsgs = delegate(IMessageHeader header, object msg)
+{
+Console.WriteLine("Received Msg: " + msg + " on: " + header.Topic);
+};
+context.SubscribeTo<object>(topicMatcher, allMsgs);
 }}}
