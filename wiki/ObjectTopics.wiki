@@ -3,7 +3,7 @@
 Any .NET object can be a topic. 
 
 == Unique Topics ==
-Created a completely unique topic is just a matter of instantiating an object. The publisher and any subscribers will need a reference to this object for pub/sub.
+Creating a completely unique topic is just a matter of instantiating an object. The publisher and any subscribers will need a reference to this object for pub/sub.
 {{{
 object uniqueTopic = new object();
 }}}
