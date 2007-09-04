@@ -31,7 +31,7 @@ TopicSelector topicSelector = new TopicSelector(selector);
 }}}
 
 = Message Type Matching through assignability =
-Subscription matches are resolved based upon topic matching and the generic type provided in the subscription. Specifically, code similar to the following is used to match a message types to subscription types. 
+Subscription matches are resolved based upon topic matching and the generic type provided in the subscription. Specifically, code similar to the following is used to match message types to subscription types. 
 {{{
 Type messageType = .. get message type
 Type subscriptionType = .. subscription type
