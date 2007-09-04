@@ -17,13 +17,13 @@ string myTopic = "system.topic"
 
 = Topic Subscription =
 
-== TopicMatcher ==
+== Matcher ==
 A topic matcher simply matches topics based on equality.
 {{{
 TopicMatcher matcher = new TopicMatcher("my.topic");
 }}}
 
-== Topic Selector ==
+== Selector ==
 The topic selector matches topics based upon a delegate.
 {{{
 IsMatch selector = delegate(object obj){ return true; }
