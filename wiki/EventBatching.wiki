@@ -3,8 +3,8 @@
 
 This example batches *_all_* events being published on any process in a second.
 {{{
-IsMatch selector = delegate { return true; };
-TopicSelector topicMatcher = new TopicSelector(selector);
+IsMatch<object> selector = delegate { return true; };
+TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
 On<IList<IMessageEnvelope<object>>> messageCount = delegate(IList<IMessageEnvelope<object>> msgs)
 {
   Console.WriteLine("Message Count: " + msgs.Count);
@@ -17,8 +17,8 @@ context.SubscribeToBatch<object>(topicMatcher, messageCount, 1000);
 Events can also be batched using keys so that duplicates are dropped. Here is the same example, but the topic is used as a key for batching.
 
 {{{
-IsMatch selector = delegate { return true; };
-TopicSelector topicMatcher = new TopicSelector(selector);
+IsMatch<object> selector = delegate { return true; };
+TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
 On<IDictionary<object, IMessageEnvelope<object>>> messageCount = delegate(IDictionary<object, IMessageEnvelope<object>> msgs)
             {
                 Console.WriteLine("Message Count: " + msgs.Values.Count);
