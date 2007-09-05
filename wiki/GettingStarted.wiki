@@ -22,7 +22,7 @@ The controller implementations shows how messages are sent and how unique topics
             _process = processContext;
             // create a unique exclusive topic to be used as an inbox
             _uniqueTopic = new object();
-            _process.Subscribe<int>(new TopicMatcher(_uniqueTopic), OnReply);
+            _process.Subscribe<int>(new TopicEquals(_uniqueTopic), OnReply);
         }
 
         private void OnReply(IMessageHeader header, int num)
@@ -51,7 +51,7 @@ The service will receive messages, calculate the result, and publish the result 
         {
             _multiplyBy = multiplyBy;
             _process = processContext;
-            _process.Subscribe<int>(new TopicMatcher("multiply.service"), OnMultiply);
+            _process.Subscribe<int>(new TopicEquals("multiply.service"), OnMultiply);
         }
 
         private void OnMultiply(IMessageHeader header, int num)
