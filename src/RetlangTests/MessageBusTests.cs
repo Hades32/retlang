@@ -46,7 +46,7 @@ namespace RetlangTests
                 count += num.ToString();
             };
             object topic = new object();
-            ISubscriber subscriber = new TopicSubscriber<string>(new TopicMatcher(topic), onInt, queue);
+            ISubscriber subscriber = new TopicSubscriber<string>(new TopicEquals(topic), onInt, queue);
             bus.Subscribe(subscriber);
             bus.Publish(CreateMessage(topic, "1"));
             Assert.AreEqual("1", count);

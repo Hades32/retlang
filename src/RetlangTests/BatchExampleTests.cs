@@ -17,8 +17,8 @@ namespace RetlangTests
      
             IProcessContext context = factory.CreateAndStart();
 
-            IsMatch selector = delegate { return true; };
-            TopicSelector topicMatcher = new TopicSelector(selector);
+            IsMatch<object> selector = delegate { return true; };
+            TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
             On<IList<IMessageEnvelope<object>>> messageCount = delegate(IList<IMessageEnvelope<object>> msgs)
             {
                 Console.WriteLine("Message Count: " + msgs.Count);
@@ -47,8 +47,8 @@ namespace RetlangTests
       
             IProcessContext context = factory.CreateAndStart();
 
-            IsMatch selector = delegate { return true; };
-            TopicSelector topicMatcher = new TopicSelector(selector);
+            IsMatch<object> selector = delegate { return true; };
+            TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
             On<IDictionary<object, IMessageEnvelope<object>>> messageCount = delegate(IDictionary<object, IMessageEnvelope<object>> msgs)
             {
                 Console.WriteLine("Message Count: " + msgs.Values.Count);

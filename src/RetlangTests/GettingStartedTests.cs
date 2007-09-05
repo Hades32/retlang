@@ -17,7 +17,7 @@ namespace RetlangTests
             _process = processContext;
             // create a unique exclusive topic to be used as an inbox
             _uniqueTopic = new object();
-            _process.Subscribe<int>(new TopicMatcher(_uniqueTopic), OnReply);
+            _process.Subscribe<int>(new TopicEquals(_uniqueTopic), OnReply);
         }
 
         private void OnReply(IMessageHeader header, int num)
@@ -43,7 +43,7 @@ namespace RetlangTests
                     _process.Stop();
                 }
             };
-            _process.Subscribe<int>(new TopicMatcher(_uniqueTopic), shutdown);
+            _process.Subscribe<int>(new TopicEquals(_uniqueTopic), shutdown);
         }
     }
 
@@ -56,7 +56,7 @@ namespace RetlangTests
         {
             _multiplyBy = multiplyBy;
             _process = processContext;
-            _process.Subscribe<int>(new TopicMatcher("multiply.service"), OnMultiply);
+            _process.Subscribe<int>(new TopicEquals("multiply.service"), OnMultiply);
         }
 
         private void OnMultiply(IMessageHeader header, int num)
