@@ -40,7 +40,7 @@ namespace RetlangTests
             {
                 proc.Stop();
             };
-            proc.Subscribe(new TopicMatcher(topic), onMsg);
+            proc.Subscribe(new TopicEquals(topic), onMsg);
             proc.Publish(topic, "stuff");
 
             proc.Join();
@@ -69,8 +69,8 @@ namespace RetlangTests
                 context2.Publish(stopTopic, "morestuff");
             };
 
-            context.Subscribe(new TopicMatcher(topic), onMsg);
-            context2.Subscribe(new TopicMatcher(stopTopic), stopAll);
+            context.Subscribe(new TopicEquals(topic), onMsg);
+            context2.Subscribe(new TopicEquals(stopTopic), stopAll);
 
             context.Publish(topic, "stuff");
 
@@ -97,7 +97,7 @@ namespace RetlangTests
                 msg(header, header);
             };
 
-            context2.Subscribe(new TopicMatcher(topic), onMsg);
+            context2.Subscribe(new TopicEquals(topic), onMsg);
 
             OnMessage<IMessageHeader> replyCommand = delegate(IMessageHeader header, IMessageHeader headerCopy)
             {
@@ -130,7 +130,7 @@ namespace RetlangTests
                 context2.Publish(header.ReplyTo, "reply to: " + msg);
             };
 
-            context2.Subscribe(new TopicMatcher(topic), onMsg);
+            context2.Subscribe(new TopicEquals(topic), onMsg);
 
             IRequestReply<string> req = context.SendRequest<string>(topic, "stuff");
 

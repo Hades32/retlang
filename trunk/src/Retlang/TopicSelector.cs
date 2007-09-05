@@ -4,20 +4,30 @@ using System.Text;
 
 namespace Retlang
 {
-    public delegate bool IsMatch(object topic);
+    public delegate bool IsMatch<T>(T topic);
 
-    public class TopicSelector: ITopicMatcher
+    public class TopicSelector<T>: ITopicMatcher
     {
-        private readonly IsMatch _selector;
+        private IsMatch<T> _match;
 
-        public TopicSelector(IsMatch selector)
+        public TopicSelector(IsMatch<T> matcher)
         {
-            _selector = selector;
+            _match = matcher;
+        }
+
+        private Type FilterType
+        {
+            get{ return typeof(T);}
         }
 
         public bool Matches(object topic)
         {
-            return _selector(topic);
+            if(FilterType.IsAssignableFrom(topic.GetType()))
+            {
+                T typedObject = (T) topic;
+                return _match(typedObject);
+            }
+            return false;
         }
     }
 }

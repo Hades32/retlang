@@ -7,7 +7,7 @@ using Rhino.Mocks;
 namespace RetlangTests
 {
     [TestFixture]
-    public class TemplateSelectorTests
+    public class TopicSelectorTests
     {
         [Test]
         public void Select()
@@ -20,7 +20,7 @@ namespace RetlangTests
 
             repo.ReplayAll();
 
-            TemplateSelector<string> selector = new TemplateSelector<string>(matcher);
+            TopicSelector<string> selector = new TopicSelector<string>(matcher);
             Assert.IsTrue(selector.Matches("one"));
             Assert.IsFalse(selector.Matches("other"));
             Assert.IsFalse(selector.Matches(1));

@@ -28,7 +28,7 @@ namespace RetlangTests
                     receiveContext.Stop();
                 }
             };
-            receiveContext.Subscribe<int>(new TopicMatcher("sub"), received);
+            receiveContext.Subscribe<int>(new TopicEquals("sub"), received);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();

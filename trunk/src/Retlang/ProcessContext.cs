@@ -121,7 +121,7 @@ namespace Retlang
         {
             object requestTopic = env.Header.ReplyTo;
             TopicRequestReply<T> req = new TopicRequestReply<T>();
-            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicMatcher(requestTopic), req.OnReply, _bus);
+            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicEquals(requestTopic), req.OnReply, _bus);
             _bus.Subscribe(subscriber);
             req.Unsubscriber = new Unsubscriber(subscriber, _bus);
             _bus.Publish(env);
