@@ -41,8 +41,8 @@ This allows for interface based subscriptions if needed. As long as it is assign
 
 For instance, this code sets up a general subscription for all events.
 {{{
-IsMatch selector = delegate { return true; };
-TopicSelector topicMatcher = new TopicSelector(selector);
+IsMatch<object> selector = delegate { return true; };
+TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
 OnMessage<object> allMsgs = delegate(IMessageHeader header, object msg)
 {
 Console.WriteLine("Received Msg: " + msg + " on: " + header.Topic);
