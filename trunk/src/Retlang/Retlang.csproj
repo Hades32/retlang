@@ -37,6 +37,7 @@
     <Compile Include="BinaryTransferEnvelope.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandTimer.cs" />
+    <Compile Include="TemplateSelector.cs" />
     <Compile Include="XmlTransferEnvelope.cs" />
     <Compile Include="ITransferEnvelope.cs" />
     <Compile Include="ITransferEnvelopeFactory.cs" />
