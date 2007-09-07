@@ -11,6 +11,7 @@ namespace Retlang
     }
     public class ProcessContextFactory: IProcessContextFactory
     {
+        private int _maxQueueDepth = -1;
         private readonly MessageBus _bus = new MessageBus();
         private ITransferEnvelopeFactory _envelopeFactory = new BinaryTransferEnvelopeFactory();
 
@@ -27,6 +28,12 @@ namespace Retlang
         public void Join()
         {
             _bus.Join();
+        }
+
+        public int MaxQueueDepth
+        {
+            get { return _maxQueueDepth; }
+            set { _maxQueueDepth = value; }
         }
 
         public IMessageBus MessageBus
@@ -49,7 +56,9 @@ namespace Retlang
 
         public IProcessContext Create()
         {
-            return new ProcessContext(_bus, new ProcessThread(new CommandQueue()), _envelopeFactory);
+            CommandQueue queue = new CommandQueue();
+            queue.MaxDepth = _maxQueueDepth;
+            return new ProcessContext(_bus, new ProcessThread(queue), _envelopeFactory);
         }
     }
 }

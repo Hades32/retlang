@@ -38,6 +38,7 @@
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandTimer.cs" />
     <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="QueueFullException.cs" />
     <Compile Include="TopicSelector.cs" />
     <Compile Include="XmlTransferEnvelope.cs" />
     <Compile Include="ITransferEnvelope.cs" />

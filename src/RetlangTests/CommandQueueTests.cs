@@ -59,5 +59,24 @@ namespace RetlangTests
             repo.VerifyAll();
         }
 
+        [Test]
+        public void MaxDepth()
+        {
+            CommandQueue queue = new CommandQueue();
+            queue.MaxDepth = 2;
+            queue.Enqueue(delegate{});
+            queue.Enqueue(delegate { });
+
+            try
+            {
+                queue.Enqueue(delegate { });
+                Assert.Fail("failed");
+            }
+            catch (QueueFullException failed)
+            {
+                Assert.AreEqual(2, failed.Depth);
+                Assert.AreEqual("Attempted to enqueue item into full queue: 2", failed.Message);
+            }
+        }
     }
 }
