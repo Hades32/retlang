@@ -24,14 +24,25 @@ namespace Retlang
     {
         private readonly object _lock = new object();
         private bool _running = true;
+        private int _maxQueueDepth = -1;
 
         private readonly Queue<OnCommand> _commands = new Queue<OnCommand>();
         public event OnException ExceptionEvent;
+
+        public int MaxDepth
+        {
+            get { return _maxQueueDepth; }
+            set { _maxQueueDepth = value; }
+        }
 
         public void Enqueue(OnCommand command)
         {
             lock (_lock)
             {
+                if(_maxQueueDepth> 0 && _commands.Count >= _maxQueueDepth)
+                {
+                    throw new QueueFullException(_commands.Count);
+                }
                 _commands.Enqueue(command);
                 Monitor.PulseAll(_lock);
             }
