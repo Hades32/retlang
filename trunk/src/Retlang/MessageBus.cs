@@ -6,11 +6,10 @@ namespace Retlang
 {
     public delegate void On<T>(T msg);
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
-    public delegate void OnTransferEnvelope(ITransferEnvelope env);
- 
+  
     public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
     {
-        event OnTransferEnvelope UnhandledMessageEvent;
+        event On<ITransferEnvelope> UnhandledMessageEvent;
 
         void Publish(ITransferEnvelope envelope);
         void Subscribe(ISubscriber subscriber);
@@ -24,7 +23,7 @@ namespace Retlang
         private readonly IProcessThread _thread;
         private readonly CommandQueue _commandQueue;
 
-        public event OnTransferEnvelope UnhandledMessageEvent;
+        public event On<ITransferEnvelope> UnhandledMessageEvent;
 
         public MessageBus()
         {
@@ -76,7 +75,7 @@ namespace Retlang
                 }
                 if (!published)
                 {
-                    OnTransferEnvelope env = UnhandledMessageEvent;
+                    On<ITransferEnvelope> env = UnhandledMessageEvent;
                     if (env != null)
                     {
                         env(envelope);
