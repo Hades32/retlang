@@ -13,6 +13,10 @@ namespace Retlang
 
         public XmlTransferEnvelope(object topic, object msg, object replyTo)
         {
+            if (msg == null)
+            {
+                throw new NullReferenceException("Message cannot be null");
+            }
             _messageType = msg.GetType();
             _header = new MessageHeader(topic, replyTo);
             _msg = ConvertToBytes(msg, _messageType);

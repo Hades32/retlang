@@ -80,7 +80,7 @@ namespace Retlang
 
         public void Publish(object topic, object msg, object replyToTopic)
         {
-            _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));
+            Publish(_envelopeFactory.Create(topic, msg, replyToTopic));
         }
 
         public void Publish(ITransferEnvelope toPublish)

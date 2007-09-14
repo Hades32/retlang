@@ -11,6 +11,10 @@ namespace Retlang
 
         public ObjectTransferEnvelope(object obj, IMessageHeader header)
         {
+            if (obj == null)
+            {
+                throw new NullReferenceException("Message Cannot be null");
+            }
             _obj = obj;
             _header = header;
         }
