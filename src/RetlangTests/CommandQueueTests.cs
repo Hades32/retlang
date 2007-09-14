@@ -14,7 +14,7 @@ namespace RetlangTests
         public void NoExceptionHandling()
         {
             MockRepository repo = new MockRepository();
-            OnCommand excCommand = repo.CreateMock<OnCommand>();
+            Command excCommand = repo.CreateMock<Command>();
             Exception failure = new Exception();
             excCommand();
             LastCall.Throw(failure);
@@ -40,7 +40,7 @@ namespace RetlangTests
         public void ExceptionHandling()
         {
             MockRepository repo = new MockRepository();
-            OnCommand excCommand = repo.CreateMock<OnCommand>();
+            Command excCommand = repo.CreateMock<Command>();
             Exception failure = new Exception();
             excCommand();
             LastCall.Throw(failure);

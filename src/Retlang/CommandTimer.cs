@@ -15,13 +15,13 @@ namespace Retlang
 
     public class PendingCommand: IPendingCommand
     {
-        private readonly OnCommand _command;
+        private readonly Command _command;
         private readonly int _firstIntervalInMs;
         private readonly int _intervalInMs;
 
         private Timer _timer;
 
-        public PendingCommand(OnCommand command, int firstIntervalInMs, int intervalInMs)
+        public PendingCommand(Command command, int firstIntervalInMs, int intervalInMs)
         {
             _command = command;
             _firstIntervalInMs = firstIntervalInMs;
@@ -30,7 +30,7 @@ namespace Retlang
 
         public void Schedule(IPendingCommandRegistry registry)
         {
-            OnCommand toExecute = _command;
+            Command toExecute = _command;
             if (_intervalInMs == Timeout.Infinite)
             {
                 toExecute = delegate
@@ -50,8 +50,8 @@ namespace Retlang
 
     public interface ICommandTimer
     {
-        void Schedule(OnCommand command, int firstIntervalInMs);
-        void ScheduleOnInterval(OnCommand command, int firstIntervalInMs, int regularIntervalInMs);
+        void Schedule(Command command, int firstIntervalInMs);
+        void ScheduleOnInterval(Command command, int firstIntervalInMs, int regularIntervalInMs);
     }
 
     public class CommandTimer: IPendingCommandRegistry, ICommandTimer
@@ -64,13 +64,13 @@ namespace Retlang
             _queue = queue;
         }
 
-        public void Schedule(OnCommand comm, int timeTillEnqueueInMs)
+        public void Schedule(Command comm, int timeTillEnqueueInMs)
         {
             PendingCommand pending = new PendingCommand(comm, timeTillEnqueueInMs, Timeout.Infinite);
             AddPending(pending);
         }
 
-        public void ScheduleOnInterval(OnCommand comm, int firstInMs, int intervalInMs)
+        public void ScheduleOnInterval(Command comm, int firstInMs, int intervalInMs)
         {
             PendingCommand pending = new PendingCommand(comm, firstInMs, intervalInMs);
             AddPending(pending);
@@ -78,7 +78,7 @@ namespace Retlang
 
         public void Remove(IPendingCommand toRemove)
         {
-            OnCommand removeCommand = delegate
+            Command removeCommand = delegate
             {
                 _pending.Remove(toRemove);
             };
@@ -87,7 +87,7 @@ namespace Retlang
 
         private void AddPending(PendingCommand pending)
         {
-            OnCommand addCommand = delegate
+            Command addCommand = delegate
             {
                 _pending.Add(pending);
                 pending.Schedule(this);

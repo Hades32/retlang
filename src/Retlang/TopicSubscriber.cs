@@ -47,7 +47,7 @@ namespace Retlang
             if (_topic.Matches(envelope.Header.Topic))
             {
                 T typedMsg = (T)envelope.ResolveMessage();
-                OnCommand toExecute = delegate
+                Command toExecute = delegate
                 {
                     _onMessage(envelope.Header, typedMsg);
                 };

@@ -4,12 +4,12 @@ using System.Threading;
 
 namespace Retlang
 {
-    public delegate void OnCommand();
-    public delegate void OnException(OnCommand command, Exception failure);
+    public delegate void Command();
+    public delegate void OnException(Command command, Exception failure);
 
     public interface ICommandQueue
     {
-        void Enqueue(OnCommand command);
+        void Enqueue(Command command);
     }
 
     public interface ICommandRunner: ICommandQueue
@@ -26,7 +26,7 @@ namespace Retlang
         private bool _running = true;
         private int _maxQueueDepth = -1;
 
-        private readonly Queue<OnCommand> _commands = new Queue<OnCommand>();
+        private readonly Queue<Command> _commands = new Queue<Command>();
         public event OnException ExceptionEvent;
 
         public int MaxDepth
@@ -35,7 +35,7 @@ namespace Retlang
             set { _maxQueueDepth = value; }
         }
 
-        public void Enqueue(OnCommand command)
+        public void Enqueue(Command command)
         {
             lock (_lock)
             {
@@ -48,7 +48,7 @@ namespace Retlang
             }
         }
 
-        public OnCommand Dequeue()
+        public Command Dequeue()
         {
             lock (_lock)
             {
@@ -66,7 +66,7 @@ namespace Retlang
 
         public bool ExecuteNext()
         {
-            OnCommand comm = Dequeue();
+            Command comm = Dequeue();
             if (comm != null)
             {
                 try

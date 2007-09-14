@@ -6,7 +6,7 @@ namespace Retlang
 {
     public class SynchronousCommandQueue: ICommandQueue
     {
-        public void Enqueue(OnCommand command)
+        public void Enqueue(Command command)
         {
             command();
         }
