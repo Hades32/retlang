@@ -1,6 +1,6 @@
 The following example demonstrates how to calculate a fibonnaci sequence using Retlang. 
 
-Example provided by [http://pages.ripco.net/~lees/index.html Oliver Gugenheim].
+Example provided by [OliverGugenheim].
 
 
 {{{
@@ -101,3 +101,4 @@ Example provided by [http://pages.ripco.net/~lees/index.html Oliver Gugenheim].
 		}
 	}
 }}} 
+ 
