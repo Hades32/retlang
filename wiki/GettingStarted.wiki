@@ -1,8 +1,12 @@
 #labels Featured
-= Examples =
+The best way to understand Retlang is to first take a look at the ThreadingDesign. A basic understanding on how events are created and received is essential to understanding how to design applications using the framework.
+
+
+=== Some Examples ===
 
 FibonacciExample - A basic example for calculating a fibonacci sequence.
 
 
 MultiplicationExample - A slightly more advanced example that uses unique topics and asynchronous replies to multiply numbers.
+ 
  
