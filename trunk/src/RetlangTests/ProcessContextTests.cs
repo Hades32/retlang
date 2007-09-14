@@ -51,5 +51,24 @@ namespace RetlangTests
             factory.Join();
             Assert.AreEqual(5, count);
         }
+
+        [Test]
+        public void PublishNullMsg()
+        {
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+            IProcessContext process = factory.CreateAndStart();
+            try
+            {
+                process.Publish("topic", null);
+                Assert.Fail("should throw null reference exception");
+            }catch(NullReferenceException exc)
+            {
+            }
+                process.Stop();
+
+            factory.Stop();
+            process.Join();
+            factory.Join();
+        }
     }
 }
