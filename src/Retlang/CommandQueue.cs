@@ -64,35 +64,71 @@ namespace Retlang
             }
         }
 
+        public Command[] DequeueAll()
+        {
+            lock (_lock)
+            {
+                while (_commands.Count == 0 && _running)
+                {
+                    Monitor.Wait(_lock);
+                }
+                if (!_running)
+                {
+                    return null;
+                }
+                Command[] toReturn = _commands.ToArray();
+                _commands.Clear();
+                return toReturn;
+            }
+        }
+        public bool ExecuteNextBatch()
+        {
+            Command[] toExecute = DequeueAll();
+            if(toExecute == null)
+            {
+                return false;
+            }
+            foreach (Command command in toExecute)
+            {
+                ExecuteSingleCommand(command);
+            }
+            return true;
+        }
+
         public bool ExecuteNext()
         {
             Command comm = Dequeue();
             if (comm != null)
             {
-                try
-                {
-                    comm();
-                }
-                catch (Exception exc)
-                {
-                    OnException onExc = ExceptionEvent;
-                    if (onExc != null)
-                    {
-                        onExc(comm, exc);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                ExecuteSingleCommand(comm);
                 return true;
             }
             return false;
         }
 
+        private void ExecuteSingleCommand(Command comm)
+        {
+            try
+            {
+                comm();
+            }
+            catch (Exception exc)
+            {
+                OnException onExc = ExceptionEvent;
+                if (onExc != null)
+                {
+                    onExc(comm, exc);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
         public void Run()
         {
-            while (ExecuteNext())
+            while (ExecuteNextBatch())
             {
             }
         }
