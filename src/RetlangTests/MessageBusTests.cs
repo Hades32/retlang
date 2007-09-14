@@ -61,7 +61,6 @@ namespace RetlangTests
             ISubscriber subscriber = new TopicSubscriber<string>(new TopicEquals(topic), onInt, queue);
             bus.Subscribe(subscriber);
             bus.Publish(CreateMessage(topic, "1"));
-            Assert.AreEqual("1", count);
             bus.Publish(CreateMessage(topic, "2"));
             Assert.IsTrue(reset.WaitOne(1000, false));
             Assert.AreEqual("12", count);

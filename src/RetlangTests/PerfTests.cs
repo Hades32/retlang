@@ -15,7 +15,7 @@ namespace RetlangTests
         [Explicit]
         public void PubSub()
         {
-            int totalMessages = 1000000;
+            int totalMessages = 10000;
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
             
             IProcessContext pubContext = factory.CreateAndStart();
@@ -36,13 +36,14 @@ namespace RetlangTests
             {
                 pubContext.Publish("sub", i);
             }
-            Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
             receiveContext.Join();
             pubContext.Stop();
             pubContext.Join();
             factory.Stop();
             factory.Join();
 
+            Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
+            Console.WriteLine("Avg Per Second: " + (totalMessages/watch.Elapsed.TotalSeconds));
         }
     }
 }
