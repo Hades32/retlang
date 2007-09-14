@@ -6,7 +6,11 @@ The best way to understand Retlang is to first take a look at the ThreadingDesig
 
 FibonacciExample - A basic example for calculating a fibonacci sequence.
 
+AlgebraDemonstration
 
 MultiplicationExample - A slightly more advanced example that uses unique topics and asynchronous replies to multiply numbers.
+
+
+ 
  
  
