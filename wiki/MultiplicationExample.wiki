@@ -1,0 +1,112 @@
+= Introduction =
+
+The following example will demonstrate how to use Retlang to implement asynchronous services.
+
+= The example =
+
+The example implements a basic service for multiplying numbers. Calculations will be done asynchronously and returned to the controller.
+
+== The Controller ==
+
+The controller implementations shows how messages are sent and how unique topics are created. 
+
+{{{
+   public class MultiplyController
+    {
+        private readonly object _uniqueTopic;
+        private readonly IProcessContext _process;
+
+        public MultiplyController(IProcessContext processContext)
+        {
+            _process = processContext;
+            // create a unique exclusive topic to be used as an inbox
+            _uniqueTopic = new object();
+            _process.Subscribe<int>(new TopicEquals(_uniqueTopic), OnReply);
+        }
+
+        private void OnReply(IMessageHeader header, int num)
+        {
+            Console.WriteLine("Reply: " + num);
+        }
+
+        public void Send(int num)
+        {
+            _process.Publish("multiply.service", num, _uniqueTopic);
+            Console.WriteLine("Sent: " + num);
+        }
+}}}
+
+== The Service ==
+
+The service will receive messages, calculate the result, and publish the result to another topic provided in the message header.
+
+{{{
+ public class MultiplyService
+    {
+        private readonly IProcessContext _process;
+        private readonly int _multiplyBy;
+
+        public MultiplyService(IProcessContext processContext, int multiplyBy)
+        {
+            _multiplyBy = multiplyBy;
+            _process = processContext;
+            _process.Subscribe<int>(new TopicEquals("multiply.service"), OnMultiply);
+        }
+
+        private void OnMultiply(IMessageHeader header, int num)
+        {
+            object replyTopic = header.ReplyTo;
+            int result = num * _multiplyBy;
+            _process.Publish(replyTopic, result);
+            Console.WriteLine("Published Reply: " + result);
+        }
+    }
+}}}
+
+== Creating the processes and services ==
+
+{{{
+           // all process contexts created from this factory will be able to exchange messages
+            ProcessContextFactory factory = new ProcessContextFactory();
+            // start the processing thread.
+            factory.Start();
+
+            IProcessContext controllerContext = factory.Create();
+            // start the process thread
+            controllerContext.Start();
+            MultiplyController controller = new MultiplyController(controllerContext);
+
+            IProcessContext firstContext = factory.Create();
+            firstContext.Start();
+            MultiplyService firstService = new MultiplyService(firstContext, 10);
+
+            IProcessContext secondContext = factory.Create();
+            secondContext.Start();
+            MultiplyService secondService = new MultiplyService(secondContext, -1);
+
+}}}
+
+== Send the Messages == 
+
+{{{
+          controller.Send(5);
+          controller.Send(100);
+
+}}}
+
+== The Output ==
+
+The output demonstrates the asynchronous nature of Retlang. The console messages are not sequential since each ProcessContext runs on its own thread.
+{{{
+Published Reply: 50
+Received Reply: 50
+Sent: 5
+Sent: 100
+Received Reply: -5
+Published Reply: -5
+Received Reply: -100
+Published Reply: -100
+Received Reply: 1000
+Published Reply: 1000
+}}}
+ 
