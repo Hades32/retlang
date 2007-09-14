@@ -30,7 +30,7 @@ namespace RetlangTests
             {
                 context.Publish(new object(), new object());
                 context.Publish("string.topic", i);
-                OnCommand command = delegate{};
+                Command command = delegate{};
                 context.Publish("command.topic", command);
             }
 
@@ -63,7 +63,7 @@ namespace RetlangTests
             {
                 context.Publish(new object(), new object());
                 context.Publish("string.topic", i);
-                OnCommand command = delegate { };
+                Command command = delegate { };
                 context.Publish("command.topic", command);
             }
 

@@ -13,7 +13,7 @@ namespace Retlang
         {
             if (obj == null)
             {
-                throw new NullReferenceException("Message Cannot be null");
+                throw new NullReferenceException("Message cannot be null");
             }
             _obj = obj;
             _header = header;

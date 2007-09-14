@@ -63,17 +63,17 @@ namespace Retlang
         }
 
 
-        public void Schedule(OnCommand command, int intervalInMs)
+        public void Schedule(Command command, int intervalInMs)
         {
             _processThread.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(OnCommand command, int firstIntervalInMs, int regularIntervalInMs)
+        public void ScheduleOnInterval(Command command, int firstIntervalInMs, int regularIntervalInMs)
         {
             _processThread.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
 
-        public void Enqueue(OnCommand command)
+        public void Enqueue(Command command)
         {
             _processThread.Enqueue(command);
         }

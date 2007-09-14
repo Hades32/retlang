@@ -17,7 +17,7 @@ namespace RetlangTests
             IProcessContext context = factory.Create();
             context.Start();
 
-            OnCommand stopCommand = context.Stop;
+            Command stopCommand = context.Stop;
             context.Schedule(stopCommand, 5);
 
             context.Join();
@@ -35,7 +35,7 @@ namespace RetlangTests
             context.Start();
 
             int count = 0;
-            OnCommand stopCommand = delegate
+            Command stopCommand = delegate
             {
                 count++;
                 if (count == 5)

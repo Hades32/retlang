@@ -56,14 +56,14 @@ namespace Retlang
             _thread.Join();
         }
 
-        public void Enqueue(OnCommand command)
+        public void Enqueue(Command command)
         {
             _thread.Enqueue(command);
         }
 
         public void Publish(ITransferEnvelope envelope)
         {
-            OnCommand pubCommand = delegate
+            Command pubCommand = delegate
             {
                 bool published = false;
                 foreach (ISubscriber sub in _subscribers)
@@ -87,7 +87,7 @@ namespace Retlang
 
         public void Subscribe(ISubscriber subscriber)
         {
-            OnCommand subCommand = delegate
+            Command subCommand = delegate
             {
                 _subscribers.Add(subscriber);
             };
@@ -96,7 +96,7 @@ namespace Retlang
 
         public void Unsubscribe(ISubscriber sub)
         {
-            OnCommand unSub = delegate
+            Command unSub = delegate
             {
                 _subscribers.Remove(sub);
             };

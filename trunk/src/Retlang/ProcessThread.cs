@@ -33,17 +33,17 @@ namespace Retlang
             _queue.Run();
         }
 
-        public void Enqueue(OnCommand command)
+        public void Enqueue(Command command)
         {
             _queue.Enqueue(command);
         }
 
-        public void Schedule(OnCommand command, int intervalInMs)
+        public void Schedule(Command command, int intervalInMs)
         {
             _scheduler.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(OnCommand command, int firstInMs, int intervalInMs)
+        public void ScheduleOnInterval(Command command, int firstInMs, int intervalInMs)
         {
             _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
         }
