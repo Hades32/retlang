@@ -10,6 +10,8 @@ namespace RetlangTests
         {
             ProcessContextFactory factory = new ProcessContextFactory();
             factory.TransferEnvelopeFactory = new ObjectTransferEnvelopeFactory();
+            factory.MaxQueueDepth = 10000;
+            factory.MaxEnqueueWaitTime = 10000;
             factory.Start();
             return factory;
         }

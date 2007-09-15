@@ -25,6 +25,7 @@ namespace Retlang
         private readonly object _lock = new object();
         private bool _running = true;
         private int _maxQueueDepth = -1;
+        private int _maxEnqueueWaitTime = 0;
 
         private readonly Queue<Command> _commands = new Queue<Command>();
         public event OnException ExceptionEvent;
@@ -35,32 +36,64 @@ namespace Retlang
             set { _maxQueueDepth = value; }
         }
 
+        public int MaxEnqueueWaitTime
+        {
+            get { return _maxEnqueueWaitTime; }
+            set { _maxEnqueueWaitTime = value; }
+        }
+
         public void Enqueue(Command command)
         {
             lock (_lock)
             {
-                if(_maxQueueDepth> 0 && _commands.Count >= _maxQueueDepth)
+                if (SpaceAvailable())
+                {
+                    _commands.Enqueue(command);
+                    Monitor.PulseAll(_lock);
+                }
+            }
+        }
+
+        private bool SpaceAvailable()
+        {
+            if (!_running)
+            {
+                return false;
+            }
+            while (_maxQueueDepth > 0 && _commands.Count >= _maxQueueDepth)
+            {
+                if (_maxEnqueueWaitTime <= 0)
                 {
                     throw new QueueFullException(_commands.Count);
                 }
-                _commands.Enqueue(command);
-                Monitor.PulseAll(_lock);
+                else
+                {
+                    Monitor.Wait(_lock, _maxEnqueueWaitTime);
+                    if (!_running)
+                    {
+                        return false;
+                    }
+                    if (_maxQueueDepth > 0 && _commands.Count >= _maxQueueDepth)
+                    {
+                        throw new QueueFullException(_commands.Count);
+                    }
+
+                }
             }
+            return true;
         }
 
         public Command Dequeue()
         {
             lock (_lock)
             {
-                while (_commands.Count == 0 && _running)
+                if (ReadyToDequeue())
                 {
-                    Monitor.Wait(_lock);
+                    Command comm = _commands.Dequeue();
+                    Monitor.PulseAll(_lock);
+                    return comm;
                 }
-                if (!_running)
-                {
-                    return null;
-                }
-                return _commands.Dequeue();
+                return null;
             }
         }
 
@@ -68,19 +101,33 @@ namespace Retlang
         {
             lock (_lock)
             {
-                while (_commands.Count == 0 && _running)
+                if (ReadyToDequeue())
                 {
-                    Monitor.Wait(_lock);
+                    Command[] toReturn = _commands.ToArray();
+                    _commands.Clear();
+                    Monitor.PulseAll(_lock);
+                    return toReturn;
                 }
-                if (!_running)
+                else
                 {
                     return null;
                 }
-                Command[] toReturn = _commands.ToArray();
-                _commands.Clear();
-                return toReturn;
             }
         }
+
+        private bool ReadyToDequeue()
+        {
+            while (_commands.Count == 0 && _running)
+            {
+                Monitor.Wait(_lock);
+            }
+            if (!_running)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public bool ExecuteNextBatch()
         {
             Command[] toExecute = DequeueAll();
