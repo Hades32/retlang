@@ -26,7 +26,7 @@ namespace RetlangTests
             };
             context.SubscribeToBatch<object>(topicMatcher, messageCount, 50);
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 context.Publish(new object(), new object());
                 context.Publish("string.topic", i);
@@ -57,9 +57,9 @@ namespace RetlangTests
             ResolveKey<object, object> keyResolver = delegate(IMessageHeader header, object msg){
                 return header.Topic;
             };
-            context.SubscribeToKeyedBatch<object, object>(topicMatcher, keyResolver, messageCount, 10);
+            context.SubscribeToKeyedBatch<object, object>(topicMatcher, keyResolver, messageCount, 50);
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 context.Publish(new object(), new object());
                 context.Publish("string.topic", i);

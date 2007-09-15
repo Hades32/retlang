@@ -14,7 +14,8 @@ namespace RetlangTests
         public void EmptyPublish()
         {
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
-            MessageBus bus = new MessageBus();
+            CommandQueue comQueue = new CommandQueue();
+            MessageBus bus = new MessageBus(comQueue, new ProcessThread(comQueue));
             object topic = new object();
             bus.Publish(new ObjectTransferEnvelope(1, new MessageHeader(topic, null)));
         }
@@ -23,7 +24,8 @@ namespace RetlangTests
         public void EmptyPublishWithHandler()
         {
             ITransferEnvelope unHandledMessage = null;
-            MessageBus bus = new MessageBus();
+            CommandQueue queue = new CommandQueue();
+            MessageBus bus = new MessageBus(queue, new ProcessThread(queue));
             bus.Start();
             AutoResetEvent reset = new AutoResetEvent(false);
             bus.UnhandledMessageEvent += delegate(ITransferEnvelope env){
@@ -43,7 +45,8 @@ namespace RetlangTests
         [Test]
         public void PubSub()
         {
-            MessageBus bus = new MessageBus();
+            CommandQueue comQueue = new CommandQueue();
+            MessageBus bus = new MessageBus(comQueue, new ProcessThread(comQueue));
             bus.Start();
             string count = "";
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
