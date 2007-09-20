@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang;
 using Rhino.Mocks;
@@ -13,8 +11,8 @@ namespace RetlangTests
         public void Select()
         {
             MockRepository repo = new MockRepository();
-            IsMatch<string> matcher = repo.CreateMock<IsMatch<string>>(); 
-            
+            IsMatch<string> matcher = repo.CreateMock<IsMatch<string>>();
+
             Expect.Call(matcher("one")).Return(true);
             Expect.Call(matcher("other")).Return(false);
 

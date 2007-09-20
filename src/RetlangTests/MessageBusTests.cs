@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using Retlang;
-using System.Threading;
 
 namespace RetlangTests
 {
@@ -28,10 +25,11 @@ namespace RetlangTests
             MessageBus bus = new MessageBus(queue, new ProcessThread(queue));
             bus.Start();
             AutoResetEvent reset = new AutoResetEvent(false);
-            bus.UnhandledMessageEvent += delegate(ITransferEnvelope env){
-                unHandledMessage = env;
-                reset.Set();
-            };
+            bus.UnhandledMessageEvent += delegate(ITransferEnvelope env)
+                                             {
+                                                 unHandledMessage = env;
+                                                 reset.Set();
+                                             };
             object topic = new object();
             bus.Publish(new ObjectTransferEnvelope(1, new MessageHeader(topic, null)));
 
@@ -52,14 +50,15 @@ namespace RetlangTests
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             AutoResetEvent reset = new AutoResetEvent(false);
             int messageCount = 0;
-            OnMessage<string> onInt = delegate(IMessageHeader header, string num){
-                count += num.ToString();
-                messageCount++;
-                if (messageCount == 2)
-                {
-                    reset.Set();
-                }
-            };
+            OnMessage<string> onInt = delegate(IMessageHeader header, string num)
+                                          {
+                                              count += num.ToString();
+                                              messageCount++;
+                                              if (messageCount == 2)
+                                              {
+                                                  reset.Set();
+                                              }
+                                          };
             object topic = new object();
             ISubscriber subscriber = new TopicSubscriber<string>(new TopicEquals(topic), onInt, queue);
             bus.Subscribe(subscriber);
@@ -75,6 +74,5 @@ namespace RetlangTests
         {
             return new ObjectTransferEnvelope(msg, new MessageHeader(topic, null));
         }
-
     }
 }

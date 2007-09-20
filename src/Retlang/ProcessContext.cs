@@ -1,15 +1,19 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
-    public interface IProcessContext: ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler, IObjectPublisher
+    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler,
+                                       IObjectPublisher
     {
         void Publish(ITransferEnvelope toPublish);
 
-        IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver, On<IDictionary<K, IMessageEnvelope<V>>> target, int minBatchIntervalInMs);
-        IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs);
+        IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
+                                                  On<IDictionary<K, IMessageEnvelope<V>>> target,
+                                                  int minBatchIntervalInMs);
+
+        IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg,
+                                          int minBatchIntervalInMs);
+
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
 
         IRequestReply<T> SendRequest<T>(ITransferEnvelope env);
@@ -18,13 +22,13 @@ namespace Retlang
         object CreateUniqueTopic();
     }
 
-    public class ProcessContext: IProcessContext
+    public class ProcessContext : IProcessContext
     {
         private ITransferEnvelopeFactory _envelopeFactory;
         private readonly IMessageBus _bus;
         private readonly IProcessThread _processThread;
 
-        public ProcessContext(IMessageBus messageBus, IProcessThread runner, ITransferEnvelopeFactory factory )
+        public ProcessContext(IMessageBus messageBus, IProcessThread runner, ITransferEnvelopeFactory factory)
         {
             _bus = messageBus;
             _processThread = runner;
@@ -93,13 +97,17 @@ namespace Retlang
             Publish(topic, msg, null);
         }
 
-        public IUnsubscriber SubscribeToKeyedBatch<K,V>(ITopicMatcher topic, ResolveKey<K,V> keyResolver, On<IDictionary<K,IMessageEnvelope<V>>> target, int minBatchIntervalInMs)
+        public IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
+                                                         On<IDictionary<K, IMessageEnvelope<V>>> target,
+                                                         int minBatchIntervalInMs)
         {
-            KeyedBatchSubscriber<K, V> batch = new KeyedBatchSubscriber<K, V>(keyResolver, target, this, minBatchIntervalInMs);
+            KeyedBatchSubscriber<K, V> batch =
+                new KeyedBatchSubscriber<K, V>(keyResolver, target, this, minBatchIntervalInMs);
             return Subscribe<V>(topic, batch.ReceiveMessage);
         }
 
-        public IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg, int minBatchIntervalInMs)
+        public IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg,
+                                                 int minBatchIntervalInMs)
         {
             BatchSubscriber<T> batch = new BatchSubscriber<T>(msg, this, minBatchIntervalInMs);
             return Subscribe<T>(topic, batch.ReceiveMessage);
@@ -133,6 +141,5 @@ namespace Retlang
         {
             return SendRequest<T>(_envelopeFactory.Create(topic, msg, CreateUniqueTopic()));
         }
-
     }
 }

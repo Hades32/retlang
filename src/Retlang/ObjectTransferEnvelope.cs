@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
-    public class ObjectTransferEnvelope: ITransferEnvelope
+    public class ObjectTransferEnvelope : ITransferEnvelope
     {
         private readonly IMessageHeader _header;
         private readonly object _obj;

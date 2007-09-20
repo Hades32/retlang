@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang;
 using Rhino.Mocks;
@@ -9,7 +8,6 @@ namespace RetlangTests
     [TestFixture]
     public class CommandQueueTests
     {
-
         [Test]
         public void NoExceptionHandling()
         {
@@ -64,7 +62,7 @@ namespace RetlangTests
         {
             CommandQueue queue = new CommandQueue();
             queue.MaxDepth = 2;
-            queue.Enqueue(delegate{});
+            queue.Enqueue(delegate { });
             queue.Enqueue(delegate { });
 
             try

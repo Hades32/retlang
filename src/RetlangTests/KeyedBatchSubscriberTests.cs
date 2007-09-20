@@ -1,17 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Rhino.Mocks;
 using NUnit.Framework;
 using Retlang;
+using Rhino.Mocks;
 
 namespace RetlangTests
 {
-
     [TestFixture]
     public class KeyedBatchSubscriberTests
     {
-
         [Test]
         public void Batch()
         {
@@ -19,13 +15,10 @@ namespace RetlangTests
             IProcessContext context = repo.CreateMock<IProcessContext>();
             IMessageHeader header = repo.CreateMock<IMessageHeader>();
 
-            ResolveKey<string, int> resolver = delegate(IMessageHeader head, int val)
-            {
-                return val.ToString();
-            };
+            ResolveKey<string, int> resolver = delegate(IMessageHeader head, int val) { return val.ToString(); };
 
-            KeyedBatchSubscriber<string, int> batch = new KeyedBatchSubscriber<string, int>(resolver, 
-                    CheckValues, context, 0);
+            KeyedBatchSubscriber<string, int> batch = new KeyedBatchSubscriber<string, int>(resolver,
+                                                                                            CheckValues, context, 0);
 
             context.Enqueue(batch.Flush);
 

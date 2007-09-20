@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Retlang
 {
     public interface IMessageEnvelope<T>
@@ -10,10 +6,11 @@ namespace Retlang
         T Message { get; }
     }
 
-    public class MessageEnvelope<T>: IMessageEnvelope<T>
+    public class MessageEnvelope<T> : IMessageEnvelope<T>
     {
         private readonly IMessageHeader _header;
         private readonly T _msg;
+
         public MessageEnvelope(IMessageHeader header, T msg)
         {
             _header = header;
