@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Retlang
 {
     public interface IMessageHeader
@@ -10,7 +6,7 @@ namespace Retlang
         object ReplyTo { get; }
     }
 
-    public class MessageHeader: IMessageHeader
+    public class MessageHeader : IMessageHeader
     {
         private readonly object _topic;
         private readonly object _replyTo;

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -13,7 +12,7 @@ namespace Retlang
     {
     }
 
-    public class PendingCommand: IPendingCommand
+    public class PendingCommand : IPendingCommand
     {
         private readonly Command _command;
         private readonly int _firstIntervalInMs;
@@ -34,18 +33,14 @@ namespace Retlang
             if (_intervalInMs == Timeout.Infinite)
             {
                 toExecute = delegate
-                {
-                    registry.Remove(this);
-                    _command();
-                };
+                                {
+                                    registry.Remove(this);
+                                    _command();
+                                };
             }
-            TimerCallback timerCallBack = delegate
-            {
-                toExecute();
-            };
+            TimerCallback timerCallBack = delegate { toExecute(); };
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
-
     }
 
     public interface ICommandTimer
@@ -54,7 +49,7 @@ namespace Retlang
         void ScheduleOnInterval(Command command, int firstIntervalInMs, int regularIntervalInMs);
     }
 
-    public class CommandTimer: IPendingCommandRegistry, ICommandTimer
+    public class CommandTimer : IPendingCommandRegistry, ICommandTimer
     {
         private readonly ICommandQueue _queue;
         private readonly List<IPendingCommand> _pending = new List<IPendingCommand>();
@@ -78,22 +73,18 @@ namespace Retlang
 
         public void Remove(IPendingCommand toRemove)
         {
-            Command removeCommand = delegate
-            {
-                _pending.Remove(toRemove);
-            };
+            Command removeCommand = delegate { _pending.Remove(toRemove); };
             _queue.Enqueue(removeCommand);
         }
 
         private void AddPending(PendingCommand pending)
         {
             Command addCommand = delegate
-            {
-                _pending.Add(pending);
-                pending.Schedule(this);
-            };
+                                     {
+                                         _pending.Add(pending);
+                                         pending.Schedule(this);
+                                     };
             _queue.Enqueue(addCommand);
-
         }
     }
 }

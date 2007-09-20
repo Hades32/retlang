@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
     public delegate void On<T>(T msg);
+
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
-  
-    public interface IMessageBus: ICommandQueue, ICommandExceptionHandler, IThreadController
+
+    public interface IMessageBus : ICommandQueue, ICommandExceptionHandler, IThreadController
     {
         event On<ITransferEnvelope> UnhandledMessageEvent;
 
@@ -15,8 +14,8 @@ namespace Retlang
         void Subscribe(ISubscriber subscriber);
         void Unsubscribe(ISubscriber subscriber);
     }
-     
-    public class MessageBus: IMessageBus
+
+    public class MessageBus : IMessageBus
     {
         private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
 
@@ -64,45 +63,37 @@ namespace Retlang
         public void Publish(ITransferEnvelope envelope)
         {
             Command pubCommand = delegate
-            {
-                bool published = false;
-                foreach (ISubscriber sub in _subscribers)
-                {
-                    if (sub.Receive(envelope))
-                    {
-                        published = true;
-                    }
-                }
-                if (!published)
-                {
-                    On<ITransferEnvelope> env = UnhandledMessageEvent;
-                    if (env != null)
-                    {
-                        env(envelope);
-                    }
-                }
-            };
+                                     {
+                                         bool published = false;
+                                         foreach (ISubscriber sub in _subscribers)
+                                         {
+                                             if (sub.Receive(envelope))
+                                             {
+                                                 published = true;
+                                             }
+                                         }
+                                         if (!published)
+                                         {
+                                             On<ITransferEnvelope> env = UnhandledMessageEvent;
+                                             if (env != null)
+                                             {
+                                                 env(envelope);
+                                             }
+                                         }
+                                     };
             Enqueue(pubCommand);
         }
 
         public void Subscribe(ISubscriber subscriber)
         {
-            Command subCommand = delegate
-            {
-                _subscribers.Add(subscriber);
-            };
+            Command subCommand = delegate { _subscribers.Add(subscriber); };
             Enqueue(subCommand);
         }
 
         public void Unsubscribe(ISubscriber sub)
         {
-            Command unSub = delegate
-            {
-                _subscribers.Remove(sub);
-            };
+            Command unSub = delegate { _subscribers.Remove(sub); };
             Enqueue(unSub);
         }
-
-
     }
 }

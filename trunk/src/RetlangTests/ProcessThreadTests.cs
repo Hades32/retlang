@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang;
 
@@ -8,7 +6,6 @@ namespace RetlangTests
     [TestFixture]
     public class ProcessThreadTests
     {
-
         [Test]
         public void RunThread()
         {
@@ -36,10 +33,7 @@ namespace RetlangTests
             IProcessContext proc = factory.CreateAndStart();
 
             object topic = new object();
-            OnMessage<string> onMsg = delegate
-            {
-                proc.Stop();
-            };
+            OnMessage<string> onMsg = delegate { proc.Stop(); };
             proc.Subscribe(new TopicEquals(topic), onMsg);
             proc.Publish(topic, "stuff");
 
@@ -56,18 +50,15 @@ namespace RetlangTests
 
             IProcessContext context = fact.CreateAndStart();
             IProcessContext context2 = fact.CreateAndStart();
-    
+
             object topic = new object();
             object stopTopic = new object();
             OnMessage<string> stopAll = delegate
-            {
-                context.Stop();
-                context2.Stop();
-            };
-            OnMessage<string> onMsg = delegate
-            {
-                context2.Publish(stopTopic, "morestuff");
-            };
+                                            {
+                                                context.Stop();
+                                                context2.Stop();
+                                            };
+            OnMessage<string> onMsg = delegate { context2.Publish(stopTopic, "morestuff"); };
 
             context.Subscribe(new TopicEquals(topic), onMsg);
             context2.Subscribe(new TopicEquals(stopTopic), stopAll);
@@ -90,19 +81,15 @@ namespace RetlangTests
 
             IProcessContext context = fact.CreateAndStart();
             IProcessContext context2 = fact.CreateAndStart();
-      
+
             object topic = new object();
-            OnMessage<OnMessage<IMessageHeader>> onMsg = delegate(IMessageHeader header, OnMessage<IMessageHeader> msg)
-            {
-                msg(header, header);
-            };
+            OnMessage<OnMessage<IMessageHeader>> onMsg =
+                delegate(IMessageHeader header, OnMessage<IMessageHeader> msg) { msg(header, header); };
 
             context2.Subscribe(new TopicEquals(topic), onMsg);
 
-            OnMessage<IMessageHeader> replyCommand = delegate(IMessageHeader header, IMessageHeader headerCopy)
-            {
-                context2.Publish(header.ReplyTo, "reply to: stuff");
-            };
+            OnMessage<IMessageHeader> replyCommand =
+                delegate(IMessageHeader header, IMessageHeader headerCopy) { context2.Publish(header.ReplyTo, "reply to: stuff"); };
             IRequestReply<string> req = context.SendRequest<string>(topic, replyCommand);
 
             Assert.AreEqual("reply to: stuff", req.Receive(1000).Message);
@@ -123,12 +110,10 @@ namespace RetlangTests
 
             IProcessContext context = fact.CreateAndStart();
             IProcessContext context2 = fact.CreateAndStart();
-    
+
             object topic = new object();
-            OnMessage<string> onMsg = delegate(IMessageHeader header, string msg)
-            {
-                context2.Publish(header.ReplyTo, "reply to: " + msg);
-            };
+            OnMessage<string> onMsg =
+                delegate(IMessageHeader header, string msg) { context2.Publish(header.ReplyTo, "reply to: " + msg); };
 
             context2.Subscribe(new TopicEquals(topic), onMsg);
 

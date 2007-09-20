@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang;
-using System.Threading;
 
 namespace RetlangTests
 {
-
     public class MultiplyController
     {
         private readonly object _uniqueTopic;
@@ -36,13 +33,13 @@ namespace RetlangTests
         {
             int count = 0;
             OnMessage<int> shutdown = delegate
-            {
-                count++;
-                if (count == num)
-                {
-                    _process.Stop();
-                }
-            };
+                                          {
+                                              count++;
+                                              if (count == num)
+                                              {
+                                                  _process.Stop();
+                                              }
+                                          };
             _process.Subscribe<int>(new TopicEquals(_uniqueTopic), shutdown);
         }
     }
@@ -62,7 +59,7 @@ namespace RetlangTests
         private void OnMultiply(IMessageHeader header, int num)
         {
             object replyTopic = header.ReplyTo;
-            int result = num * _multiplyBy;
+            int result = num*_multiplyBy;
             _process.Publish(replyTopic, result);
             Console.WriteLine("Published Reply: " + result);
         }
@@ -71,7 +68,6 @@ namespace RetlangTests
     [TestFixture]
     public class GettingStartedTests
     {
-
         [Test]
         public void Example()
         {

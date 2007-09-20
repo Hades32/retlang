@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
@@ -14,7 +12,7 @@ namespace Retlang
         bool Receive(ITransferEnvelope envelope);
     }
 
-    public class TopicSubscriber<T>: ISubscriber
+    public class TopicSubscriber<T> : ISubscriber
     {
         private readonly ITopicMatcher _topic;
         private readonly OnMessage<T> _onMessage;
@@ -34,7 +32,7 @@ namespace Retlang
 
         public Type MessageType
         {
-            get { return typeof(T); }
+            get { return typeof (T); }
         }
 
         public bool Receive(ITransferEnvelope envelope)
@@ -43,14 +41,11 @@ namespace Retlang
             {
                 return false;
             }
-      
+
             if (_topic.Matches(envelope.Header.Topic))
             {
-                T typedMsg = (T)envelope.ResolveMessage();
-                Command toExecute = delegate
-                {
-                    _onMessage(envelope.Header, typedMsg);
-                };
+                T typedMsg = (T) envelope.ResolveMessage();
+                Command toExecute = delegate { _onMessage(envelope.Header, typedMsg); };
                 _queue.Enqueue(toExecute);
                 return true;
             }

@@ -12,6 +12,5 @@ namespace Retlang
         /// </summary>
         /// <returns></returns>
         object ResolveMessage();
-
     }
 }

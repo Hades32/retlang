@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Retlang
@@ -37,7 +35,7 @@ namespace Retlang
         IReply<T> Receive(int waitTimeoutInMs);
     }
 
-    public class TopicRequestReply<T>: IRequestReply<T>
+    public class TopicRequestReply<T> : IRequestReply<T>
     {
         private object _lock = new object();
 
@@ -62,7 +60,7 @@ namespace Retlang
 
         public IReply<T> Receive(int timeoutInMs)
         {
-            lock(_lock)
+            lock (_lock)
             {
                 if (_timedOut)
                 {

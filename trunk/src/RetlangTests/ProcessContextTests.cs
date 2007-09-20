@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using Retlang;
 
@@ -36,14 +34,14 @@ namespace RetlangTests
 
             int count = 0;
             Command stopCommand = delegate
-            {
-                count++;
-                if (count == 5)
-                {
-                    context.Stop();
-                }
-            };
-            context.ScheduleOnInterval(stopCommand, 1,1);
+                                      {
+                                          count++;
+                                          if (count == 5)
+                                          {
+                                              context.Stop();
+                                          }
+                                      };
+            context.ScheduleOnInterval(stopCommand, 1, 1);
 
             context.Join();
 
@@ -61,10 +59,11 @@ namespace RetlangTests
             {
                 process.Publish("topic", null);
                 Assert.Fail("should throw null reference exception");
-            }catch(NullReferenceException exc)
+            }
+            catch (NullReferenceException exc)
             {
             }
-                process.Stop();
+            process.Stop();
 
             factory.Stop();
             process.Join();

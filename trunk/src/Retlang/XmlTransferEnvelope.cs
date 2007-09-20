@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
 namespace Retlang
 {
-    public class XmlTransferEnvelope: ITransferEnvelope
+    public class XmlTransferEnvelope : ITransferEnvelope
     {
         private readonly Type _messageType;
         private readonly byte[] _msg;

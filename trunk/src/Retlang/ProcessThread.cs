@@ -1,14 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Retlang
 {
-    public interface IProcessThread: ICommandQueue, ICommandTimer, IThreadController, ICommandExceptionHandler
+    public interface IProcessThread : ICommandQueue, ICommandTimer, IThreadController, ICommandExceptionHandler
     {
     }
 
-    public class ProcessThread: IProcessThread
+    public class ProcessThread : IProcessThread
     {
         private static int THREAD_COUNT = 0;
 
@@ -24,7 +22,8 @@ namespace Retlang
             _scheduler = new CommandTimer(this);
         }
 
-        private static int GetNextThreadId(){
+        private static int GetNextThreadId()
+        {
             return Interlocked.Increment(ref THREAD_COUNT);
         }
 

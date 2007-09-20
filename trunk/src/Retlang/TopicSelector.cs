@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
     public delegate bool IsMatch<T>(T topic);
 
-    public class TopicSelector<T>: ITopicMatcher
+    public class TopicSelector<T> : ITopicMatcher
     {
         private IsMatch<T> _match;
 
@@ -17,12 +15,12 @@ namespace Retlang
 
         private Type FilterType
         {
-            get{ return typeof(T);}
+            get { return typeof (T); }
         }
 
         public bool Matches(object topic)
         {
-            if(FilterType.IsAssignableFrom(topic.GetType()))
+            if (FilterType.IsAssignableFrom(topic.GetType()))
             {
                 T typedObject = (T) topic;
                 return _match(typedObject);

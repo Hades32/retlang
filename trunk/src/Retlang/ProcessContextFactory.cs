@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Retlang
 {
-    public interface IProcessContextFactory: IThreadController
+    public interface IProcessContextFactory : IThreadController
     {
         IProcessContext CreateAndStart();
         IProcessContext Create();
     }
-    public class ProcessContextFactory: IProcessContextFactory
+
+    public class ProcessContextFactory : IProcessContextFactory
     {
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime = -1;

@@ -1,17 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Rhino.Mocks;
 using NUnit.Framework;
 using Retlang;
+using Rhino.Mocks;
 
 namespace RetlangTests
 {
-
     [TestFixture]
     public class BatchSubscriberTests
     {
-
         [Test]
         public void Batch()
         {
@@ -50,8 +46,6 @@ namespace RetlangTests
 
             batch.ReceiveMessage(header, new object());
             batch.Flush();
-
         }
-
     }
 }

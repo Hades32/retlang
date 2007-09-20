@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Retlang
 {
     public interface ITransferEnvelopeFactory
@@ -33,4 +29,3 @@ namespace Retlang
         }
     }
 }
-
