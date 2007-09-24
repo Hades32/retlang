@@ -6,7 +6,7 @@ namespace Retlang
 
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
 
-    public interface IMessageBus : ICommandQueue, IThreadController
+    public interface IMessageBus : ICommandQueue
     {
         event On<ITransferEnvelope> UnhandledMessageEvent;
 
@@ -19,28 +19,13 @@ namespace Retlang
     {
         private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
 
-        private readonly ProcessThread _thread;
+        private readonly ICommandQueue _thread;
 
         public event On<ITransferEnvelope> UnhandledMessageEvent;
 
-        public MessageBus(ProcessThread thread)
+        public MessageBus(ICommandQueue thread)
         {
             _thread = thread;
-        }
-
-        public void Start()
-        {
-            _thread.Start();
-        }
-
-        public void Stop()
-        {
-            _thread.Stop();
-        }
-
-        public void Join()
-        {
-            _thread.Join();
         }
 
         public void Enqueue(Command command)

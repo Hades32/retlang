@@ -6,10 +6,12 @@ namespace RetlangTests
     {
         public static ProcessContextFactory CreateAndStart()
         {
+            ProcessThreadFactory threadFactory = new ProcessThreadFactory();
             ProcessContextFactory factory = new ProcessContextFactory();
+            factory.ThreadFactory = threadFactory;
             factory.TransferEnvelopeFactory = new ObjectTransferEnvelopeFactory();
-            factory.MaxQueueDepth = 10000;
-            factory.MaxEnqueueWaitTime = 10000;
+            threadFactory.MaxQueueDepth = 10000;
+            threadFactory.MaxEnqueueWaitTime = 10000;
             factory.Start();
             return factory;
         }
