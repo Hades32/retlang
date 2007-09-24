@@ -41,6 +41,7 @@
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
     <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="ProcessThreadFactory.cs" />
     <Compile Include="QueueFullException.cs" />
     <Compile Include="TopicSelector.cs" />
     <Compile Include="XmlTransferEnvelope.cs" />

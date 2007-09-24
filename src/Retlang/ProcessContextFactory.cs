@@ -8,58 +8,38 @@ namespace Retlang
 
     public class ProcessContextFactory : IProcessContextFactory
     {
-        private int _maxQueueDepth = -1;
-        private int _maxEnqueueWaitTime = -1;
-        private readonly MessageBus _bus;
-        private readonly CommandQueue _queue;
-        private readonly ProcessThread _thread;
+        private MessageBus _bus;
         private ITransferEnvelopeFactory _envelopeFactory = new BinaryTransferEnvelopeFactory();
-
-        public ProcessContextFactory()
-        {
-            _queue = new CommandQueue();
-            _thread = new ProcessThread(_queue);
-            _bus = new MessageBus(_thread);
-        }
+        private IProcessThreadFactory _threadFactory = new ProcessThreadFactory();
+        private IProcessThread _busThread;
 
         public void Start()
         {
-            _queue.MaxEnqueueWaitTime = _maxEnqueueWaitTime;
-            _queue.MaxDepth = _maxQueueDepth;
-            _bus.Start();
+            _busThread = ThreadFactory.CreateMessageBusThread();
+            _bus = new MessageBus(_busThread);
+            _busThread.Start();
         }
 
         public void Stop()
         {
-            _bus.Stop();
+            _busThread.Stop();
         }
 
         public void Join()
         {
-            _bus.Join();
-        }
-
-        public int MaxQueueDepth
-        {
-            get { return _maxQueueDepth; }
-            set { _maxQueueDepth = value; }
-        }
-
-        public int MaxEnqueueWaitTime
-        {
-            get { return _maxEnqueueWaitTime; }
-            set { _maxEnqueueWaitTime = value; }
-        }
-
-        public IMessageBus MessageBus
-        {
-            get { return _bus; }
+            _busThread.Join();
         }
 
         public ITransferEnvelopeFactory TransferEnvelopeFactory
         {
             get { return _envelopeFactory; }
             set { _envelopeFactory = value; }
+        }
+
+        public IProcessThreadFactory ThreadFactory
+        {
+            get { return _threadFactory; }
+            set { _threadFactory = value; }
         }
 
         public IProcessContext CreateAndStart()
@@ -71,10 +51,7 @@ namespace Retlang
 
         public IProcessContext Create()
         {
-            CommandQueue queue = new CommandQueue();
-            queue.MaxDepth = _maxQueueDepth;
-            queue.MaxEnqueueWaitTime = _maxEnqueueWaitTime;
-            return new ProcessContext(_bus, new ProcessThread(queue), _envelopeFactory);
+            return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(), _envelopeFactory);
         }
     }
 }
