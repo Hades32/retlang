@@ -15,9 +15,17 @@ namespace Retlang
 
         public void Start()
         {
+            if(_bus == null)
+            {
+                Init();
+            }
+            _busThread.Start();
+        }
+
+        public void Init()
+        {
             _busThread = ThreadFactory.CreateMessageBusThread();
             _bus = new MessageBus(_busThread);
-            _busThread.Start();
         }
 
         public IMessageBus MessageBus
