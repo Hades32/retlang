@@ -20,6 +20,11 @@ namespace Retlang
             _busThread.Start();
         }
 
+        public IMessageBus MessageBus
+        {
+            get{ return _bus; }
+        }
+
         public void Stop()
         {
             _busThread.Stop();
