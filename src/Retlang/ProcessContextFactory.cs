@@ -19,7 +19,7 @@ namespace Retlang
         {
             _queue = new CommandQueue();
             _thread = new ProcessThread(_queue);
-            _bus = new MessageBus(_queue, _thread);
+            _bus = new MessageBus(_thread);
         }
 
         public void Start()
