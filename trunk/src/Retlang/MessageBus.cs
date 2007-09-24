@@ -20,13 +20,11 @@ namespace Retlang
         private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
 
         private readonly ProcessThread _thread;
-        private readonly CommandQueue _commandQueue;
 
         public event On<ITransferEnvelope> UnhandledMessageEvent;
 
-        public MessageBus(CommandQueue queue, ProcessThread thread)
+        public MessageBus(ProcessThread thread)
         {
-            _commandQueue = queue;
             _thread = thread;
         }
 
