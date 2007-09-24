@@ -24,7 +24,7 @@ namespace RetlangTests
 
             try
             {
-                queue.ExecuteNext();
+                queue.ExecuteNextBatch();
                 Assert.Fail("Should throw Exception");
             }
             catch (Exception commFailure)
@@ -34,28 +34,7 @@ namespace RetlangTests
             repo.VerifyAll();
         }
 
-        [Test]
-        public void ExceptionHandling()
-        {
-            MockRepository repo = new MockRepository();
-            Command excCommand = repo.CreateMock<Command>();
-            Exception failure = new Exception();
-            excCommand();
-            LastCall.Throw(failure);
-
-            OnException handler = repo.CreateMock<OnException>();
-            handler(excCommand, failure);
-
-            repo.ReplayAll();
-
-            CommandQueue queue = new CommandQueue();
-            queue.ExceptionEvent += handler;
-            queue.Enqueue(excCommand);
-
-            queue.ExecuteNext();
-
-            repo.VerifyAll();
-        }
+    
 
         [Test]
         public void MaxDepth()

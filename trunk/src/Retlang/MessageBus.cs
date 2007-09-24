@@ -6,7 +6,7 @@ namespace Retlang
 
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
 
-    public interface IMessageBus : ICommandQueue, ICommandExceptionHandler, IThreadController
+    public interface IMessageBus : ICommandQueue, IThreadController
     {
         event On<ITransferEnvelope> UnhandledMessageEvent;
 
@@ -28,16 +28,6 @@ namespace Retlang
         {
             _commandQueue = queue;
             _thread = thread;
-        }
-
-        public void AddExceptionHandler(OnException onExc)
-        {
-            _commandQueue.ExceptionEvent += onExc;
-        }
-
-        public void RemoveExceptionHandler(OnException onExc)
-        {
-            _commandQueue.ExceptionEvent -= onExc;
         }
 
         public void Start()

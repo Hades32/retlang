@@ -38,6 +38,7 @@
     <Compile Include="BatchSubscriber.cs" />
     <Compile Include="BinaryTransferEnvelope.cs" />
     <Compile Include="CommandQueue.cs" />
+    <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
     <Compile Include="ITopicMatcher.cs" />
     <Compile Include="QueueFullException.cs" />

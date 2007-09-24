@@ -15,8 +15,6 @@ namespace Retlang
 
     public interface ICommandRunner : ICommandQueue
     {
-        event OnException ExceptionEvent;
-        bool ExecuteNext();
         void Run();
         void Stop();
     }
@@ -29,7 +27,14 @@ namespace Retlang
         private int _maxEnqueueWaitTime = 0;
 
         private readonly Queue<Command> _commands = new Queue<Command>();
-        public event OnException ExceptionEvent;
+
+        private ICommandExecutor _commandRunner;
+
+        public ICommandExecutor Executor
+        {
+            get { return _commandRunner; }
+            set { _commandRunner = value; }
+        }
 
         public int MaxDepth
         {
@@ -83,20 +88,6 @@ namespace Retlang
             return true;
         }
 
-        public Command Dequeue()
-        {
-            lock (_lock)
-            {
-                if (ReadyToDequeue())
-                {
-                    Command comm = _commands.Dequeue();
-                    Monitor.PulseAll(_lock);
-                    return comm;
-                }
-                return null;
-            }
-        }
-
         public Command[] DequeueAll()
         {
             lock (_lock)
@@ -135,42 +126,18 @@ namespace Retlang
             {
                 return false;
             }
-            foreach (Command command in toExecute)
+            if (_commandRunner != null)
             {
-                ExecuteSingleCommand(command);
+                _commandRunner.ExecuteAll(toExecute);
+            }
+            else
+            {
+                foreach (Command command in toExecute)
+                {
+                    command();
+                }
             }
             return true;
-        }
-
-        public bool ExecuteNext()
-        {
-            Command comm = Dequeue();
-            if (comm != null)
-            {
-                ExecuteSingleCommand(comm);
-                return true;
-            }
-            return false;
-        }
-
-        private void ExecuteSingleCommand(Command comm)
-        {
-            try
-            {
-                comm();
-            }
-            catch (Exception exc)
-            {
-                OnException onExc = ExceptionEvent;
-                if (onExc != null)
-                {
-                    onExc(comm, exc);
-                }
-                else
-                {
-                    throw;
-                }
-            }
         }
 
         public void Run()
