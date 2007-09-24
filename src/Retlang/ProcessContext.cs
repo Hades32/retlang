@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController, ICommandExceptionHandler,
+    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController,
                                        IObjectPublisher
     {
         void Publish(ITransferEnvelope toPublish);
@@ -55,17 +55,6 @@ namespace Retlang
         {
             _processThread.Join();
         }
-
-        public void AddExceptionHandler(OnException onExc)
-        {
-            _processThread.AddExceptionHandler(onExc);
-        }
-
-        public void RemoveExceptionHandler(OnException onExc)
-        {
-            _processThread.RemoveExceptionHandler(onExc);
-        }
-
 
         public void Schedule(Command command, int intervalInMs)
         {

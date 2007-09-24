@@ -2,7 +2,7 @@ using System.Threading;
 
 namespace Retlang
 {
-    public interface IProcessThread : ICommandQueue, ICommandTimer, IThreadController, ICommandExceptionHandler
+    public interface IProcessThread : ICommandQueue, ICommandTimer, IThreadController
     {
     }
 
@@ -45,16 +45,6 @@ namespace Retlang
         public void ScheduleOnInterval(Command command, int firstInMs, int intervalInMs)
         {
             _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
-        }
-
-        public void AddExceptionHandler(OnException onExc)
-        {
-            _queue.ExceptionEvent += onExc;
-        }
-
-        public void RemoveExceptionHandler(OnException onExc)
-        {
-            _queue.ExceptionEvent -= onExc;
         }
 
         public void Stop()
