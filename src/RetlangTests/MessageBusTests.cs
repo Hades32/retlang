@@ -37,8 +37,9 @@ namespace RetlangTests
         {
             ITransferEnvelope unHandledMessage = null;
             CommandQueue queue = new CommandQueue();
-            MessageBus bus = new MessageBus(new ProcessThread(queue));
-            bus.Start();
+            ProcessThread thread = new ProcessThread(queue);
+            MessageBus bus = new MessageBus(thread);
+            thread.Start();
             AutoResetEvent reset = new AutoResetEvent(false);
             bus.UnhandledMessageEvent += delegate(ITransferEnvelope env)
                                              {
@@ -51,16 +52,17 @@ namespace RetlangTests
             Assert.IsTrue(reset.WaitOne(30000, false));
 
             Assert.IsNotNull(unHandledMessage);
-            bus.Stop();
-            bus.Join();
+            thread.Stop();
+            thread.Join();
         }
 
         [Test]
         public void PubSub()
         {
             CommandQueue comQueue = new CommandQueue();
-            MessageBus bus = new MessageBus(new ProcessThread(comQueue));
-            bus.Start();
+            ProcessThread thread = new ProcessThread(comQueue);
+            MessageBus bus = new MessageBus(thread);
+            thread.Start();
             string count = "";
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             AutoResetEvent reset = new AutoResetEvent(false);
@@ -81,8 +83,8 @@ namespace RetlangTests
             bus.Publish(CreateMessage(topic, "2"));
             Assert.IsTrue(reset.WaitOne(1000, false));
             Assert.AreEqual("12", count);
-            bus.Stop();
-            bus.Join();
+            thread.Stop();
+            thread.Join();
         }
 
         private ITransferEnvelope CreateMessage(object topic, object msg)
