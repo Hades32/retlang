@@ -2,8 +2,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController,
-                                       IObjectPublisher
+    public interface IProcessBus: IObjectPublisher
     {
         void Publish(ITransferEnvelope toPublish);
 
@@ -20,6 +19,11 @@ namespace Retlang
         IRequestReply<T> SendRequest<T>(object topic, object msg);
 
         object CreateUniqueTopic();
+    }
+
+    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController,
+                                       IProcessBus
+    {
     }
 
     public class ProcessContext : IProcessContext
