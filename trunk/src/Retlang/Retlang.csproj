@@ -47,7 +47,6 @@
     <Compile Include="ITransferEnvelope.cs" />
     <Compile Include="ITransferEnvelopeFactory.cs" />
     <Compile Include="KeyedBatchSubscriber.cs" />
-    <Compile Include="ICommandExceptionHandler.cs" />
     <Compile Include="IObjectPublisher.cs" />
     <Compile Include="IThreadController.cs" />
     <Compile Include="Message.cs" />
