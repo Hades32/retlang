@@ -1,0 +1,77 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{65ABCF4F-88F0-46EF-A6CF-71850019262E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Retlang</RootNamespace>
+    <AssemblyName>Retlang</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Retlang.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BatchSubscriber.cs" />
+    <Compile Include="BinaryTransferEnvelope.cs" />
+    <Compile Include="CommandQueue.cs" />
+    <Compile Include="CommandExecutor.cs" />
+    <Compile Include="CommandTimer.cs" />
+    <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="QueueFullException.cs" />
+    <Compile Include="TopicSelector.cs" />
+    <Compile Include="XmlTransferEnvelope.cs" />
+    <Compile Include="ITransferEnvelope.cs" />
+    <Compile Include="ITransferEnvelopeFactory.cs" />
+    <Compile Include="KeyedBatchSubscriber.cs" />
+    <Compile Include="IObjectPublisher.cs" />
+    <Compile Include="IThreadController.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="ObjectTransferEnvelope.cs" />
+    <Compile Include="ProcessThread.cs" />
+    <Compile Include="TopicEquals.cs" />
+    <Compile Include="MessageBus.cs" />
+    <Compile Include="MessageHeader.cs" />
+    <Compile Include="ProcessContext.cs" />
+    <Compile Include="ProcessContextFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SynchronousCommandQueue.cs" />
+    <Compile Include="TopicReply.cs" />
+    <Compile Include="TopicSubscriber.cs" />
+    <Compile Include="Unsubscriber.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Retlang.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
