@@ -62,6 +62,7 @@ namespace RetlangTests
             }
             catch (NullReferenceException exc)
             {
+                Assert.IsNotNull(exc);
             }
             process.Stop();
 
