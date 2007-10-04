@@ -6,6 +6,7 @@ namespace Retlang
     public interface IPendingCommandRegistry
     {
         void Remove(IPendingCommand pending);
+        void Execute(Command command);
     }
 
     public interface IPendingCommand
@@ -29,18 +30,20 @@ namespace Retlang
 
         public void Schedule(IPendingCommandRegistry registry)
         {
-            Command toExecute = _command;
+            Command toExecute = delegate { registry.Execute(_command); };
+
             if (_intervalInMs == Timeout.Infinite)
             {
                 toExecute = delegate
                                 {
                                     registry.Remove(this);
-                                    _command();
+                                    registry.Execute(_command);
                                 };
             }
             TimerCallback timerCallBack = delegate { toExecute(); };
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
+
     }
 
     public interface ICommandTimer
@@ -75,6 +78,11 @@ namespace Retlang
         {
             Command removeCommand = delegate { _pending.Remove(toRemove); };
             _queue.Enqueue(removeCommand);
+        }
+
+        public void Execute(Command toExecute)
+        {
+            _queue.Enqueue(toExecute);
         }
 
         private void AddPending(PendingCommand pending)
