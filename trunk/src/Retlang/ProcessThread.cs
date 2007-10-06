@@ -22,6 +22,11 @@ namespace Retlang
             _scheduler = new CommandTimer(this);
         }
 
+        public Thread Thread
+        {
+            get { return _thread; }
+        }
+
         private static int GetNextThreadId()
         {
             return Interlocked.Increment(ref THREAD_COUNT);

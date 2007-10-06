@@ -64,8 +64,15 @@ namespace Retlang
 
         public void Schedule(Command comm, int timeTillEnqueueInMs)
         {
-            PendingCommand pending = new PendingCommand(comm, timeTillEnqueueInMs, Timeout.Infinite);
-            AddPending(pending);
+            if (timeTillEnqueueInMs == 0)
+            {
+                _queue.Enqueue(comm);
+            }
+            else
+            {
+                PendingCommand pending = new PendingCommand(comm, timeTillEnqueueInMs, Timeout.Infinite);
+                AddPending(pending);
+            }
         }
 
         public void ScheduleOnInterval(Command comm, int firstInMs, int intervalInMs)
