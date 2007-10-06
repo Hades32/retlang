@@ -20,7 +20,7 @@ namespace RetlangTests
             KeyedBatchSubscriber<string, int> batch = new KeyedBatchSubscriber<string, int>(resolver,
                                                                                             CheckValues, context, 0);
 
-            context.Enqueue(batch.Flush);
+            context.Schedule(batch.Flush, 0);
 
             repo.ReplayAll();
 
