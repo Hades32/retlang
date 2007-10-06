@@ -1,0 +1,22 @@
+
+Events can be scheduled on a single or recurring interval.
+
+=== Single Execution ===
+
+{{{
+IProcessContext context = ... resolve context
+Command scheduled = delegate{
+                              Console.Writeline("Hello");
+                            };
+context.Schedule(scheduled, 100);
+}}}
+
+=== On Interval ===
+
+{{{
+IProcessContext context = ... resolve context
+Command scheduled = delegate{
+                              Console.Writeline("Hello");
+                            };
+context.ScheduleOnInterval(scheduled, 100, 100);
+}}}
