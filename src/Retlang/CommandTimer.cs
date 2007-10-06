@@ -64,7 +64,7 @@ namespace Retlang
 
         public void Schedule(Command comm, int timeTillEnqueueInMs)
         {
-            if (timeTillEnqueueInMs == 0)
+            if (timeTillEnqueueInMs <= 0)
             {
                 _queue.Enqueue(comm);
             }
