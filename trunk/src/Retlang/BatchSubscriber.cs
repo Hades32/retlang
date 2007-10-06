@@ -22,14 +22,7 @@ namespace Retlang
             if (_pending == null)
             {
                 _pending = new List<IMessageEnvelope<T>>();
-                if (_flushIntervalInMs <= 0)
-                {
-                    _context.Enqueue(Flush);
-                }
-                else
-                {
-                    _context.Schedule(Flush, _flushIntervalInMs);
-                }
+                _context.Schedule(Flush, _flushIntervalInMs);
             }
             _pending.Add(new MessageEnvelope<T>(header, msg));
         }

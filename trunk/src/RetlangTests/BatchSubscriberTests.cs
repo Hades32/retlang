@@ -20,7 +20,7 @@ namespace RetlangTests
 
             BatchSubscriber<object> batch = new BatchSubscriber<object>(callback, context, 0);
 
-            context.Enqueue(batch.Flush);
+            context.Schedule(batch.Flush, 0);
 
             repo.ReplayAll();
 
