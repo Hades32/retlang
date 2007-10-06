@@ -1,5 +1,15 @@
-
 Events can be scheduled on a single or recurring interval.
+
+=== Enqueue for Immediate Execution On Process Thread ===
+
+{{{
+IProcessContext context = ... resolve context
+Command scheduled = delegate{
+                              Console.Writeline("Hello");
+                            };
+context.Enqueue(scheduled);
+}}}
+
 
 === Single Execution ===
 
