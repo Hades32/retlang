@@ -29,14 +29,7 @@ namespace Retlang
             if (_pending == null)
             {
                 _pending = new Dictionary<K, IMessageEnvelope<V>>();
-                if (_flushIntervalInMs <= 0)
-                {
-                    _context.Enqueue(Flush);
-                }
-                else
-                {
-                    _context.Schedule(Flush, _flushIntervalInMs);
-                }
+                _context.Schedule(Flush, _flushIntervalInMs);
             }
             K key = _keyResolver(header, msg);
             _pending[key] = new MessageEnvelope<V>(header, msg);
