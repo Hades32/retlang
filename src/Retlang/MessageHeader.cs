@@ -26,5 +26,19 @@ namespace Retlang
         {
             get { return _replyTo; }
         }
+
+        public override int GetHashCode()
+        {
+            return Topic.GetHashCode();
+        }
+        public override bool Equals(object obj)
+        {
+            IMessageHeader header = obj as IMessageHeader;
+            if (header == null)
+            {
+                return false;
+            }
+            return Topic == header.Topic && ReplyTo == header.ReplyTo;
+        }
     }
 }

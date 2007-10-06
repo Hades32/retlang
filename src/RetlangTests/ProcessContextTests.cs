@@ -51,6 +51,47 @@ namespace RetlangTests
         }
 
         [Test]
+        public void ScheduleShutdownNoInterval()
+        {
+            ProcessContextFactory factory = new ProcessContextFactory();
+            factory.Start();
+            IProcessContext context = factory.Create();
+            context.Start();
+
+            Command stopCommand = delegate
+                                      {
+                                            context.Stop();
+                                      };
+            context.Schedule(stopCommand, 0);
+
+            context.Join();
+
+            factory.Stop();
+            factory.Join();
+        }
+
+        [Test]
+        public void EnqueuShutdown()
+        {
+            ProcessContextFactory factory = new ProcessContextFactory();
+            factory.Start();
+            IProcessContext context = factory.Create();
+            context.Start();
+
+            Command stopCommand = delegate
+                                      {
+                                          context.Stop();
+                                      };
+            context.Enqueue(stopCommand);
+
+            context.Join();
+
+            factory.Stop();
+            factory.Join();
+        }
+
+
+        [Test]
         public void PublishNullMsg()
         {
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
