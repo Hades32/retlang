@@ -9,6 +9,6 @@
   * Publish and Subscribe model with ObjectTopics
   * In Memory Message Multicast Across Threads
   * Generics Support - Subscriptions are typed - no casting necessary.
-  * Event Scheduling - Schedule an event for one time execution or on a regular interval.
+  * EventScheduling - Schedule an event for one time execution or on a regular interval.
   * EventBatching
   * Xml, Binary, or In-Memory ProcessTransferStrategies
