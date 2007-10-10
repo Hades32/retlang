@@ -16,13 +16,11 @@ namespace Retlang
     {
         private readonly ITopicMatcher _topic;
         private readonly OnMessage<T> _onMessage;
-        private readonly ICommandQueue _queue;
 
-        public TopicSubscriber(ITopicMatcher topic, OnMessage<T> onMessage, ICommandQueue targetQueue)
+        public TopicSubscriber(ITopicMatcher topic, OnMessage<T> onMessage)
         {
             _topic = topic;
             _onMessage = onMessage;
-            _queue = targetQueue;
         }
 
         public ITopicMatcher Topic
@@ -45,8 +43,7 @@ namespace Retlang
             if (_topic.Matches(envelope.Header.Topic))
             {
                 T typedMsg = (T) envelope.ResolveMessage();
-                Command toExecute = delegate { _onMessage(envelope.Header, typedMsg); };
-                _queue.Enqueue(toExecute);
+                _onMessage(envelope.Header, typedMsg);
                 consumed = true;
             }
         }

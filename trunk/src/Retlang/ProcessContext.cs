@@ -112,9 +112,21 @@ namespace Retlang
 
         public IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg)
         {
-            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(topic, msg, _processThread);
+            OnMessage<T> asyncReceive = CreateReceiveOnProcessThread(msg);
+            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(topic, asyncReceive);
             AddSubscription(subscriber);
             return new Unsubscriber(subscriber, _subscribers);
+        }
+
+        private OnMessage<T> CreateReceiveOnProcessThread<T>(OnMessage<T> msg)
+        {
+            // message received on message bus thread, then executed on process thread.
+            OnMessage<T> onMsgBusThread = delegate(IMessageHeader header, T data)
+                                              {
+                                                  Command toExecute = delegate { msg(header, data); };
+                                                  Enqueue(toExecute);
+                                              };
+            return onMsgBusThread;
         }
 
         private void AddSubscription(ISubscriber subscriber)
@@ -131,7 +143,7 @@ namespace Retlang
         {
             object requestTopic = env.Header.ReplyTo;
             TopicRequestReply<T> req = new TopicRequestReply<T>();
-            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicEquals(requestTopic), req.OnReply, _bus);
+            TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicEquals(requestTopic), req.OnReply);
             AddSubscription(subscriber);
             req.Unsubscriber = new Unsubscriber(subscriber, _subscribers);
             _bus.Publish(env);

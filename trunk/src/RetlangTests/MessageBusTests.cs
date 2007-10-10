@@ -27,7 +27,7 @@ namespace RetlangTests
                                                  {
                                                      received = true;
                                                  };
-            bus.Subscribe(new TopicSubscriber<int>(new TopicEquals(topic), receivedMessage, queue));
+            bus.Subscribe(new TopicSubscriber<int>(new TopicEquals(topic), receivedMessage));
             bus.Publish(new ObjectTransferEnvelope(1, new MessageHeader(topic, null)));
             Assert.IsTrue(received);
         }
@@ -77,7 +77,7 @@ namespace RetlangTests
                                               }
                                           };
             object topic = new object();
-            ISubscriber subscriber = new TopicSubscriber<string>(new TopicEquals(topic), onInt, queue);
+            ISubscriber subscriber = new TopicSubscriber<string>(new TopicEquals(topic), onInt);
             bus.Subscribe(subscriber);
             bus.Publish(CreateMessage(topic, "1"));
             bus.Publish(CreateMessage(topic, "2"));
