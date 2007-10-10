@@ -8,8 +8,7 @@ namespace Retlang
         /// 
         /// </summary>
         /// <param name="envelope"></param>
-        /// <returns>true if message is processed. false if ignored.</returns>
-        /// <param name="consumed">set to true if the subscriber consumes the event</param>
+        /// <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
         void Receive(ITransferEnvelope envelope, ref bool consumed);
     }
 
