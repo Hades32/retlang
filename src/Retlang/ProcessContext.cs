@@ -38,7 +38,7 @@ namespace Retlang
             _bus = messageBus;
             _processThread = runner;
             _envelopeFactory = factory;
-            _subscribers = new SubscriberRegistry(runner);
+            _subscribers = new SubscriberRegistry();
             _bus.Subscribe(this);
         }
 
@@ -144,9 +144,12 @@ namespace Retlang
             return SendRequest<T>(_envelopeFactory.Create(topic, msg, CreateUniqueTopic()));
         }
 
-        public bool Receive(ITransferEnvelope envelope)
+        public void Receive(ITransferEnvelope envelope, ref bool consumed)
         {
-            return _subscribers.Publish(envelope);
+            if( _subscribers.Publish(envelope))
+            {
+                consumed = true;
+            }
         }
     }
 }

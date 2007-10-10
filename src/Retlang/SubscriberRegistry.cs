@@ -2,39 +2,31 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
+    public delegate void OnReceive(ITransferEnvelope envelope, ref bool received);
+
     public class SubscriberRegistry: ISubscriberRegistry
     {
-        private readonly ICommandQueue _targetThread;
-        private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
-
-        public SubscriberRegistry(ICommandQueue targetThread)
-        {
-            _targetThread = targetThread;
-        }
+        private event OnReceive ReceiveEvent;
 
         public bool Publish(ITransferEnvelope envelope)
         {
             bool published = false;
-            foreach (ISubscriber sub in _subscribers)
+            OnReceive rcv = ReceiveEvent;
+            if(rcv != null)
             {
-                if (sub.Receive(envelope))
-                {
-                    published = true;
-                }
+                rcv(envelope, ref published);
             }
             return published;
         }
 
         public void Subscribe(ISubscriber subscriber)
         {
-            Command subCommand = delegate { _subscribers.Add(subscriber); };
-            _targetThread.Enqueue(subCommand);
+            ReceiveEvent += subscriber.Receive;
         }
 
         public void Unsubscribe(ISubscriber sub)
         {
-            Command unSub = delegate { _subscribers.Remove(sub); };
-            _targetThread.Enqueue(unSub);
+            ReceiveEvent -= sub.Receive;
         }
     }
 }

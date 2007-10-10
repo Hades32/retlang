@@ -9,7 +9,8 @@ namespace Retlang
         /// </summary>
         /// <param name="envelope"></param>
         /// <returns>true if message is processed. false if ignored.</returns>
-        bool Receive(ITransferEnvelope envelope);
+        /// <param name="consumed">set to true if the subscriber consumes the event</param>
+        void Receive(ITransferEnvelope envelope, ref bool consumed);
     }
 
     public class TopicSubscriber<T> : ISubscriber
@@ -35,11 +36,11 @@ namespace Retlang
             get { return typeof (T); }
         }
 
-        public bool Receive(ITransferEnvelope envelope)
+        public void Receive(ITransferEnvelope envelope, ref bool consumed)
         {
             if (!MessageType.IsAssignableFrom(envelope.MessageType))
             {
-                return false;
+                return;
             }
 
             if (_topic.Matches(envelope.Header.Topic))
@@ -47,9 +48,8 @@ namespace Retlang
                 T typedMsg = (T) envelope.ResolveMessage();
                 Command toExecute = delegate { _onMessage(envelope.Header, typedMsg); };
                 _queue.Enqueue(toExecute);
-                return true;
+                consumed = true;
             }
-            return false;
         }
     }
 }

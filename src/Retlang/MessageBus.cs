@@ -30,7 +30,7 @@ namespace Retlang
         public MessageBus(ICommandQueue thread)
         {
             _thread = thread;
-            _subscribers = new SubscriberRegistry(thread);
+            _subscribers = new SubscriberRegistry();
         }
 
         public void Enqueue(Command command)
