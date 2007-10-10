@@ -26,17 +26,20 @@ namespace Retlang
     {
     }
 
-    public class ProcessContext : IProcessContext
+    public class ProcessContext : IProcessContext, ISubscriber
     {
         private ITransferEnvelopeFactory _envelopeFactory;
         private readonly IMessageBus _bus;
         private readonly IProcessThread _processThread;
+        private readonly SubscriberRegistry _subscribers;
 
         public ProcessContext(IMessageBus messageBus, IProcessThread runner, ITransferEnvelopeFactory factory)
         {
             _bus = messageBus;
             _processThread = runner;
             _envelopeFactory = factory;
+            _subscribers = new SubscriberRegistry(runner);
+            _bus.Subscribe(this);
         }
 
         public ITransferEnvelopeFactory TransferEnvelopeFactory
@@ -53,6 +56,7 @@ namespace Retlang
         public void Stop()
         {
             _processThread.Stop();
+            _bus.Unsubscribe(this);
         }
 
         public void Join()
@@ -109,8 +113,13 @@ namespace Retlang
         public IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg)
         {
             TopicSubscriber<T> subscriber = new TopicSubscriber<T>(topic, msg, _processThread);
-            _bus.Subscribe(subscriber);
-            return new Unsubscriber(subscriber, _bus);
+            AddSubscription(subscriber);
+            return new Unsubscriber(subscriber, _subscribers);
+        }
+
+        private void AddSubscription(ISubscriber subscriber)
+        {
+            _subscribers.Subscribe(subscriber);
         }
 
         public object CreateUniqueTopic()
@@ -123,8 +132,8 @@ namespace Retlang
             object requestTopic = env.Header.ReplyTo;
             TopicRequestReply<T> req = new TopicRequestReply<T>();
             TopicSubscriber<T> subscriber = new TopicSubscriber<T>(new TopicEquals(requestTopic), req.OnReply, _bus);
-            _bus.Subscribe(subscriber);
-            req.Unsubscriber = new Unsubscriber(subscriber, _bus);
+            AddSubscription(subscriber);
+            req.Unsubscriber = new Unsubscriber(subscriber, _subscribers);
             _bus.Publish(env);
             return req;
         }
@@ -133,6 +142,11 @@ namespace Retlang
         public IRequestReply<T> SendRequest<T>(object topic, object msg)
         {
             return SendRequest<T>(_envelopeFactory.Create(topic, msg, CreateUniqueTopic()));
+        }
+
+        public bool Receive(ITransferEnvelope envelope)
+        {
+            return _subscribers.Publish(envelope);
         }
     }
 }

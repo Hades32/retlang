@@ -6,18 +6,22 @@ namespace Retlang
 
     public delegate void OnMessage<T>(IMessageHeader header, T msg);
 
-    public interface IMessageBus : ICommandQueue
+    public interface ISubscriberRegistry
+    {
+        void Subscribe(ISubscriber subscriber);
+        void Unsubscribe(ISubscriber subscriber);        
+    }
+
+    public interface IMessageBus : ICommandQueue, ISubscriberRegistry
     {
         event On<ITransferEnvelope> UnhandledMessageEvent;
 
         void Publish(ITransferEnvelope envelope);
-        void Subscribe(ISubscriber subscriber);
-        void Unsubscribe(ISubscriber subscriber);
     }
 
     public class MessageBus : IMessageBus
     {
-        private readonly List<ISubscriber> _subscribers = new List<ISubscriber>();
+        private readonly SubscriberRegistry _subscribers;
 
         private readonly ICommandQueue _thread;
 
@@ -26,6 +30,7 @@ namespace Retlang
         public MessageBus(ICommandQueue thread)
         {
             _thread = thread;
+            _subscribers = new SubscriberRegistry(thread);
         }
 
         public void Enqueue(Command command)
@@ -37,15 +42,7 @@ namespace Retlang
         {
             Command pubCommand = delegate
                                      {
-                                         bool published = false;
-                                         foreach (ISubscriber sub in _subscribers)
-                                         {
-                                             if (sub.Receive(envelope))
-                                             {
-                                                 published = true;
-                                             }
-                                         }
-                                         if (!published)
+                                         if(!_subscribers.Publish(envelope))
                                          {
                                              On<ITransferEnvelope> env = UnhandledMessageEvent;
                                              if (env != null)
@@ -59,14 +56,12 @@ namespace Retlang
 
         public void Subscribe(ISubscriber subscriber)
         {
-            Command subCommand = delegate { _subscribers.Add(subscriber); };
-            Enqueue(subCommand);
+            _subscribers.Subscribe(subscriber); 
         }
 
         public void Unsubscribe(ISubscriber sub)
         {
-            Command unSub = delegate { _subscribers.Remove(sub); };
-            Enqueue(unSub);
+            _subscribers.Unsubscribe(sub);
         }
     }
 }
