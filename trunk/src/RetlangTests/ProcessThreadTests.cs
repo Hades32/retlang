@@ -119,7 +119,7 @@ namespace RetlangTests
 
             IRequestReply<string> req = context.SendRequest<string>(topic, "stuff");
 
-            Assert.AreEqual("reply to: stuff", req.Receive(1000).Message);
+            Assert.AreEqual("reply to: stuff", req.Receive(5000).Message);
 
             context.Stop();
             context.Join();
