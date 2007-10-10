@@ -7,10 +7,10 @@ namespace Retlang
 
     public class Unsubscriber : IUnsubscriber
     {
-        private readonly IMessageBus _bus;
+        private readonly ISubscriberRegistry _bus;
         private readonly ISubscriber _sub;
 
-        public Unsubscriber(ISubscriber sub, IMessageBus bus)
+        public Unsubscriber(ISubscriber sub, ISubscriberRegistry bus)
         {
             _sub = sub;
             _bus = bus;
