@@ -1,3 +1,5 @@
+using System;
+
 namespace Retlang
 {
     public class TopicEquals : ITopicMatcher
@@ -30,12 +32,12 @@ namespace Retlang
 
         public bool Matches(object topic)
         {
-            return _toMatch == topic;
+            return _toMatch.Equals(topic);
         }
 
         public override string ToString()
         {
-            return _toMatch.ToString();
+            return "TopicEquals:"+_toMatch;
         }
     }
 }
