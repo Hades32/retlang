@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using NUnit.Framework;
 using Retlang;
 
@@ -24,15 +25,21 @@ namespace RetlangTests
                                               {
                                                   receiveContext.Stop();
                                               }
+                                              else
+                                              {
+                                                  Thread.Sleep(0);
+                                              }
                                           };
-            receiveContext.Subscribe<int>(new TopicEquals("sub"), received);
-
+            TopicEquals selectall = new TopicEquals("string");
+            receiveContext.Subscribe<int>(selectall, received);
+            
             Stopwatch watch = new Stopwatch();
             watch.Start();
             for (int i = 1; i <= totalMessages; i++)
             {
-                pubContext.Publish("sub", i);
+                pubContext.Publish("string", i);
             }
+            Console.WriteLine("Done publishing.");
             receiveContext.Join();
             pubContext.Stop();
             pubContext.Join();
@@ -41,6 +48,11 @@ namespace RetlangTests
 
             Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
             Console.WriteLine("Avg Per Second: " + (totalMessages/watch.Elapsed.TotalSeconds));
+        }
+
+        public static void Main(string[] args)
+        {
+            new PerfTests().PubSub();
         }
     }
 }
