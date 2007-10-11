@@ -32,5 +32,10 @@ namespace Retlang
         {
             return _toMatch == topic;
         }
+
+        public override string ToString()
+        {
+            return _toMatch.ToString();
+        }
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="Demonstration.cs" />
     <Compile Include="FibonacciDemonstration.cs" />
     <Compile Include="MessageHeaderTests.cs" />
+    <Compile Include="SubscriberRegistryTests.cs" />
     <Compile Include="TopicEqualsTests.cs" />
     <Compile Include="TopicSelectorTests.cs" />
     <Compile Include="XmlTransferEnvelopeTests.cs" />
