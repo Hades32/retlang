@@ -26,7 +26,7 @@ namespace Retlang
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime = 0;
 
-        private readonly Queue<Command> _commands = new Queue<Command>();
+        private readonly List<Command> _commands = new List<Command>();
 
         private ICommandExecutor _commandRunner;
 
@@ -54,7 +54,7 @@ namespace Retlang
             {
                 if (SpaceAvailable())
                 {
-                    _commands.Enqueue(command);
+                    _commands.Add(command);
                     Monitor.PulseAll(_lock);
                 }
             }

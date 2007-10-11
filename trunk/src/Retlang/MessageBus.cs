@@ -24,6 +24,7 @@ namespace Retlang
         private readonly SubscriberRegistry _subscribers;
 
         private readonly ICommandQueue _thread;
+        private bool _asyncPublish = false;
 
         public event On<ITransferEnvelope> UnhandledMessageEvent;
 
@@ -33,6 +34,12 @@ namespace Retlang
             _subscribers = new SubscriberRegistry();
         }
 
+        public bool AsyncPublish
+        {
+            get { return _asyncPublish; }
+            set { _asyncPublish = value; }
+        }
+
         public void Enqueue(Command command)
         {
             _thread.Enqueue(command);
@@ -40,18 +47,36 @@ namespace Retlang
 
         public void Publish(ITransferEnvelope envelope)
         {
-            Command pubCommand = delegate
-                                     {
-                                         if(!_subscribers.Publish(envelope))
+            if (!_asyncPublish)
+            {
+                if (!_subscribers.Publish(envelope))
+                {
+                    Command unhandled = delegate
+                                            {
+                                                On<ITransferEnvelope> env = UnhandledMessageEvent;
+                                                if (env != null)
+                                                {
+                                                    env(envelope);
+                                                }
+                                            };
+                    Enqueue(unhandled);
+                }
+            }
+            else
+            {
+                Command pubCommand = delegate
                                          {
-                                             On<ITransferEnvelope> env = UnhandledMessageEvent;
-                                             if (env != null)
+                                             if (!_subscribers.Publish(envelope))
                                              {
-                                                 env(envelope);
+                                                 On<ITransferEnvelope> env = UnhandledMessageEvent;
+                                                 if (env != null)
+                                                 {
+                                                     env(envelope);
+                                                 }
                                              }
-                                         }
-                                     };
-            Enqueue(pubCommand);
+                                         };
+                Enqueue(pubCommand);
+            }
         }
 
         public void Subscribe(ISubscriber subscriber)

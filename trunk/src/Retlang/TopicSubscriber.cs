@@ -35,16 +35,14 @@ namespace Retlang
 
         public void Receive(ITransferEnvelope envelope, ref bool consumed)
         {
-            if (!MessageType.IsAssignableFrom(envelope.MessageType))
-            {
-                return;
-            }
-
             if (_topic.Matches(envelope.Header.Topic))
             {
-                T typedMsg = (T) envelope.ResolveMessage();
-                _onMessage(envelope.Header, typedMsg);
-                consumed = true;
+                if (MessageType.IsAssignableFrom(envelope.MessageType))
+                {
+                    T typedMsg = (T)envelope.ResolveMessage();
+                    _onMessage(envelope.Header, typedMsg);
+                    consumed = true;
+                }
             }
         }
     }
