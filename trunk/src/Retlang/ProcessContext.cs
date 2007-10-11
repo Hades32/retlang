@@ -4,6 +4,12 @@ namespace Retlang
 {
     public interface IProcessBus: IObjectPublisher
     {
+        /// <summary>
+        /// Callback from any and all publishing threads. Not Thread Safe.
+        /// Will only happen if the max size of the queue and the max wait times are set.
+        /// </summary>
+        event OnQueueFull QueueFullEvent;
+
         void Publish(ITransferEnvelope toPublish);
 
         IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
@@ -26,8 +32,12 @@ namespace Retlang
     {
     }
 
+    public delegate void OnQueueFull(QueueFullException exception, IMessageHeader header, object msg);
+
     public class ProcessContext : IProcessContext, ISubscriber
     {
+        public event OnQueueFull QueueFullEvent;
+
         private ITransferEnvelopeFactory _envelopeFactory;
         private readonly IMessageBus _bus;
         private readonly IProcessThread _processThread;
@@ -124,9 +134,25 @@ namespace Retlang
             OnMessage<T> onMsgBusThread = delegate(IMessageHeader header, T data)
                                               {
                                                   Command toExecute = delegate { msg(header, data); };
-                                                  Enqueue(toExecute);
+                                                  try
+                                                  {
+                                                      Enqueue(toExecute);
+                                                  }
+                                                  catch (QueueFullException full)
+                                                  {
+                                                      OnQueueFull(full, header, data);
+                                                  }
                                               };
             return onMsgBusThread;
+        }
+
+        private void OnQueueFull(QueueFullException full, IMessageHeader header, object data)
+        {
+            OnQueueFull onExc = QueueFullEvent;
+            if (onExc != null)
+            {
+                onExc(full, header, data);
+            }
         }
 
         private void AddSubscription(ISubscriber subscriber)
