@@ -150,5 +150,31 @@ namespace RetlangTests
             repo.VerifyAll();
             
         }
+
+        [Test]
+        public void QueueFullEvent()
+        {
+            MockRepository repo = new MockRepository();
+            IMessageBus bus = repo.CreateMock<IMessageBus>();
+            bus.Subscribe(null);
+            LastCall.IgnoreArguments();
+            IProcessThread thread = repo.CreateMock<IProcessThread>();
+            thread.Enqueue(null);
+            QueueFullException exc = new QueueFullException(1);
+            LastCall.IgnoreArguments().Throw(exc);
+
+            OnQueueFull fullEvent = repo.CreateMock<OnQueueFull>();
+            fullEvent(exc, new MessageHeader("topic", null), "data");
+
+            repo.ReplayAll();
+
+            ProcessContext context = new ProcessContext(bus, thread, new ObjectTransferEnvelopeFactory());
+            context.QueueFullEvent += fullEvent;
+            context.Subscribe<string>(new TopicEquals("topic"), delegate { });
+            bool consumed = false;
+            context.Receive(new ObjectTransferEnvelope("data", new MessageHeader("topic", null)), ref consumed);
+            Assert.IsTrue(consumed);
+            repo.VerifyAll();
+        }
     }
 }
