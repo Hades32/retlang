@@ -1,11 +1,10 @@
 namespace Retlang
 {
-    public class TopicEquals : TopicSelector<object>
+    public class TopicEquals : ITopicMatcher
     {
         private readonly object _toMatch;
 
         public TopicEquals(object toMatch)
-            : base(toMatch.Equals)
         {
             _toMatch = toMatch;
         }
@@ -27,6 +26,11 @@ namespace Retlang
                 return false;
             }
             return _toMatch == otherEquals._toMatch;
+        }
+
+        public bool Matches(object topic)
+        {
+            return _toMatch == topic;
         }
     }
 }

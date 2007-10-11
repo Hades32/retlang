@@ -54,7 +54,7 @@ namespace RetlangTests
                 _expectedSum = expectedSum;
                 // We create a selector that will allow this class
                 // to subscribe to the topic.
-                TopicSelector<object> topicSelector = new TopicEquals(topic);
+                ITopicMatcher topicSelector = new TopicEquals(topic);
                 // The subscription demands a delegate to call upon
                 // receiving a message.
                 _processContext.Subscribe<int>(topicSelector, Add);
