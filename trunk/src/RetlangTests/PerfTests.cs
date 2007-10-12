@@ -7,7 +7,7 @@ using Retlang;
 namespace RetlangTests
 {
     [TestFixture]
-    public class PerfTests
+    public class PerfTests: ICommandExecutor
     {
         [Test]
         [Explicit]
@@ -15,6 +15,8 @@ namespace RetlangTests
         {
             int totalMessages = 10000000;
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+            ProcessThreadFactory threadFactory = (ProcessThreadFactory)factory.ThreadFactory;
+            threadFactory.Executor = this;
 
             IProcessContext pubContext = factory.CreateAndStart();
             IProcessContext receiveContext = factory.CreateAndStart();
@@ -24,10 +26,6 @@ namespace RetlangTests
                                               if (count == totalMessages)
                                               {
                                                   receiveContext.Stop();
-                                              }
-                                              else
-                                              {
-                                                  Thread.Sleep(0);
                                               }
                                           };
             TopicEquals selectall = new TopicEquals("string");
@@ -53,6 +51,15 @@ namespace RetlangTests
         public static void Main(string[] args)
         {
             new PerfTests().PubSub();
+        }
+
+        public void ExecuteAll(Command[] toExecute)
+        {
+            foreach (Command command in toExecute)
+            {
+                command();
+            }
+            Thread.Sleep(1);
         }
     }
 }
