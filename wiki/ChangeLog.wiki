@@ -8,3 +8,4 @@
   * ProcessContext.Stop unsubscribes the context completely from the message bus
   * Various Performance Optimizations - Up to 1 Million messages per second on 2ghz dual core
   * Added QueueFullEvent to ProcessContext for handling events that cannot be delivered to a full queue.
+  * Added Synchronous Publish option to MessageBus. The publishing thread delivers the message directly to the process queues rather than using the message bus thread for delivery.
