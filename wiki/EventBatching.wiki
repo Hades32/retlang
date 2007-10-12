@@ -1,4 +1,3 @@
-#labels Featured
 = Example: Receive All Events Batched Every Second =
 
 This example batches *_all_* events being published on any process in a second.
