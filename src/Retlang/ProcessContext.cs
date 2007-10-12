@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public interface IProcessBus: IObjectPublisher
+    public interface IProcessBus: IObjectPublisher, ICommandQueue, ICommandTimer
     {
         /// <summary>
         /// Callback from any and all publishing threads. Not Thread Safe.
@@ -27,8 +27,7 @@ namespace Retlang
         object CreateUniqueTopic();
     }
 
-    public interface IProcessContext : ICommandTimer, ICommandQueue, IThreadController,
-                                       IProcessBus
+    public interface IProcessContext : IThreadController, IProcessBus
     {
     }
 
