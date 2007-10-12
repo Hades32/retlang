@@ -156,8 +156,6 @@ namespace RetlangTests
         {
             MockRepository repo = new MockRepository();
             IMessageBus bus = repo.CreateMock<IMessageBus>();
-            bus.Subscribe(null);
-            LastCall.IgnoreArguments();
             IProcessThread thread = repo.CreateMock<IProcessThread>();
             thread.Enqueue(null);
             QueueFullException exc = new QueueFullException(1);

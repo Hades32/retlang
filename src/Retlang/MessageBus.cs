@@ -24,7 +24,7 @@ namespace Retlang
         private readonly SubscriberRegistry _subscribers;
 
         private readonly ICommandQueue _thread;
-        private bool _asyncPublish = false;
+        private bool _asyncPublish = true;
 
         public event On<ITransferEnvelope> UnhandledMessageEvent;
 

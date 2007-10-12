@@ -48,7 +48,6 @@ namespace Retlang
             _processThread = runner;
             _envelopeFactory = factory;
             _subscribers = new SubscriberRegistry();
-            _bus.Subscribe(this);
         }
 
         public ITransferEnvelopeFactory TransferEnvelopeFactory
@@ -59,6 +58,7 @@ namespace Retlang
 
         public void Start()
         {
+            _bus.Subscribe(this);
             _processThread.Start();
         }
 
