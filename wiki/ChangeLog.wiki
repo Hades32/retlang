@@ -1,0 +1,10 @@
+= 0.2.1.3 =
+
+  * Defaulted MessageBus Publishing to Async
+  * ProcessContext subscribes at Start rather than in constructor
+
+= 0.2.1.2 =
+
+  * ProcessContext.Stop unsubscribes the context completely from the message bus
+  * Various Performance Optimizations - Up to 1 Million messages per second on 2ghz dual core
+  * Added QueueFullEvent to ProcessContext for handling events that cannot be delivered to a full queue.
