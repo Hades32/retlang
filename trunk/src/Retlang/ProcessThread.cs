@@ -2,8 +2,13 @@ using System.Threading;
 
 namespace Retlang
 {
-    public interface IProcessThread : ICommandQueue, ICommandTimer, IThreadController
+    public interface IProcessQueue : ICommandQueue, ICommandTimer, IThreadController
     {
+    }
+
+    public interface IProcessThread : IProcessQueue
+    {
+        Thread Thread { get;}
     }
 
     public class ProcessThread : IProcessThread
