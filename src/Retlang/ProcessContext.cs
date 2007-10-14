@@ -39,15 +39,20 @@ namespace Retlang
 
         private ITransferEnvelopeFactory _envelopeFactory;
         private readonly IMessageBus _bus;
-        private readonly IProcessThread _processThread;
+        private readonly IProcessQueue _processThread;
         private readonly SubscriberRegistry _subscribers;
 
-        public ProcessContext(IMessageBus messageBus, IProcessThread runner, ITransferEnvelopeFactory factory)
+        public ProcessContext(IMessageBus messageBus, IProcessQueue runner, ITransferEnvelopeFactory factory)
         {
             _bus = messageBus;
             _processThread = runner;
             _envelopeFactory = factory;
             _subscribers = new SubscriberRegistry();
+        }
+
+        public IProcessQueue ProcessQueue
+        {
+            get { return _processThread; }
         }
 
         public ITransferEnvelopeFactory TransferEnvelopeFactory
