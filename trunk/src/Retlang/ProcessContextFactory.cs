@@ -9,7 +9,7 @@ namespace Retlang
     public class ProcessContextFactory : IProcessContextFactory
     {
         private MessageBus _bus;
-        private ITransferEnvelopeFactory _envelopeFactory = new BinaryTransferEnvelopeFactory();
+        private ITransferEnvelopeFactory _envelopeFactory = new ObjectTransferEnvelopeFactory();
         private IProcessThreadFactory _threadFactory = new ProcessThreadFactory();
         private IProcessThread _busThread;
 
