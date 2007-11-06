@@ -114,19 +114,24 @@ namespace Retlang
         {
             KeyedBatchSubscriber<K, V> batch =
                 new KeyedBatchSubscriber<K, V>(keyResolver, target, this, minBatchIntervalInMs);
-            return Subscribe<V>(topic, batch.ReceiveMessage);
+            return CreateSubscription<V>(topic, batch.ReceiveMessage);
         }
 
         public IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg,
                                                  int minBatchIntervalInMs)
         {
             BatchSubscriber<T> batch = new BatchSubscriber<T>(msg, this, minBatchIntervalInMs);
-            return Subscribe<T>(topic, batch.ReceiveMessage);
+            return CreateSubscription<T>(topic, batch.ReceiveMessage);
         }
 
         public IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg)
         {
             OnMessage<T> asyncReceive = CreateReceiveOnProcessThread(msg);
+            return CreateSubscription(topic, asyncReceive);
+        }
+
+        private IUnsubscriber CreateSubscription<T>(ITopicMatcher topic, OnMessage<T> asyncReceive)
+        {
             TopicSubscriber<T> subscriber = new TopicSubscriber<T>(topic, asyncReceive);
             AddSubscription(subscriber);
             return new Unsubscriber(subscriber, _subscribers);
