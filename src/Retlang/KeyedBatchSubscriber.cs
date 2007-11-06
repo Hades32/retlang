@@ -6,6 +6,8 @@ namespace Retlang
 
     public class KeyedBatchSubscriber<K, V>
     {
+        private readonly object _batchLock = new object();
+
         private readonly IProcessContext _context;
         private readonly On<IDictionary<K, IMessageEnvelope<V>>> _target;
         private readonly int _flushIntervalInMs;
@@ -24,27 +26,50 @@ namespace Retlang
             _flushIntervalInMs = flushIntervalInMs;
         }
 
+        /// <summary>
+        /// received on delivery thread
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="msg"></param>
         public void ReceiveMessage(IMessageHeader header, V msg)
         {
-            if (_pending == null)
+            lock (_batchLock)
             {
-                _pending = new Dictionary<K, IMessageEnvelope<V>>();
-                _context.Schedule(Flush, _flushIntervalInMs);
+                K key = _keyResolver(header, msg);
+                if (_pending == null)
+                {
+                    _pending = new Dictionary<K, IMessageEnvelope<V>>();
+                    _context.Schedule(Flush, _flushIntervalInMs);
+                }
+                _pending[key] = new MessageEnvelope<V>(header, msg);
             }
-            K key = _keyResolver(header, msg);
-            _pending[key] = new MessageEnvelope<V>(header, msg);
         }
 
+        /// <summary>
+        /// Flushed from process thread
+        /// </summary>
         public void Flush()
         {
-            if (_pending == null || _pending.Count == 0)
+            IDictionary<K, IMessageEnvelope<V>> toReturn = ClearPending();
+            if (toReturn != null)
             {
-                _pending = null;
-                return;
+                _target(toReturn);
             }
-            IDictionary<K, IMessageEnvelope<V>> toReturn = _pending;
-            _pending = null;
-            _target(toReturn);
+        }
+
+        private IDictionary<K, IMessageEnvelope<V>> ClearPending()
+        {
+            lock (_batchLock)
+            {
+                if (_pending == null || _pending.Count == 0)
+                {
+                    _pending = null;
+                    return null;
+                }
+                IDictionary<K, IMessageEnvelope<V>> toReturn = _pending;
+                _pending = null;
+                return toReturn;
+            }
         }
     }
 }

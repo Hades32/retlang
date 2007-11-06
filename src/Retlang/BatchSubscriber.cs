@@ -4,6 +4,8 @@ namespace Retlang
 {
     public class BatchSubscriber<T>
     {
+        private readonly object _batchLock = new object();
+
         private readonly IProcessContext _context;
         private readonly On<IList<IMessageEnvelope<T>>> _target;
         private readonly int _flushIntervalInMs;
@@ -17,26 +19,44 @@ namespace Retlang
             _flushIntervalInMs = flushIntervalInMs;
         }
 
+        //received from message delivery thread
         public void ReceiveMessage(IMessageHeader header, T msg)
         {
-            if (_pending == null)
+            lock (_batchLock)
             {
-                _pending = new List<IMessageEnvelope<T>>();
-                _context.Schedule(Flush, _flushIntervalInMs);
+                if (_pending == null)
+                {
+                    _pending = new List<IMessageEnvelope<T>>();
+                    _context.Schedule(Flush, _flushIntervalInMs);
+                }
+                _pending.Add(new MessageEnvelope<T>(header, msg));
             }
-            _pending.Add(new MessageEnvelope<T>(header, msg));
         }
 
+        //flushed on process context thead
         public void Flush()
         {
-            if (_pending == null || _pending.Count == 0)
+            IList < IMessageEnvelope < T> > toReturn = ClearPending();
+            if (toReturn != null)
             {
-                _pending = null;
-                return;
+                _target(toReturn);
             }
-            IList<IMessageEnvelope<T>> toReturn = _pending;
-            _pending = null;
-            _target(toReturn);
         }
+
+        private IList<IMessageEnvelope<T>> ClearPending()
+        {
+            lock (_batchLock)
+            {
+                if (_pending == null || _pending.Count == 0)
+                {
+                    _pending = null;
+                    return null;
+                }
+                IList<IMessageEnvelope<T>> toReturn = _pending;
+                _pending = null;
+                return toReturn;
+            }
+        }
+
     }
 }
