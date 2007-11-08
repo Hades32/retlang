@@ -19,11 +19,15 @@ namespace Retlang
         private readonly ICommandRunner _queue;
         private readonly CommandTimer _scheduler;
 
-        public ProcessThread(ICommandRunner queue)
+        public ProcessThread(ICommandRunner queue): this(queue, "ProcessThread-" + GetNextThreadId())
+        {
+        }
+
+        public ProcessThread(ICommandRunner queue, string threadName)
         {
             _queue = queue;
             _thread = new Thread(RunThread);
-            _thread.Name = "ProcessThread-" + GetNextThreadId();
+            _thread.Name = threadName;
             _scheduler = new CommandTimer(this);
         }
 
