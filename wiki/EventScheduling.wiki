@@ -34,7 +34,7 @@ context.ScheduleOnInterval(scheduled, 100, 100);
 === Using System.Threading.Timer ===
 {{{
 IProcesscontext context = ....
-TimerCallback callback = delegate{context.Enqueue(delegate{Console.WriteLine("event");});
+TimerCallback callback = delegate{context.Enqueue(delegate{Console.WriteLine("event");})};
 Timer timer = new Timer(callback, null, 1000, 1000);
 
 // give some time for events to happen
