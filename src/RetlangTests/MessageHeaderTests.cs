@@ -1,12 +1,11 @@
-using Retlang;
 using NUnit.Framework;
+using Retlang;
 
 namespace RetlangTests
 {
     [TestFixture]
     public class MessageHeaderTests
     {
-
         [Test]
         public void Equality()
         {

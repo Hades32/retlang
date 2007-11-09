@@ -34,7 +34,6 @@ namespace RetlangTests
             repo.VerifyAll();
         }
 
-    
 
         [Test]
         public void MaxDepth()

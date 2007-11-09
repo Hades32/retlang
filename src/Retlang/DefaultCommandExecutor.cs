@@ -1,7 +1,6 @@
-
 namespace Retlang
 {
-    public class DefaultCommandExecutor: ICommandExecutor
+    public class CommandExecutor : ICommandExecutor
     {
         public void ExecuteAll(Command[] toExecute)
         {
@@ -10,6 +9,5 @@ namespace Retlang
                 command();
             }
         }
-
     }
 }

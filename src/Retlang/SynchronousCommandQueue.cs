@@ -6,7 +6,7 @@ namespace Retlang
 
         public void Enqueue(Command command)
         {
-            if(_running)
+            if (_running)
                 command();
         }
 

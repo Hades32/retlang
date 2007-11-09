@@ -9,7 +9,6 @@ namespace Retlang
 
         IProcessContext CreatePooledAndStart(ICommandExecutor executor);
         IProcessContext CreatePooled(ICommandExecutor executor);
-  
     }
 
     public class ProcessContextFactory : IProcessContextFactory
@@ -19,7 +18,7 @@ namespace Retlang
         private IProcessThreadFactory _threadFactory = new ProcessThreadFactory();
         private IProcessThread _busThread;
         private IThreadPool _threadPool = new DefaultThreadPool();
-        private ICommandExecutor _executor = new DefaultCommandExecutor();
+        private ICommandExecutor _executor = new CommandExecutor();
 
         public ICommandExecutor MessageBusCommandExecutor
         {
@@ -29,7 +28,7 @@ namespace Retlang
 
         public void Start()
         {
-            if(_bus == null)
+            if (_bus == null)
             {
                 Init();
             }
@@ -50,7 +49,7 @@ namespace Retlang
 
         public IMessageBus MessageBus
         {
-            get{ return _bus; }
+            get { return _bus; }
         }
 
         public void Stop()
@@ -77,12 +76,12 @@ namespace Retlang
 
         public IProcessContext CreateAndStart()
         {
-            return CreateAndStart(new DefaultCommandExecutor());
+            return CreateAndStart(new CommandExecutor());
         }
 
         public IProcessContext Create()
         {
-            return Create(new DefaultCommandExecutor());
+            return Create(new CommandExecutor());
         }
 
         public IProcessContext CreateAndStart(ICommandExecutor executor)
@@ -99,7 +98,7 @@ namespace Retlang
 
         public IProcessContext CreatePooled(ICommandExecutor executor)
         {
-            return new ProcessContext(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory); 
+            return new ProcessContext(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory);
         }
 
         public IProcessContext CreatePooledAndStart(ICommandExecutor executor)

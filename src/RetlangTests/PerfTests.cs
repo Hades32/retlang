@@ -7,7 +7,7 @@ using Retlang;
 namespace RetlangTests
 {
     [TestFixture]
-    public class PerfTests: ICommandExecutor
+    public class PerfTests : ICommandExecutor
     {
         private IProcessContext CreateContext(ProcessContextFactory factory)
         {
@@ -19,12 +19,11 @@ namespace RetlangTests
         public void PubSub()
         {
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
-            ProcessThreadFactory threadFactory = (ProcessThreadFactory)factory.ThreadFactory;
 
             IProcessContext pubContext = CreateContext(factory);
             IProcessContext receiveContext = CreateContext(factory);
             int totalMessages = 10000000;
-     
+
             OnMessage<int> received = delegate(IMessageHeader header, int count)
                                           {
                                               if (count == totalMessages)
@@ -34,7 +33,7 @@ namespace RetlangTests
                                           };
             TopicEquals selectall = new TopicEquals("string");
             receiveContext.Subscribe<int>(selectall, received);
-            
+
             Stopwatch watch = new Stopwatch();
             watch.Start();
             for (int i = 1; i <= totalMessages; i++)
@@ -57,15 +56,16 @@ namespace RetlangTests
         public void PubSubWithPool()
         {
             DefaultThreadPool pool = new DefaultThreadPool();
-            PoolQueue busQueue = new PoolQueue(pool, new DefaultCommandExecutor());
+            PoolQueue busQueue = new PoolQueue(pool, new CommandExecutor());
             busQueue.Start();
             MessageBus bus = new MessageBus(busQueue);
             bus.AsyncPublish = false;
-            
+
             ObjectTransferEnvelopeFactory transfer = new ObjectTransferEnvelopeFactory();
-            IProcessContext pubContext = new ProcessContext(bus, new PoolQueue(pool, new DefaultCommandExecutor()), transfer);
+            IProcessContext pubContext = new ProcessContext(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
             pubContext.Start();
-            IProcessContext receiveContext = new ProcessContext(bus, new PoolQueue(pool, new DefaultCommandExecutor()), transfer);
+            IProcessContext receiveContext =
+                new ProcessContext(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
             receiveContext.Start();
             int totalMessages = 10000000;
 
@@ -89,7 +89,7 @@ namespace RetlangTests
             Console.WriteLine("Done publishing.");
             Assert.IsTrue(reset.WaitOne(45000, false));
             Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
-            Console.WriteLine("Avg Per Second: " + (totalMessages / watch.Elapsed.TotalSeconds));
+            Console.WriteLine("Avg Per Second: " + (totalMessages/watch.Elapsed.TotalSeconds));
         }
 
 

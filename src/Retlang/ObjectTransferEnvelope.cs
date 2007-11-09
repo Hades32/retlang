@@ -9,6 +9,7 @@ namespace Retlang
     {
         private readonly IMessageHeader _header;
         private readonly object _obj;
+
         /// <summary>
         /// </summary>
         /// <param name="obj">data to publish</param>

@@ -23,10 +23,7 @@ namespace RetlangTests
             MessageBus bus = new MessageBus(new ProcessThread(queue));
             object topic = new object();
             bool received = false;
-            OnMessage<int> receivedMessage = delegate
-                                                 {
-                                                     received = true;
-                                                 };
+            OnMessage<int> receivedMessage = delegate { received = true; };
             bus.Subscribe(new TopicSubscriber<int>(new TopicEquals(topic), receivedMessage));
             bus.Publish(new ObjectTransferEnvelope(1, new MessageHeader(topic, null)));
             Assert.IsTrue(received);

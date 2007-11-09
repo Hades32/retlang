@@ -1,5 +1,3 @@
-using System;
-
 namespace Retlang
 {
     public class TopicEquals : ITopicMatcher
@@ -13,7 +11,7 @@ namespace Retlang
 
         public override int GetHashCode()
         {
-            if(_toMatch == null)
+            if (_toMatch == null)
             {
                 return 0;
             }
@@ -23,7 +21,7 @@ namespace Retlang
         public override bool Equals(object obj)
         {
             TopicEquals otherEquals = obj as TopicEquals;
-            if(otherEquals == null)
+            if (otherEquals == null)
             {
                 return false;
             }
@@ -37,7 +35,7 @@ namespace Retlang
 
         public override string ToString()
         {
-            return "TopicEquals:"+_toMatch;
+            return "TopicEquals:" + _toMatch;
         }
     }
 }
