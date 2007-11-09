@@ -9,6 +9,13 @@ namespace RetlangTests
     [TestFixture]
     public class PerfTests: ICommandExecutor
     {
+        private static IProcessContext CreateContext(ProcessContextFactory factory)
+        {
+            DefaultThreadPool netPool = new DefaultThreadPool();
+            PoolQueue pool = new PoolQueue(netPool, new DefaultCommandExecutor());
+            ProcessContext context = new ProcessContext(factory.MessageBus, pool, factory.TransferEnvelopeFactory);
+            return context;
+        }
         [Test]
         [Explicit]
         public void PubSub()
@@ -18,8 +25,8 @@ namespace RetlangTests
             ProcessThreadFactory threadFactory = (ProcessThreadFactory)factory.ThreadFactory;
             threadFactory.Executor = this;
 
-            IProcessContext pubContext = factory.CreateAndStart();
-            IProcessContext receiveContext = factory.CreateAndStart();
+            IProcessContext pubContext = CreateContext(factory);
+            IProcessContext receiveContext = CreateContext(factory);
 
             OnMessage<int> received = delegate(IMessageHeader header, int count)
                                           {

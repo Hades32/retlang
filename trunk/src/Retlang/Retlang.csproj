@@ -42,7 +42,10 @@
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
+    <Compile Include="DefaultCommandExecutor.cs" />
+    <Compile Include="IThreadPool.cs" />
     <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="PoolQueue.cs" />
     <Compile Include="ProcessThreadFactory.cs" />
     <Compile Include="QueueFullException.cs" />
     <Compile Include="SubscriberRegistry.cs" />
