@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Retlang
 {
     public delegate void On<T>(T msg);
@@ -9,7 +7,7 @@ namespace Retlang
     public interface ISubscriberRegistry
     {
         void Subscribe(ISubscriber subscriber);
-        void Unsubscribe(ISubscriber subscriber);        
+        void Unsubscribe(ISubscriber subscriber);
     }
 
     public interface IMessageBus : ICommandQueue, ISubscriberRegistry
@@ -81,7 +79,7 @@ namespace Retlang
 
         public void Subscribe(ISubscriber subscriber)
         {
-            _subscribers.Subscribe(subscriber); 
+            _subscribers.Subscribe(subscriber);
         }
 
         public void Unsubscribe(ISubscriber sub)

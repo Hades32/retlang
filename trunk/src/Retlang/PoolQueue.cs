@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Retlang
 {
-    public class PoolQueue: IProcessQueue
+    public class PoolQueue : IProcessQueue
     {
         private bool _flushPending = false;
         private readonly object _lock = new object();
@@ -41,19 +39,24 @@ namespace Retlang
 
         private void Flush(object state)
         {
-            while (true)
+            Command[] toExecute = ClearCommands();
+            if (toExecute != null)
             {
-                Command[] toExecute = ClearCommands();
-                if (toExecute != null)
+                _executor.ExecuteAll(toExecute);
+                lock (_lock)
                 {
-                    _executor.ExecuteAll(toExecute);
-                }
-                else
-                {
-                    return;
+                    if (_queue.Count > 0)
+                    {
+                        // don't monopolize thread.
+                        _pool.Queue(Flush);
+                    }
+                    else
+                    {
+                        _flushPending = false;
+                    }
                 }
             }
-         }
+        }
 
         private Command[] ClearCommands()
         {

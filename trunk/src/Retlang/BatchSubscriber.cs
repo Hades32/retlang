@@ -36,7 +36,7 @@ namespace Retlang
         //flushed on process context thead
         public void Flush()
         {
-            IList < IMessageEnvelope < T> > toReturn = ClearPending();
+            IList<IMessageEnvelope<T>> toReturn = ClearPending();
             if (toReturn != null)
             {
                 _target(toReturn);
@@ -57,6 +57,5 @@ namespace Retlang
                 return toReturn;
             }
         }
-
     }
 }

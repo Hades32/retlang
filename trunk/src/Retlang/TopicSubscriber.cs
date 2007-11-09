@@ -39,7 +39,7 @@ namespace Retlang
             {
                 if (MessageType.IsAssignableFrom(envelope.MessageType))
                 {
-                    T typedMsg = (T)envelope.ResolveMessage();
+                    T typedMsg = (T) envelope.ResolveMessage();
                     _onMessage(envelope.Header, typedMsg);
                     consumed = true;
                 }

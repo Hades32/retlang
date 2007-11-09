@@ -8,7 +8,7 @@ namespace Retlang
 
     public interface IProcessThread : IProcessQueue
     {
-        Thread Thread { get;}
+        Thread Thread { get; }
     }
 
     public class ProcessThread : IProcessThread
@@ -19,7 +19,7 @@ namespace Retlang
         private readonly ICommandRunner _queue;
         private readonly CommandTimer _scheduler;
 
-        public ProcessThread(ICommandRunner queue): this(queue, "ProcessThread-" + GetNextThreadId())
+        public ProcessThread(ICommandRunner queue) : this(queue, "ProcessThread-" + GetNextThreadId())
         {
         }
 

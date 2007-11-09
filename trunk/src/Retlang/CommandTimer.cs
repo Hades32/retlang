@@ -43,7 +43,6 @@ namespace Retlang
             TimerCallback timerCallBack = delegate { toExecute(); };
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
-
     }
 
     public interface ICommandTimer

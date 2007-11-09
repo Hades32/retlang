@@ -28,7 +28,7 @@ namespace Retlang
 
         private readonly List<Command> _commands = new List<Command>();
 
-        private ICommandExecutor _commandRunner = new DefaultCommandExecutor();
+        private ICommandExecutor _commandRunner = new CommandExecutor();
 
         public ICommandExecutor Executor
         {

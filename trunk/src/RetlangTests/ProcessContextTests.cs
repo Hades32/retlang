@@ -59,10 +59,7 @@ namespace RetlangTests
             IProcessContext context = factory.Create();
             context.Start();
 
-            Command stopCommand = delegate
-                                      {
-                                            context.Stop();
-                                      };
+            Command stopCommand = delegate { context.Stop(); };
             context.Schedule(stopCommand, 0);
 
             context.Join();
@@ -79,10 +76,7 @@ namespace RetlangTests
             IProcessContext context = factory.Create();
             context.Start();
 
-            Command stopCommand = delegate
-                                      {
-                                          context.Stop();
-                                      };
+            Command stopCommand = delegate { context.Stop(); };
             context.Enqueue(stopCommand);
 
             context.Join();
@@ -123,12 +117,12 @@ namespace RetlangTests
             MockRepository repo = new MockRepository();
             IMessageBus bus = repo.CreateMock<IMessageBus>();
             IProcessThread thread = repo.CreateMock<IProcessThread>();
-            
+
             OnCommand executor = delegate(Command command)
-                         {
-                             command();
-                             return true;
-                         };
+                                     {
+                                         command();
+                                         return true;
+                                     };
             thread.Enqueue(null);
             LastCall.IgnoreArguments().Callback(executor).Repeat.Any();
 
@@ -148,7 +142,6 @@ namespace RetlangTests
 
             context.Stop();
             repo.VerifyAll();
-            
         }
 
         [Test]

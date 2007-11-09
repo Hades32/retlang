@@ -1,4 +1,3 @@
-
 using NUnit.Framework;
 using Retlang;
 using Rhino.Mocks;
@@ -8,7 +7,6 @@ namespace RetlangTests
     [TestFixture]
     public class SubscriberRegistryTests
     {
-
         [Test]
         public void Subscribe()
         {
@@ -23,7 +21,7 @@ namespace RetlangTests
 
             SubscriberRegistry registry = new SubscriberRegistry();
             TopicEquals topic = new TopicEquals("topic");
-            
+
             TopicSubscriber<string> sub = new TopicSubscriber<string>(topic, callback);
             registry.Subscribe(sub);
 

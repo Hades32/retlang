@@ -31,6 +31,7 @@ namespace Retlang
         {
             return Topic.GetHashCode();
         }
+
         public override bool Equals(object obj)
         {
             IMessageHeader header = obj as IMessageHeader;

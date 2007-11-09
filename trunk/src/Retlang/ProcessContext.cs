@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public interface IProcessBus: IObjectPublisher, ICommandQueue, ICommandTimer
+    public interface IProcessBus : IObjectPublisher, ICommandQueue, ICommandTimer
     {
         /// <summary>
         /// Callback from any and all publishing threads. Not Thread Safe.
@@ -193,7 +193,7 @@ namespace Retlang
 
         public void Receive(ITransferEnvelope envelope, ref bool consumed)
         {
-            if( _subscribers.Publish(envelope))
+            if (_subscribers.Publish(envelope))
             {
                 consumed = true;
             }

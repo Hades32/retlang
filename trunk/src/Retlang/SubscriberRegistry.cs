@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-
 namespace Retlang
 {
     public delegate void OnReceive(ITransferEnvelope envelope, ref bool received);
 
-    public class SubscriberRegistry: ISubscriberRegistry
+    public class SubscriberRegistry : ISubscriberRegistry
     {
         private event OnReceive ReceiveEvent;
 
@@ -12,7 +10,7 @@ namespace Retlang
         {
             bool published = false;
             OnReceive rcv = ReceiveEvent;
-            if(rcv != null)
+            if (rcv != null)
             {
                 rcv(envelope, ref published);
             }
