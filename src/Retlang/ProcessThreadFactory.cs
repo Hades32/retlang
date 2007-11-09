@@ -2,15 +2,14 @@ namespace Retlang
 {
     public interface IProcessThreadFactory
     {
-        IProcessThread CreateProcessThread();
-        IProcessThread CreateMessageBusThread();
+        IProcessThread CreateProcessThread(ICommandExecutor executor);
+        IProcessThread CreateMessageBusThread(ICommandExecutor executor);
     }
 
     public class ProcessThreadFactory: IProcessThreadFactory
     {
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime = -1;
-        private ICommandExecutor _executor;
 
         public int MaxQueueDepth
         {
@@ -24,27 +23,21 @@ namespace Retlang
             set { _maxEnqueueWaitTime = value; }
         }
 
-        public ICommandExecutor Executor
-        {
-            get { return _executor; }
-            set{ _executor = value; }
-        }
-
-        public IProcessThread CreateProcessThread()
+        public IProcessThread CreateProcessThread(ICommandExecutor executor)
         {
             CommandQueue queue = new CommandQueue();
             queue.MaxEnqueueWaitTime = _maxEnqueueWaitTime;
             queue.MaxDepth = _maxQueueDepth;
-            if(_executor != null)
+            if(executor != null)
             {
-                queue.Executor = _executor;
+                queue.Executor = executor;
             }
             return new ProcessThread(queue);
         }
 
-        public IProcessThread CreateMessageBusThread()
+        public IProcessThread CreateMessageBusThread(ICommandExecutor executor)
         {
-            return CreateProcessThread();
+            return CreateProcessThread(executor);
         }
     }
 }

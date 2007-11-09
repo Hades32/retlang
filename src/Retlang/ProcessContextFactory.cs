@@ -4,6 +4,12 @@ namespace Retlang
     {
         IProcessContext CreateAndStart();
         IProcessContext Create();
+        IProcessContext CreateAndStart(ICommandExecutor executor);
+        IProcessContext Create(ICommandExecutor executor);
+
+        IProcessContext CreatePooledAndStart(ICommandExecutor executor);
+        IProcessContext CreatePooled(ICommandExecutor executor);
+  
     }
 
     public class ProcessContextFactory : IProcessContextFactory
@@ -13,6 +19,13 @@ namespace Retlang
         private IProcessThreadFactory _threadFactory = new ProcessThreadFactory();
         private IProcessThread _busThread;
         private IThreadPool _threadPool = new DefaultThreadPool();
+        private ICommandExecutor _executor = new DefaultCommandExecutor();
+
+        public ICommandExecutor MessageBusCommandExecutor
+        {
+            get { return _executor; }
+            set { _executor = value; }
+        }
 
         public void Start()
         {
@@ -31,7 +44,7 @@ namespace Retlang
 
         public void Init()
         {
-            _busThread = ThreadFactory.CreateMessageBusThread();
+            _busThread = ThreadFactory.CreateMessageBusThread(_executor);
             _bus = new MessageBus(_busThread);
         }
 
@@ -64,14 +77,24 @@ namespace Retlang
 
         public IProcessContext CreateAndStart()
         {
-            IProcessContext context = Create();
-            context.Start();
-            return context;
+            return CreateAndStart(new DefaultCommandExecutor());
         }
 
         public IProcessContext Create()
         {
-            return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(), _envelopeFactory);
+            return Create(new DefaultCommandExecutor());
+        }
+
+        public IProcessContext CreateAndStart(ICommandExecutor executor)
+        {
+            IProcessContext context = Create(executor);
+            context.Start();
+            return context;
+        }
+
+        public IProcessContext Create(ICommandExecutor executor)
+        {
+            return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(executor), _envelopeFactory);
         }
 
         public IProcessContext CreatePooled(ICommandExecutor executor)

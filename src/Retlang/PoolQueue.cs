@@ -41,10 +41,17 @@ namespace Retlang
 
         private void Flush(object state)
         {
-            Command[] toExecute = ClearCommands();
-            if (toExecute != null)
+            while (true)
             {
-                _executor.ExecuteAll(toExecute);
+                Command[] toExecute = ClearCommands();
+                if (toExecute != null)
+                {
+                    _executor.ExecuteAll(toExecute);
+                }
+                else
+                {
+                    return;
+                }
             }
          }
 
@@ -52,7 +59,11 @@ namespace Retlang
         {
             lock (_lock)
             {
-                _flushPending = false;
+                if (_queue.Count == 0)
+                {
+                    _flushPending = false;
+                    return null;
+                }
                 Command[] toReturn = _queue.ToArray();
                 _queue.Clear();
                 return toReturn;

@@ -9,25 +9,22 @@ namespace RetlangTests
     [TestFixture]
     public class PerfTests: ICommandExecutor
     {
-        private static IProcessContext CreateContext(ProcessContextFactory factory)
+        private IProcessContext CreateContext(ProcessContextFactory factory)
         {
-            DefaultThreadPool netPool = new DefaultThreadPool();
-            PoolQueue pool = new PoolQueue(netPool, new DefaultCommandExecutor());
-            ProcessContext context = new ProcessContext(factory.MessageBus, pool, factory.TransferEnvelopeFactory);
-            return context;
+            return factory.CreateAndStart(this);
         }
+
         [Test]
         [Explicit]
         public void PubSub()
         {
-            int totalMessages = 10000000;
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
             ProcessThreadFactory threadFactory = (ProcessThreadFactory)factory.ThreadFactory;
-            threadFactory.Executor = this;
 
             IProcessContext pubContext = CreateContext(factory);
             IProcessContext receiveContext = CreateContext(factory);
-
+            int totalMessages = 10000000;
+     
             OnMessage<int> received = delegate(IMessageHeader header, int count)
                                           {
                                               if (count == totalMessages)
@@ -54,6 +51,47 @@ namespace RetlangTests
             Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
             Console.WriteLine("Avg Per Second: " + (totalMessages/watch.Elapsed.TotalSeconds));
         }
+
+        [Test]
+        [Explicit]
+        public void PubSubWithPool()
+        {
+            DefaultThreadPool pool = new DefaultThreadPool();
+            PoolQueue busQueue = new PoolQueue(pool, new DefaultCommandExecutor());
+            busQueue.Start();
+            MessageBus bus = new MessageBus(busQueue);
+            bus.AsyncPublish = false;
+            
+            ObjectTransferEnvelopeFactory transfer = new ObjectTransferEnvelopeFactory();
+            IProcessContext pubContext = new ProcessContext(bus, new PoolQueue(pool, new DefaultCommandExecutor()), transfer);
+            pubContext.Start();
+            IProcessContext receiveContext = new ProcessContext(bus, new PoolQueue(pool, new DefaultCommandExecutor()), transfer);
+            receiveContext.Start();
+            int totalMessages = 10000000;
+
+            AutoResetEvent reset = new AutoResetEvent(false);
+            OnMessage<int> received = delegate(IMessageHeader header, int count)
+                                          {
+                                              if (count == totalMessages)
+                                              {
+                                                  reset.Set();
+                                              }
+                                          };
+            TopicEquals selectall = new TopicEquals("string");
+            receiveContext.Subscribe<int>(selectall, received);
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            for (int i = 1; i <= totalMessages; i++)
+            {
+                pubContext.Publish("string", i);
+            }
+            Console.WriteLine("Done publishing.");
+            Assert.IsTrue(reset.WaitOne(45000, false));
+            Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
+            Console.WriteLine("Avg Per Second: " + (totalMessages / watch.Elapsed.TotalSeconds));
+        }
+
 
         public static void Main(string[] args)
         {
