@@ -12,6 +12,7 @@ namespace Retlang
         private ITransferEnvelopeFactory _envelopeFactory = new ObjectTransferEnvelopeFactory();
         private IProcessThreadFactory _threadFactory = new ProcessThreadFactory();
         private IProcessThread _busThread;
+        private IThreadPool _threadPool = new DefaultThreadPool();
 
         public void Start()
         {
@@ -20,6 +21,12 @@ namespace Retlang
                 Init();
             }
             _busThread.Start();
+        }
+
+        public IThreadPool ThreadPool
+        {
+            get { return _threadPool; }
+            set { _threadPool = value; }
         }
 
         public void Init()
@@ -65,6 +72,18 @@ namespace Retlang
         public IProcessContext Create()
         {
             return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(), _envelopeFactory);
+        }
+
+        public IProcessContext CreatePooled(ICommandExecutor executor)
+        {
+            return new ProcessContext(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory); 
+        }
+
+        public IProcessContext CreatePooledAndStart(ICommandExecutor executor)
+        {
+            IProcessContext context = CreatePooled(executor);
+            context.Start();
+            return context;
         }
     }
 }
