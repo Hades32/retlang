@@ -12,6 +12,11 @@ namespace Retlang
             _depth = depth;
         }
 
+        public QueueFullException(string msg)
+            : base(msg)
+        {
+        }
+
         public int Depth
         {
             get { return _depth; }

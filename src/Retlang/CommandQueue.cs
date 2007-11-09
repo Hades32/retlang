@@ -28,7 +28,7 @@ namespace Retlang
 
         private readonly List<Command> _commands = new List<Command>();
 
-        private ICommandExecutor _commandRunner;
+        private ICommandExecutor _commandRunner = new DefaultCommandExecutor();
 
         public ICommandExecutor Executor
         {
@@ -126,17 +126,7 @@ namespace Retlang
             {
                 return false;
             }
-            if (_commandRunner != null)
-            {
-                _commandRunner.ExecuteAll(toExecute);
-            }
-            else
-            {
-                foreach (Command command in toExecute)
-                {
-                    command();
-                }
-            }
+            _commandRunner.ExecuteAll(toExecute);
             return true;
         }
 
