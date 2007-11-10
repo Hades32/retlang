@@ -4,23 +4,9 @@
         <name>Retlang</name>
     </assembly>
     <members>
-        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
+        <member name="T:Retlang.ObjectTransferEnvelope">
             <summary>
-            
-            </summary>
-            <param name="envelope"></param>
-            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
-        </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
-            <summary>
-            received on delivery thread
-            </summary>
-            <param name="header"></param>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
-            <summary>
-            Flushed from process thread
+            Transfer objects between contexts without serialization.
             </summary>
         </member>
         <member name="T:Retlang.ITransferEnvelope">
@@ -44,22 +30,36 @@
             The topic and reply topic of the message.
             </summary>
         </member>
+        <member name="M:Retlang.ObjectTransferEnvelope.#ctor(System.Object,Retlang.IMessageHeader)">
+            <summary>
+            </summary>
+            <param name="obj">data to publish</param>
+            <param name="header">header</param>
+        </member>
         <member name="E:Retlang.IProcessBus.QueueFullEvent">
             <summary>
             Callback from any and all publishing threads. Not Thread Safe.
             Will only happen if the max size of the queue and the max wait times are set.
             </summary>
         </member>
-        <member name="T:Retlang.ObjectTransferEnvelope">
+        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
             <summary>
-            Transfer objects between contexts without serialization.
+            
             </summary>
+            <param name="envelope"></param>
+            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
         </member>
-        <member name="M:Retlang.ObjectTransferEnvelope.#ctor(System.Object,Retlang.IMessageHeader)">
+        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
             <summary>
+            received on delivery thread
             </summary>
-            <param name="obj">data to publish</param>
-            <param name="header">header</param>
+            <param name="header"></param>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
+            <summary>
+            Flushed from process thread
+            </summary>
         </member>
     </members>
 </doc>
