@@ -1,0 +1,13 @@
+
+In general, request reply is not recommended. With asynchronous messaging it is typically better to use purely asynchronous communication. However, there are times when request/reply is the best option.
+
+= Example =
+
+{{{
+IProcessContext context = ... 
+
+IRequestReply<string> req = context.SendRequest<string>("my.topic", "data");
+
+string reply = req.Receive(5000).Message;
+
+}}}
