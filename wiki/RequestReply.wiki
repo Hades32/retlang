@@ -1,4 +1,4 @@
-With asynchronous messaging, request reply should be used sparingly. It is usually better to avoid the blocking nature of request reply and use basic pub/sub instead. For those rare cases when request/reply is require, Retlang supports a simple interface to exchange data.
+With asynchronous messaging, request reply should be used sparingly. It is usually better to avoid the blocking nature of request reply and use basic pub/sub instead. For those rare cases when request/reply is required, Retlang supports a simple interface to exchange data.
 
 === Request ===
 
