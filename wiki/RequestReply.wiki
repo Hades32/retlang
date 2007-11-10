@@ -14,7 +14,7 @@ string reply = req.Receive(5000).Message;
 === Reply ===
 
 {{{
-IProcessContext context = ...
+IProcessContext context2 = ...
 OnMessage<string> onMsg = delegate(IMessageHeader header, string msg) 
 { 
   context2.Publish(header.ReplyTo, "reply to: " + msg); 
