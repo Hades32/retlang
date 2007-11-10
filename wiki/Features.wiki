@@ -12,3 +12,4 @@
   * EventScheduling - Schedule an event for one time execution or on a regular interval.
   * EventBatching
   * Xml, Binary, or In-Memory ProcessTransferStrategies
+  * Process contexts can use dedicated threads or a thread pool
