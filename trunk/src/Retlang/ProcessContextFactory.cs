@@ -8,7 +8,9 @@ namespace Retlang
         IProcessContext Create(ICommandExecutor executor);
 
         IProcessContext CreatePooledAndStart(ICommandExecutor executor);
+        IProcessContext CreatePooledAndStart();
         IProcessContext CreatePooled(ICommandExecutor executor);
+        IProcessContext CreatePooled();
     }
 
     public class ProcessContextFactory : IProcessContextFactory
@@ -96,9 +98,19 @@ namespace Retlang
             return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(executor), _envelopeFactory);
         }
 
+        public IProcessContext CreatePooled()
+        {
+            return CreatePooled(new CommandExecutor());
+        }
+
         public IProcessContext CreatePooled(ICommandExecutor executor)
         {
             return new ProcessContext(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory);
+        }
+
+        public IProcessContext CreatePooledAndStart()
+        {
+            return CreatePooledAndStart(new CommandExecutor());
         }
 
         public IProcessContext CreatePooledAndStart(ICommandExecutor executor)
