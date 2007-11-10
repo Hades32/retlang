@@ -35,5 +35,5 @@ Custom implementations are passed to the process context at creation time. Most 
 
 {{{
 IProcessContextFactory factory = ...
-IProcessContext context = factory.CreatePoole
+IProcessContext context = factory.CreatePooled(new MyCommandExecutor());
 }}}
