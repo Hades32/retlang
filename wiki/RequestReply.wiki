@@ -1,7 +1,6 @@
-
 In general, request reply is not recommended. With asynchronous messaging it is typically better to use purely asynchronous communication. However, there are times when request/reply is the best option.
 
-= Example =
+=== Request ===
 
 {{{
 IProcessContext context = ... 
@@ -9,5 +8,17 @@ IProcessContext context = ...
 IRequestReply<string> req = context.SendRequest<string>("my.topic", "data");
 
 string reply = req.Receive(5000).Message;
+
+}}}
+
+=== Reply ===
+
+{{{
+IProcessContext context = ...
+OnMessage<string> onMsg = delegate(IMessageHeader header, string msg) 
+{ 
+  context2.Publish(header.ReplyTo, "reply to: " + msg); 
+};
+context2.Subscribe(new TopicEquals("my.topic"), onMsg);
 
 }}}
