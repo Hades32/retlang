@@ -78,12 +78,12 @@ namespace Retlang
             _processThread.Join();
         }
 
-        public void Schedule(Command command, int intervalInMs)
+        public void Schedule(Command command, long intervalInMs)
         {
             _processThread.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(Command command, int firstIntervalInMs, int regularIntervalInMs)
+        public void ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
         {
             _processThread.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
