@@ -51,12 +51,12 @@ namespace Retlang
             _queue.Enqueue(command);
         }
 
-        public void Schedule(Command command, int intervalInMs)
+        public void Schedule(Command command, long intervalInMs)
         {
             _scheduler.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(Command command, int firstInMs, int intervalInMs)
+        public void ScheduleOnInterval(Command command, long firstInMs, long intervalInMs)
         {
             _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
         }

@@ -16,12 +16,12 @@ namespace Retlang
     public class PendingCommand : IPendingCommand
     {
         private readonly Command _command;
-        private readonly int _firstIntervalInMs;
-        private readonly int _intervalInMs;
+        private readonly long _firstIntervalInMs;
+        private readonly long _intervalInMs;
 
         private Timer _timer;
 
-        public PendingCommand(Command command, int firstIntervalInMs, int intervalInMs)
+        public PendingCommand(Command command, long firstIntervalInMs, long intervalInMs)
         {
             _command = command;
             _firstIntervalInMs = firstIntervalInMs;
@@ -47,8 +47,8 @@ namespace Retlang
 
     public interface ICommandTimer
     {
-        void Schedule(Command command, int firstIntervalInMs);
-        void ScheduleOnInterval(Command command, int firstIntervalInMs, int regularIntervalInMs);
+        void Schedule(Command command, long firstIntervalInMs);
+        void ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs);
     }
 
     public class CommandTimer : IPendingCommandRegistry, ICommandTimer
@@ -61,7 +61,7 @@ namespace Retlang
             _queue = queue;
         }
 
-        public void Schedule(Command comm, int timeTillEnqueueInMs)
+        public void Schedule(Command comm, long timeTillEnqueueInMs)
         {
             if (timeTillEnqueueInMs <= 0)
             {
@@ -74,7 +74,7 @@ namespace Retlang
             }
         }
 
-        public void ScheduleOnInterval(Command comm, int firstInMs, int intervalInMs)
+        public void ScheduleOnInterval(Command comm, long firstInMs, long intervalInMs)
         {
             PendingCommand pending = new PendingCommand(comm, firstInMs, intervalInMs);
             AddPending(pending);
