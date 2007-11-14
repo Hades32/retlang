@@ -73,14 +73,14 @@ namespace Retlang
             }
         }
 
-        public void Schedule(Command command, long firstIntervalInMs)
+        public ITimerControl Schedule(Command command, long firstIntervalInMs)
         {
-            _timer.Schedule(command, firstIntervalInMs);
+            return _timer.Schedule(command, firstIntervalInMs);
         }
 
-        public void ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
+        public ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
         {
-            _timer.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+            return _timer.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
 
         public void Start()

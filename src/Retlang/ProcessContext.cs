@@ -78,14 +78,14 @@ namespace Retlang
             _processThread.Join();
         }
 
-        public void Schedule(Command command, long intervalInMs)
+        public ITimerControl Schedule(Command command, long intervalInMs)
         {
-            _processThread.Schedule(command, intervalInMs);
+            return _processThread.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
+        public ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
         {
-            _processThread.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
+            return _processThread.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
 
         public void Enqueue(Command command)
