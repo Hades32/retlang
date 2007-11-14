@@ -49,7 +49,7 @@ namespace Retlang
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
 
-        private void ExecuteOnTimerThread(IPendingCommandRegistry registry)
+        public void ExecuteOnTimerThread(IPendingCommandRegistry registry)
         {
             if (_intervalInMs == Timeout.Infinite || _cancelled)
             {
@@ -61,12 +61,15 @@ namespace Retlang
             }
             else
             {
-                _timer.Dispose();
-                _timer = null;
+                if (_timer != null)
+                {
+                    _timer.Dispose();
+                    _timer = null;
+                }
             }
         }
 
-        private void ExecuteOnProcessThread()
+        public void ExecuteOnProcessThread()
         {
             if(!_cancelled)
             {
