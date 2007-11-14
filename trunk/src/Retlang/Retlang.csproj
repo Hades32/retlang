@@ -45,6 +45,7 @@
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="IThreadPool.cs" />
     <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="TimerCommand.cs" />
     <Compile Include="PoolQueue.cs" />
     <Compile Include="ProcessThreadFactory.cs" />
     <Compile Include="QueueFullException.cs" />

@@ -5,93 +5,66 @@ namespace Retlang
 {
     public interface IPendingCommandRegistry
     {
-        void Remove(IPendingCommand pending);
-        void Execute(Command command);
+        void Remove(ITimerControl timer);
+        void EnqueueTask(Command command);
     }
 
-    public interface IPendingCommand
+    public interface ITimerControl
     {
-    }
-
-    public class PendingCommand : IPendingCommand
-    {
-        private readonly Command _command;
-        private readonly long _firstIntervalInMs;
-        private readonly long _intervalInMs;
-
-        private Timer _timer;
-
-        public PendingCommand(Command command, long firstIntervalInMs, long intervalInMs)
-        {
-            _command = command;
-            _firstIntervalInMs = firstIntervalInMs;
-            _intervalInMs = intervalInMs;
-        }
-
-        public void Schedule(IPendingCommandRegistry registry)
-        {
-            Command toExecute = delegate { registry.Execute(_command); };
-
-            if (_intervalInMs == Timeout.Infinite)
-            {
-                toExecute = delegate
-                                {
-                                    registry.Remove(this);
-                                    registry.Execute(_command);
-                                };
-            }
-            TimerCallback timerCallBack = delegate { toExecute(); };
-            _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
-        }
+        void Cancel();
     }
 
     public interface ICommandTimer
     {
-        void Schedule(Command command, long firstIntervalInMs);
-        void ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs);
+        ITimerControl Schedule(Command command, long firstIntervalInMs);
+        ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs);
     }
 
     public class CommandTimer : IPendingCommandRegistry, ICommandTimer
     {
         private readonly ICommandQueue _queue;
-        private readonly List<IPendingCommand> _pending = new List<IPendingCommand>();
+        private readonly List<ITimerControl> _pending = new List<ITimerControl>();
 
         public CommandTimer(ICommandQueue queue)
         {
             _queue = queue;
         }
 
-        public void Schedule(Command comm, long timeTillEnqueueInMs)
+        public ITimerControl Schedule(Command comm, long timeTillEnqueueInMs)
         {
             if (timeTillEnqueueInMs <= 0)
             {
-                _queue.Enqueue(comm);
+                PendingCommand pending = new PendingCommand(comm);
+                _queue.Enqueue(pending.ExecuteCommand);
+                return pending;
             }
             else
             {
-                PendingCommand pending = new PendingCommand(comm, timeTillEnqueueInMs, Timeout.Infinite);
+                TimerCommand pending = new TimerCommand(comm, timeTillEnqueueInMs, Timeout.Infinite);
                 AddPending(pending);
+                return pending;
             }
         }
 
-        public void ScheduleOnInterval(Command comm, long firstInMs, long intervalInMs)
+        public ITimerControl ScheduleOnInterval(Command comm, long firstInMs, long intervalInMs)
         {
-            PendingCommand pending = new PendingCommand(comm, firstInMs, intervalInMs);
+            TimerCommand pending = new TimerCommand(comm, firstInMs, intervalInMs);
             AddPending(pending);
+            return pending;
         }
 
-        public void Remove(IPendingCommand toRemove)
+        public void Remove(ITimerControl toRemove)
         {
             Command removeCommand = delegate { _pending.Remove(toRemove); };
             _queue.Enqueue(removeCommand);
         }
 
-        public void Execute(Command toExecute)
+        public void EnqueueTask(Command toExecute)
         {
             _queue.Enqueue(toExecute);
         }
 
-        private void AddPending(PendingCommand pending)
+        private void AddPending(TimerCommand pending)
         {
             Command addCommand = delegate
                                      {

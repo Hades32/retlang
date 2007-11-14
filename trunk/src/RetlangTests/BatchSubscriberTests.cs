@@ -20,7 +20,7 @@ namespace RetlangTests
 
             BatchSubscriber<object> batch = new BatchSubscriber<object>(callback, context, 0);
 
-            context.Schedule(batch.Flush, 0);
+            Expect.Call(context.Schedule(batch.Flush, 0)).Return(null);
 
             repo.ReplayAll();
 
@@ -40,7 +40,7 @@ namespace RetlangTests
 
             BatchSubscriber<object> batch = new BatchSubscriber<object>(callback, context, 100);
 
-            context.Schedule(batch.Flush, 100);
+            Expect.Call(context.Schedule(batch.Flush, 100)).Return(null);
 
             repo.ReplayAll();
 

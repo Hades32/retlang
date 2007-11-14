@@ -51,14 +51,14 @@ namespace Retlang
             _queue.Enqueue(command);
         }
 
-        public void Schedule(Command command, long intervalInMs)
+        public ITimerControl Schedule(Command command, long intervalInMs)
         {
-            _scheduler.Schedule(command, intervalInMs);
+            return _scheduler.Schedule(command, intervalInMs);
         }
 
-        public void ScheduleOnInterval(Command command, long firstInMs, long intervalInMs)
+        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long intervalInMs)
         {
-            _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
+            return _scheduler.ScheduleOnInterval(command, firstInMs, intervalInMs);
         }
 
         public void Stop()
