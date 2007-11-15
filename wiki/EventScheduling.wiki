@@ -18,7 +18,10 @@ IProcessContext context = ... resolve context
 Command scheduled = delegate{
                               Console.Writeline("Hello");
                             };
-context.Schedule(scheduled, 100);
+ITimerControl timer = context.Schedule(scheduled, 100);
+
+// the control can later be used to cancel if the event has not executed.
+timer.Cancel();
 }}}
 
 === On Interval ===
@@ -28,7 +31,9 @@ IProcessContext context = ... resolve context
 Command scheduled = delegate{
                               Console.Writeline("Hello");
                             };
-context.ScheduleOnInterval(scheduled, 100, 100);
+ITimerControl control = context.ScheduleOnInterval(scheduled, 100, 100);
+// the control can be used to cancel the timer at any time.
+timer.Cancel();
 }}}
 
 === Using System.Threading.Timer ===
