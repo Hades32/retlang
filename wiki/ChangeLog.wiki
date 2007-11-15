@@ -1,3 +1,7 @@
+= 0.2.3.0 =
+  * Change from 'int' to 'long' for event scheduling
+  * Added 'ITimerControl' to allow for canceling scheduled events.
+
 = 0.2.2.0 =
   * Lightweight process contexts using .NET thread pool
 
