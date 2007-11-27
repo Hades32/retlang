@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Retlang;
 using Rhino.Mocks;
@@ -62,6 +63,42 @@ namespace RetlangTests
             Command stopCommand = delegate { context.Stop(); };
             context.Schedule(stopCommand, 0);
 
+            context.Join();
+
+            factory.Stop();
+            factory.Join();
+        }
+
+        [Test]
+        [Explicit]
+        public void FirstEventDeliveryLoop()
+        {
+            for(int i = 0; i < 1000; i++)
+            {
+                FirstEventDelivery();
+            }
+        }
+
+        [Test]
+        public void FirstEventDelivery()
+        {
+            ProcessContextFactory factory = new ProcessContextFactory();
+            factory.Start();
+            IProcessContext context = factory.Create();
+            IProcessContext pubContext = factory.CreateAndStart();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            OnMessage<string> onMsg=delegate { reset.Set(); };
+            context.Subscribe(new TopicEquals("topic"), onMsg);
+            context.Start();
+
+            pubContext.Publish("topic", "msg");
+
+            Assert.IsTrue(reset.WaitOne(30000, false), "Should be reset by first message");
+
+            pubContext.Stop();
+            pubContext.Join();
+
+            context.Stop();
             context.Join();
 
             factory.Stop();
