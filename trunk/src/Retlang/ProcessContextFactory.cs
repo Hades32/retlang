@@ -7,6 +7,12 @@ namespace Retlang
         IProcessContext CreateAndStart(ICommandExecutor executor);
         IProcessContext Create(ICommandExecutor executor);
 
+        IProcessContext CreateAndStart(string threadName);
+        IProcessContext Create(string threadName);
+        IProcessContext CreateAndStart(ICommandExecutor executor, string threadName);
+        IProcessContext Create(ICommandExecutor executor, string threadName);
+
+
         IProcessContext CreatePooledAndStart(ICommandExecutor executor);
         IProcessContext CreatePooledAndStart();
         IProcessContext CreatePooled(ICommandExecutor executor);
@@ -88,14 +94,38 @@ namespace Retlang
 
         public IProcessContext CreateAndStart(ICommandExecutor executor)
         {
-            IProcessContext context = Create(executor);
-            context.Start();
-            return context;
+            return StartThread(Create(executor));
         }
 
         public IProcessContext Create(ICommandExecutor executor)
         {
             return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(executor), _envelopeFactory);
+        }
+
+        public IProcessContext CreateAndStart(string threadName)
+        {
+            return StartThread(Create(threadName));
+        }
+
+        public IProcessContext Create(string threadName)
+        {
+            return Create(new CommandExecutor(), threadName);
+        }
+
+        public IProcessContext CreateAndStart(ICommandExecutor executor, string threadName)
+        {
+            return StartThread(Create(executor, threadName));
+        }
+
+        private IProcessContext StartThread(IProcessContext context)
+        {
+            context.Start();
+            return context;
+        }
+
+        public IProcessContext Create(ICommandExecutor executor, string threadName)
+        {
+            return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(executor, threadName), _envelopeFactory);
         }
 
         public IProcessContext CreatePooled()
@@ -115,9 +145,7 @@ namespace Retlang
 
         public IProcessContext CreatePooledAndStart(ICommandExecutor executor)
         {
-            IProcessContext context = CreatePooled(executor);
-            context.Start();
-            return context;
+            return StartThread(CreatePooled(executor));
         }
     }
 }
