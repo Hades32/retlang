@@ -104,7 +104,7 @@ namespace RetlangTests
             {
                 command();
             }
-            Thread.Sleep(1);
+            Thread.Sleep(0);
         }
     }
 }
