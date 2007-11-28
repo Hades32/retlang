@@ -2,13 +2,16 @@ using System.Threading;
 
 namespace Retlang
 {
-    public interface IProcessQueue : ICommandQueue, ICommandTimer, IThreadController
+    public interface IProcessQueue : ICommandQueue, ICommandTimer
     {
+        void Start();
+        void Stop();
     }
 
     public interface IProcessThread : IProcessQueue
     {
         Thread Thread { get; }
+        void Join();
     }
 
     public class ProcessThread : IProcessThread

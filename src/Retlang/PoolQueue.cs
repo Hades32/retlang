@@ -93,8 +93,5 @@ namespace Retlang
             _started = false;
         }
 
-        public void Join()
-        {
-        }
     }
 }
