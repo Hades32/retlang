@@ -8,7 +8,7 @@ namespace Retlang
     {
         private readonly object _batchLock = new object();
 
-        private readonly IProcessContext _context;
+        private readonly ICommandTimer _context;
         private readonly On<IDictionary<K, IMessageEnvelope<V>>> _target;
         private readonly int _flushIntervalInMs;
         private readonly ResolveKey<K, V> _keyResolver;
@@ -18,7 +18,7 @@ namespace Retlang
         public KeyedBatchSubscriber(
             ResolveKey<K, V> keyResolver,
             On<IDictionary<K, IMessageEnvelope<V>>> target,
-            IProcessContext context, int flushIntervalInMs)
+            ICommandTimer context, int flushIntervalInMs)
         {
             _keyResolver = keyResolver;
             _context = context;

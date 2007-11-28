@@ -6,13 +6,13 @@ namespace Retlang
     {
         private readonly object _batchLock = new object();
 
-        private readonly IProcessContext _context;
+        private readonly ICommandTimer _context;
         private readonly On<IList<IMessageEnvelope<T>>> _target;
         private readonly int _flushIntervalInMs;
 
         private List<IMessageEnvelope<T>> _pending = null;
 
-        public BatchSubscriber(On<IList<IMessageEnvelope<T>>> target, IProcessContext context, int flushIntervalInMs)
+        public BatchSubscriber(On<IList<IMessageEnvelope<T>>> target, ICommandTimer context, int flushIntervalInMs)
         {
             _context = context;
             _target = target;

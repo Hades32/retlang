@@ -13,10 +13,10 @@ namespace Retlang
         IProcessContext Create(ICommandExecutor executor, string threadName);
 
 
-        IProcessContext CreatePooledAndStart(ICommandExecutor executor);
-        IProcessContext CreatePooledAndStart();
-        IProcessContext CreatePooled(ICommandExecutor executor);
-        IProcessContext CreatePooled();
+        IProcessBus CreatePooledAndStart(ICommandExecutor executor);
+        IProcessBus CreatePooledAndStart();
+        IProcessBus CreatePooled(ICommandExecutor executor);
+        IProcessBus CreatePooled();
     }
 
     public class ProcessContextFactory : IProcessContextFactory
@@ -128,24 +128,26 @@ namespace Retlang
             return new ProcessContext(_bus, ThreadFactory.CreateProcessThread(executor, threadName), _envelopeFactory);
         }
 
-        public IProcessContext CreatePooled()
+        public IProcessBus CreatePooled()
         {
             return CreatePooled(new CommandExecutor());
         }
 
-        public IProcessContext CreatePooled(ICommandExecutor executor)
+        public IProcessBus CreatePooled(ICommandExecutor executor)
         {
-            return new ProcessContext(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory);
+            return new ProcessBus(_bus, new PoolQueue(_threadPool, executor), _envelopeFactory);
         }
 
-        public IProcessContext CreatePooledAndStart()
+        public IProcessBus CreatePooledAndStart()
         {
             return CreatePooledAndStart(new CommandExecutor());
         }
 
-        public IProcessContext CreatePooledAndStart(ICommandExecutor executor)
+        public IProcessBus CreatePooledAndStart(ICommandExecutor executor)
         {
-            return StartThread(CreatePooled(executor));
+            IProcessBus bus = CreatePooled(executor);
+            bus.Start();
+            return bus;
         }
     }
 }

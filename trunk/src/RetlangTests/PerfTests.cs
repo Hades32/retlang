@@ -62,10 +62,10 @@ namespace RetlangTests
             bus.AsyncPublish = false;
 
             ObjectTransferEnvelopeFactory transfer = new ObjectTransferEnvelopeFactory();
-            IProcessContext pubContext = new ProcessContext(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
+            IProcessBus pubContext = new ProcessBus(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
             pubContext.Start();
-            IProcessContext receiveContext =
-                new ProcessContext(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
+            IProcessBus receiveContext =
+                new ProcessBus(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
             receiveContext.Start();
             int totalMessages = 10000000;
 
