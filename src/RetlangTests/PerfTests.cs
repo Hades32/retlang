@@ -19,6 +19,8 @@ namespace RetlangTests
         public void PubSub()
         {
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+            MessageBus bus = factory.MessageBus as MessageBus;
+            bus.AsyncPublish = false;
 
             IProcessContext pubContext = CreateContext(factory);
             IProcessContext receiveContext = CreateContext(factory);
@@ -56,7 +58,7 @@ namespace RetlangTests
         public void PubSubWithPool()
         {
             DefaultThreadPool pool = new DefaultThreadPool();
-            PoolQueue busQueue = new PoolQueue(pool, new CommandExecutor());
+            PoolQueue busQueue = new PoolQueue(pool, this);
             busQueue.Start();
             MessageBus bus = new MessageBus(busQueue);
             bus.AsyncPublish = false;
@@ -65,7 +67,7 @@ namespace RetlangTests
             IProcessBus pubContext = new ProcessBus(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
             pubContext.Start();
             IProcessBus receiveContext =
-                new ProcessBus(bus, new PoolQueue(pool, new CommandExecutor()), transfer);
+                new ProcessBus(bus, new PoolQueue(pool, this), transfer);
             receiveContext.Start();
             int totalMessages = 10000000;
 
@@ -98,13 +100,23 @@ namespace RetlangTests
             new PerfTests().PubSub();
         }
 
+        private int count = 0;
+        private int commandCount = 0;
         public void ExecuteAll(Command[] toExecute)
         {
+            count++;
             foreach (Command command in toExecute)
             {
                 command();
+                commandCount++;
             }
-            Thread.Sleep(0);
+            if(count % 1000 == 0)
+            {
+                Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " + (commandCount/(double)count));
+                count = 0;
+                commandCount = 0;
+            }
+            Thread.Sleep(1);
         }
     }
 }
