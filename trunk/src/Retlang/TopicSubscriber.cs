@@ -16,11 +16,13 @@ namespace Retlang
     {
         private readonly ITopicMatcher _topic;
         private readonly OnMessage<T> _onMessage;
+        private readonly Type _type;
 
         public TopicSubscriber(ITopicMatcher topic, OnMessage<T> onMessage)
         {
             _topic = topic;
             _onMessage = onMessage;
+            _type = typeof (T);
         }
 
         public ITopicMatcher Topic
@@ -30,7 +32,7 @@ namespace Retlang
 
         public Type MessageType
         {
-            get { return typeof (T); }
+            get { return _type; }
         }
 
         public void Receive(ITransferEnvelope envelope, ref bool consumed)
