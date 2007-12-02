@@ -33,14 +33,15 @@ namespace RetlangTests
                                                   receiveContext.Stop();
                                               }
                                           };
-            TopicEquals selectall = new TopicEquals("string");
+            object topic = new object();
+            TopicEquals selectall = new TopicEquals(topic);
             receiveContext.Subscribe<int>(selectall, received);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
             for (int i = 1; i <= totalMessages; i++)
             {
-                pubContext.Publish("string", i);
+                pubContext.Publish(topic, i);
             }
             Console.WriteLine("Done publishing.");
             receiveContext.Join();
@@ -79,14 +80,15 @@ namespace RetlangTests
                                                   reset.Set();
                                               }
                                           };
-            TopicEquals selectall = new TopicEquals("string");
+            object topic = new object();
+            TopicEquals selectall = new TopicEquals(topic);
             receiveContext.Subscribe<int>(selectall, received);
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
             for (int i = 1; i <= totalMessages; i++)
             {
-                pubContext.Publish("string", i);
+                pubContext.Publish(topic, i);
             }
             Console.WriteLine("Done publishing.");
             Assert.IsTrue(reset.WaitOne(45000, false));
