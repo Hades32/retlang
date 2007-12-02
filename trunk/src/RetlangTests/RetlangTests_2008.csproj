@@ -74,6 +74,7 @@
     <Compile Include="SubscriberRegistryTests.cs" />
     <Compile Include="TimerCommandTests.cs" />
     <Compile Include="TopicEqualsTests.cs" />
+    <Compile Include="TopicRegexTests.cs" />
     <Compile Include="TopicSelectorTests.cs" />
     <Compile Include="XmlTransferEnvelopeTests.cs" />
     <Compile Include="KeyedBatchSubscriberTests.cs" />
