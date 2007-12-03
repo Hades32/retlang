@@ -30,6 +30,8 @@ IsMatch<object> selector = delegate(object obj){ return true; }
 TopicSelector<object> topicSelector = new TopicSelector<object>(selector);
 }}}
 
+== TopicRegex ==
+
 = Message Type Matching through assignability =
 Subscriptions are resolved based upon topic matching and the generic type provided in the subscription. Specifically, code similar to the following is used to match message types to subscription types. 
 {{{
