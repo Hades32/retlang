@@ -1,4 +1,4 @@
-= 0.2.5.0 -
+= 0.2.5.0 =
   * Added TopicRegex class for regular expression based subscriptions
   * Slight performance improvement on message delivery.
 
