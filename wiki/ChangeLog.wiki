@@ -1,3 +1,7 @@
+= 0.2.5.0 -
+  * Added TopicRegex class for regular expression based subscriptions
+  * Slight performance improvement on message delivery.
+
 = 0.2.4.0 =
   * Split IProcessContext and IProcessBus for thread backed and pooled contexts
   * Added Join with wait time for context
