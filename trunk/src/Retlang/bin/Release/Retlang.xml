@@ -4,6 +4,27 @@
         <name>Retlang</name>
     </assembly>
     <members>
+        <member name="T:Retlang.ITransferEnvelope">
+            <summary>
+            Packages a message for transfer between contexts.
+            </summary>
+        </member>
+        <member name="M:Retlang.ITransferEnvelope.ResolveMessage">
+            <summary>
+            Called when the message is delivered to an individual subscriber.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Retlang.ITransferEnvelope.MessageType">
+            <summary>
+            The type of the message contained in the envelope.
+            </summary>
+        </member>
+        <member name="P:Retlang.ITransferEnvelope.Header">
+            <summary>
+            The topic and reply topic of the message.
+            </summary>
+        </member>
         <member name="E:Retlang.IProcessBus.QueueFullEvent">
             <summary>
             Callback from any and all publishing threads. Not Thread Safe.
@@ -27,27 +48,6 @@
         <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
             <summary>
             Flushed from process thread
-            </summary>
-        </member>
-        <member name="T:Retlang.ITransferEnvelope">
-            <summary>
-            Packages a message for transfer between contexts.
-            </summary>
-        </member>
-        <member name="M:Retlang.ITransferEnvelope.ResolveMessage">
-            <summary>
-            Called when the message is delivered to an individual subscriber.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.ITransferEnvelope.MessageType">
-            <summary>
-            The type of the message contained in the envelope.
-            </summary>
-        </member>
-        <member name="P:Retlang.ITransferEnvelope.Header">
-            <summary>
-            The topic and reply topic of the message.
             </summary>
         </member>
         <member name="T:Retlang.ObjectTransferEnvelope">
