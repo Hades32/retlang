@@ -5,10 +5,11 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RetlangTests</RootNamespace>
     <AssemblyName>RetlangTests</AssemblyName>
+    <StartupObject>RetlangTests.PerfTests</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +54,7 @@
     <Compile Include="SubscriberRegistryTests.cs" />
     <Compile Include="TimerCommandTests.cs" />
     <Compile Include="TopicEqualsTests.cs" />
+    <Compile Include="TopicRegexTests.cs" />
     <Compile Include="TopicSelectorTests.cs" />
     <Compile Include="XmlTransferEnvelopeTests.cs" />
     <Compile Include="KeyedBatchSubscriberTests.cs" />

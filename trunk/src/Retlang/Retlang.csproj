@@ -52,6 +52,7 @@
     <Compile Include="ProcessThreadFactory.cs" />
     <Compile Include="QueueFullException.cs" />
     <Compile Include="SubscriberRegistry.cs" />
+    <Compile Include="TopicRegex.cs" />
     <Compile Include="TopicSelector.cs" />
     <Compile Include="XmlTransferEnvelope.cs" />
     <Compile Include="ITransferEnvelope.cs" />
