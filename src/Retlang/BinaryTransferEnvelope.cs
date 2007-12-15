@@ -37,6 +37,11 @@ namespace Retlang
             get { return _messageType; }
         }
 
+        public bool CanCastTo<T>()
+        {
+            return MessageType.IsAssignableFrom(typeof(T));
+        }
+
         public object ResolveMessage()
         {
             using (MemoryStream stream = new MemoryStream(_msg))

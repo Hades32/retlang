@@ -21,6 +21,11 @@ namespace Retlang
             _msg = ConvertToBytes(msg, _messageType);
         }
 
+        public bool CanCastTo<T>()
+        {
+            return MessageType.IsAssignableFrom(typeof(T));
+        }
+
         private byte[] ConvertToBytes(object obj, Type typ)
         {
             using (MemoryStream stream = new MemoryStream())

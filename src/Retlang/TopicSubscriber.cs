@@ -39,7 +39,7 @@ namespace Retlang
         {
             if (_topic.Matches(envelope.Header.Topic))
             {
-                if (MessageType.IsAssignableFrom(envelope.MessageType))
+                if (envelope.CanCastTo<T>())
                 {
                     T typedMsg = (T) envelope.ResolveMessage();
                     _onMessage(envelope.Header, typedMsg);
