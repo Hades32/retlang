@@ -29,6 +29,11 @@ namespace Retlang
             get { return _obj.GetType(); }
         }
 
+        public bool CanCastTo<T>()
+        {
+            return _obj is T;
+        }
+
         public object ResolveMessage()
         {
             return _obj;

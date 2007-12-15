@@ -22,5 +22,7 @@ namespace Retlang
         /// </summary>
         /// <returns></returns>
         object ResolveMessage();
+
+        bool CanCastTo<T>();
     }
 }
