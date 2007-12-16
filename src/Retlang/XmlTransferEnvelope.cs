@@ -23,7 +23,7 @@ namespace Retlang
 
         public bool CanCastTo<T>()
         {
-            return MessageType.IsAssignableFrom(typeof(T));
+            return typeof(T).IsAssignableFrom(MessageType);   
         }
 
         private byte[] ConvertToBytes(object obj, Type typ)
