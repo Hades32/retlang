@@ -39,7 +39,7 @@ namespace Retlang
 
         public bool CanCastTo<T>()
         {
-            return MessageType.IsAssignableFrom(typeof(T));
+            return typeof(T).IsAssignableFrom(MessageType);
         }
 
         public object ResolveMessage()

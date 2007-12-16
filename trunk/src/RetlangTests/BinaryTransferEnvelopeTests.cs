@@ -14,6 +14,10 @@ namespace RetlangTests
             Assert.AreEqual(1, env.ResolveMessage());
             Assert.AreEqual(55, env.Header.Topic);
             Assert.AreEqual(66, env.Header.ReplyTo);
+            Assert.IsFalse(env.CanCastTo<string>());
+            Assert.IsTrue(env.CanCastTo<int>());
+            Assert.IsTrue(env.CanCastTo<object>());
+            
         }
     }
 }
