@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Retlang
 {
@@ -92,6 +93,10 @@ namespace Retlang
 
         public void Start()
         {
+            if(_started == ExecutionState.Running)
+            {
+                throw new ThreadStateException("Already Started");
+            }
             _started = ExecutionState.Running;
             //flush any pending events in queue
             Enqueue(delegate { });
