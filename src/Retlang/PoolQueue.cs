@@ -2,6 +2,11 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
+    public enum ExecutionState
+    {
+        Created, Running, Stopped
+    }
+
     public class PoolQueue : IProcessQueue
     {
         private bool _flushPending = false;
@@ -9,7 +14,7 @@ namespace Retlang
         private readonly List<Command> _queue = new List<Command>();
         private readonly IThreadPool _pool;
         private readonly CommandTimer _timer;
-        private bool _started;
+        private ExecutionState _started = ExecutionState.Created;
         private readonly ICommandExecutor _executor;
 
         public PoolQueue(IThreadPool pool, ICommandExecutor executor)
@@ -21,7 +26,7 @@ namespace Retlang
 
         public void Enqueue(Command command)
         {
-            if (!_started)
+            if (_started == ExecutionState.Stopped)
             {
                 return;
             }
@@ -85,12 +90,14 @@ namespace Retlang
 
         public void Start()
         {
-            _started = true;
+            _started = ExecutionState.Running;
+            //flush any pending events in queue
+            Enqueue(delegate {});
         }
 
         public void Stop()
         {
-            _started = false;
+            _started = ExecutionState.Stopped;
         }
 
     }
