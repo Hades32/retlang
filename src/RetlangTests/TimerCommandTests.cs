@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using Retlang;
@@ -8,11 +5,9 @@ using Rhino.Mocks;
 
 namespace RetlangTests
 {
-
     [TestFixture]
     public class TimerCommandTests
     {
-
         [Test]
         public void Cancel()
         {
@@ -25,7 +20,6 @@ namespace RetlangTests
             timer.ExecuteOnProcessThread();
 
             Assert.AreEqual(1, executionCount);
-
         }
 
         [Test]
@@ -39,7 +33,7 @@ namespace RetlangTests
             registry.EnqueueTask(timer.ExecuteOnProcessThread);
 
             mocks.ReplayAll();
-            
+
             timer.ExecuteOnTimerThread(registry);
         }
 
@@ -50,7 +44,7 @@ namespace RetlangTests
             Command command = mocks.CreateMock<Command>();
             TimerCommand timer = new TimerCommand(command, 2, 3);
             IPendingCommandRegistry registry = mocks.CreateMock<IPendingCommandRegistry>();
-            
+
             registry.Remove(timer);
 
             mocks.ReplayAll();
@@ -73,7 +67,5 @@ namespace RetlangTests
             mocks.ReplayAll();
             timer.ExecuteOnTimerThread(registry);
         }
-
-
     }
 }

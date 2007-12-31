@@ -2,7 +2,7 @@ using System.Threading;
 
 namespace Retlang
 {
-    public class PendingCommand: ITimerControl
+    public class PendingCommand : ITimerControl
     {
         private readonly Command _toExecute;
         private bool _cancelled;
@@ -45,7 +45,7 @@ namespace Retlang
 
         public void Schedule(IPendingCommandRegistry registry)
         {
-            TimerCallback timerCallBack =  delegate { ExecuteOnTimerThread(registry); };
+            TimerCallback timerCallBack = delegate { ExecuteOnTimerThread(registry); };
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
 
@@ -71,7 +71,7 @@ namespace Retlang
 
         public void ExecuteOnProcessThread()
         {
-            if(!_cancelled)
+            if (!_cancelled)
             {
                 _command();
             }

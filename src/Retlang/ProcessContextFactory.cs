@@ -18,10 +18,7 @@ namespace Retlang
         IProcessBus CreatePooled(ICommandExecutor executor);
         IProcessBus CreatePooled();
 
-        IMessageBus MessageBus
-        {
-            get;
-        }
+        IMessageBus MessageBus { get; }
     }
 
     public class ProcessContextFactory : IProcessContextFactory

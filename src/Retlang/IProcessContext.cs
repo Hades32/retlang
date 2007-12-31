@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Retlang
 {
@@ -39,5 +37,4 @@ namespace Retlang
     }
 
     public delegate void OnQueueFull(QueueFullException exception, IMessageHeader header, object msg);
-
 }

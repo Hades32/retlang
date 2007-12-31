@@ -4,7 +4,9 @@ namespace Retlang
 {
     public enum ExecutionState
     {
-        Created, Running, Stopped
+        Created,
+        Running,
+        Stopped
     }
 
     public class PoolQueue : IProcessQueue
@@ -92,13 +94,12 @@ namespace Retlang
         {
             _started = ExecutionState.Running;
             //flush any pending events in queue
-            Enqueue(delegate {});
+            Enqueue(delegate { });
         }
 
         public void Stop()
         {
             _started = ExecutionState.Stopped;
         }
-
     }
 }

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-
     public class ProcessBus : IProcessBus, ISubscriber
     {
         public event OnQueueFull QueueFullEvent;
@@ -42,6 +41,7 @@ namespace Retlang
             _processThread.Stop();
             _bus.Unsubscribe(this);
         }
+
         public ITimerControl Schedule(Command command, long intervalInMs)
         {
             return _processThread.Schedule(command, intervalInMs);

@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-
 namespace Retlang
 {
-
     public class ProcessContext : ProcessBus, IProcessContext
     {
         private readonly IProcessThread _processThread;
