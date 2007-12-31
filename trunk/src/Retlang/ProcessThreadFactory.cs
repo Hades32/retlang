@@ -7,7 +7,6 @@ namespace Retlang
 
         IProcessThread CreateProcessThread(ICommandExecutor executor, string threadName);
         IProcessThread CreateMessageBusThread(ICommandExecutor executor, string threadName);
-
     }
 
     public class ProcessThreadFactory : IProcessThreadFactory

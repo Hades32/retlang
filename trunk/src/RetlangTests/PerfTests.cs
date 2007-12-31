@@ -104,6 +104,7 @@ namespace RetlangTests
 
         private int count = 0;
         private int commandCount = 0;
+
         public void ExecuteAll(Command[] toExecute)
         {
             count++;
@@ -112,9 +113,10 @@ namespace RetlangTests
                 command();
                 commandCount++;
             }
-            if(count % 1000 == 0)
+            if (count%1000 == 0)
             {
-                Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " + (commandCount/(double)count));
+                Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
+                                  (commandCount/(double) count));
                 count = 0;
                 commandCount = 0;
             }

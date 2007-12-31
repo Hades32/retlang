@@ -73,7 +73,7 @@ namespace RetlangTests
         [Explicit]
         public void FirstEventDeliveryLoop()
         {
-            for(int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 FirstEventDelivery();
             }
@@ -87,7 +87,7 @@ namespace RetlangTests
             IProcessContext context = factory.Create();
             IProcessContext pubContext = factory.CreateAndStart();
             AutoResetEvent reset = new AutoResetEvent(false);
-            OnMessage<string> onMsg=delegate { reset.Set(); };
+            OnMessage<string> onMsg = delegate { reset.Set(); };
             context.Subscribe(new TopicEquals("topic"), onMsg);
             context.Start();
 

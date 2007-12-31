@@ -21,8 +21,8 @@ namespace Retlang
         /// </summary>
         public bool IsEnabled
         {
-            get{ return _running;}
-            set{_running = value;}
+            get { return _running; }
+            set { _running = value; }
         }
     }
 }

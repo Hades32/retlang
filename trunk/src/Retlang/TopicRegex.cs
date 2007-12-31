@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Retlang
 {
-    public class TopicRegex: ITopicMatcher
+    public class TopicRegex : ITopicMatcher
     {
         private readonly Regex _regex;
 
@@ -16,7 +14,7 @@ namespace Retlang
         public bool Matches(object topic)
         {
             string topicStr = topic as string;
-            if(topicStr != null)
+            if (topicStr != null)
             {
                 return _regex.IsMatch(topicStr);
             }

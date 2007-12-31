@@ -8,7 +8,7 @@ namespace RetlangTests
     {
         private IProcessContextFactory _contextFactory;
         public abstract IProcessBus CreateBus(IProcessContextFactory factory);
-        
+
 
         private IProcessBus _bus;
 
@@ -23,7 +23,7 @@ namespace RetlangTests
         [TearDown]
         public void TearDown()
         {
-            if(_bus != null)
+            if (_bus != null)
             {
                 _bus.Stop();
             }
@@ -36,21 +36,17 @@ namespace RetlangTests
         {
             ManualResetEvent reset = new ManualResetEvent(false);
 
-            Command onReset = delegate
-                                  {
-                                      reset.Set();
-                                  };
+            Command onReset = delegate { reset.Set(); };
             _bus.Schedule(onReset, 1);
             _bus.Start();
 
             Assert.IsTrue(reset.WaitOne(5000, false));
         }
-
     }
 
 
     [TestFixture]
-    public class ThreadedContextTests: SubstitutabilityBaseTest
+    public class ThreadedContextTests : SubstitutabilityBaseTest
     {
         public override IProcessBus CreateBus(IProcessContextFactory factory)
         {

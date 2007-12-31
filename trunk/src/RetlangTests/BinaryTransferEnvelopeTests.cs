@@ -17,7 +17,6 @@ namespace RetlangTests
             Assert.IsFalse(env.CanCastTo<string>());
             Assert.IsTrue(env.CanCastTo<int>());
             Assert.IsTrue(env.CanCastTo<object>());
-            
         }
     }
 }
