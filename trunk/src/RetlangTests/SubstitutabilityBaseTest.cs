@@ -42,6 +42,20 @@ namespace RetlangTests
 
             Assert.IsTrue(reset.WaitOne(5000, false));
         }
+
+        [Test]
+        public void DoubleStartResultsInException()
+        {
+            _bus.Start();
+            try
+            {
+                _bus.Start();
+                Assert.Fail("Should not Start");
+            }catch(ThreadStateException failed)
+            {
+                
+            }
+        }
     }
 
 

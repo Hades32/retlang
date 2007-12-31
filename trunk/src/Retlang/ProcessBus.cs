@@ -32,8 +32,8 @@ namespace Retlang
 
         public void Start()
         {
-            _bus.Subscribe(this);
             _processThread.Start();
+            _bus.Subscribe(this);
         }
 
         public void Stop()
