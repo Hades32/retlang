@@ -11,7 +11,7 @@ string reply = req.Receive(5000).Message;
 
 }}}
 
-=== Async Request ===
+=== Async Request - Introduced in 0.2.7.0 ===
 An Async request does not block the calling thread. Callbacks are used to handle the reply or timeout.
 {{{
 
