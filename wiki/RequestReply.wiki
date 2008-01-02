@@ -20,7 +20,7 @@ Command onTimeout = delegate{...};
 OnMessage<string> reply = delegate {...};
 
 // will return immediately and not wait for reply
-context.SendAsyncRequest("request", "msg", reply, onTimeout, 100);
+context.SendAsyncRequest("my.topic", "data", reply, onTimeout, 100);
 }}}
 
 === Reply ===
