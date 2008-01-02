@@ -11,6 +11,18 @@ string reply = req.Receive(5000).Message;
 
 }}}
 
+=== Async Request ===
+An Async request does not block the calling thread. Callbacks are used to handle the reply or timeout.
+{{{
+
+//callbacks to be invoked on context thread.
+Command onTimeout = delegate{...};
+OnMessage<string> reply = delegate {...};
+
+// will return immediately and not wait for reply
+context.SendAsyncRequest("request", "msg", reply, onTimeout, 100);
+}}}
+
 === Reply ===
 
 {{{
