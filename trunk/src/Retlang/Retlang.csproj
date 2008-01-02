@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncRequestSubscriber.cs" />
     <Compile Include="BatchSubscriber.cs" />
     <Compile Include="BinaryTransferEnvelope.cs" />
     <Compile Include="CommandQueue.cs" />
