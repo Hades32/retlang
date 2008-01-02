@@ -23,6 +23,7 @@ namespace Retlang
 
         IRequestReply<T> SendRequest<T>(ITransferEnvelope env);
         IRequestReply<T> SendRequest<T>(object topic, object msg);
+        void SendAsyncRequest<T>(object topic, object msg, OnMessage<T> onReply, Command onTimeout, long requestTimeout);
 
         object CreateUniqueTopic();
 

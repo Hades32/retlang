@@ -149,6 +149,20 @@ namespace Retlang
             return req;
         }
 
+        public void SendAsyncRequest<T>(object topic, object msg, OnMessage<T> onReply, Command onTimeout, long requestTimeout)
+        {
+            AsyncRequestSubscriber<T> sub = new AsyncRequestSubscriber<T>(onReply, onTimeout);
+            object replyTopic = CreateUniqueTopic();
+            IUnsubscriber replySubscriber = Subscribe<T>(new TopicEquals(replyTopic), sub.OnReceive);
+            sub.Unsubscriber = replySubscriber;
+            if (onTimeout != null)
+            {
+                ITimerControl timeoutControl = Schedule(sub.OnTimeout, requestTimeout);
+                sub.TimeoutControl = timeoutControl;
+            }
+            Publish(topic, msg, replyTopic);
+        }
+
 
         public IRequestReply<T> SendRequest<T>(object topic, object msg)
         {
