@@ -1,3 +1,7 @@
+= 0.2.7.0 = 
+  * Added defensive checks for starting context twice
+  * Added Async RequestReply support
+
 = 0.2.6.0 =
   * Another optimization for message delivery
   * First Release Candidate - The library API has stabilized and there are no known bugs.
