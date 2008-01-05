@@ -19,6 +19,8 @@ namespace Retlang
         IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg,
                                           int minBatchIntervalInMs);
 
+        IUnsubscriber SubscribeToLast<T>(ITopicMatcher topic, OnMessage<T> msg, int minBatchIntervalInMs);
+
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
 
         IRequestReply<T> SendRequest<T>(ITransferEnvelope env);

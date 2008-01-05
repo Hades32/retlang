@@ -47,6 +47,7 @@
     <Compile Include="IProcessContext.cs" />
     <Compile Include="IThreadPool.cs" />
     <Compile Include="ITopicMatcher.cs" />
+    <Compile Include="LastSubscriber.cs" />
     <Compile Include="ProcessBus.cs" />
     <Compile Include="TimerCommand.cs" />
     <Compile Include="PoolQueue.cs" />
