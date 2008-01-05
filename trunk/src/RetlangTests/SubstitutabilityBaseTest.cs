@@ -93,6 +93,22 @@ namespace RetlangTests
             Assert.IsTrue(reset.WaitOne(5000, false));
             replyBus.Stop();
         }
+
+        [Test]
+        public void Post()
+        {
+            ManualResetEvent reset = new ManualResetEvent(false);
+            OnMessage<string> onMsg = delegate(IMessageHeader header, string msg)
+                                          {
+                                              reset.Set();
+                                          };
+            _bus.Subscribe(new TopicEquals("topic"), onMsg);
+            _bus.Start();
+            Assert.IsTrue(_bus.Post("topic", "msg", null));
+            Assert.IsTrue(reset.WaitOne(5000, false));
+            _bus.Stop();
+
+        }
     }
 
 

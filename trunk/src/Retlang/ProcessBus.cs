@@ -72,6 +72,12 @@ namespace Retlang
             Publish(topic, msg, null);
         }
 
+        public bool Post(object topic, object msg, object replyToTopic)
+        {
+            ITransferEnvelope env = _envelopeFactory.Create(topic, msg, replyToTopic);
+            return _subscribers.Publish(env);
+        }
+
         public IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
                                                          On<IDictionary<K, IMessageEnvelope<V>>> target,
                                                          int minBatchIntervalInMs)
