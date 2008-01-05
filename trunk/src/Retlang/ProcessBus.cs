@@ -88,6 +88,12 @@ namespace Retlang
             return CreateSubscription<T>(topic, batch.ReceiveMessage);
         }
 
+        public IUnsubscriber SubscribeToLast<T>(ITopicMatcher topic, OnMessage<T> msg, int minBatchIntervalInMs)
+        {
+            LastSubscriber<T> last = new LastSubscriber<T>(msg, this, minBatchIntervalInMs);
+            return CreateSubscription<T>(topic, last.ReceiveMessage);
+        }
+
         public IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg)
         {
             OnMessage<T> asyncReceive = CreateReceiveOnProcessThread(msg);

@@ -49,6 +49,7 @@
     <Compile Include="CommandQueueTests.cs" />
     <Compile Include="Demonstration.cs" />
     <Compile Include="FibonacciDemonstration.cs" />
+    <Compile Include="LastSubscriberTests.cs" />
     <Compile Include="MessageHeaderTests.cs" />
     <Compile Include="PoolQueueTests.cs" />
     <Compile Include="SubscriberRegistryTests.cs" />
