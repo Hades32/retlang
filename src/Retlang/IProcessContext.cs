@@ -12,6 +12,14 @@ namespace Retlang
 
         void Publish(ITransferEnvelope toPublish);
 
+        /// <summary>
+        /// Posts a message to this context only. The message is not broadcast.
+        /// Returns true if a subscriber is found.
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="msg"></param>
+        bool Post(object topic, object msg, object replyToTopic);
+
         IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
                                                   On<IDictionary<K, IMessageEnvelope<V>>> target,
                                                   int minBatchIntervalInMs);
