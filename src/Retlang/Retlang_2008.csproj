@@ -58,11 +58,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncRequestSubscriber.cs" />
     <Compile Include="BatchSubscriber.cs" />
     <Compile Include="BinaryTransferEnvelope.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
+    <Compile Include="LastSubscriber.cs" />
     <Compile Include="ProcessBus.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="IProcessContext.cs" />
