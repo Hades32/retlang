@@ -28,3 +28,17 @@ ResolveKey<object, object> keyResolver = delegate(IMessageHeader header, object 
 context.SubscribeToKeyedBatch<object, object>(topicMatcher, keyResolver, messageCount, 1000);
 
 }}}
+
+= Subscribe To Last =
+
+The SubscribeToLast method batches events over a specified interval and then delivers the last event to the callback.
+
+{{{
+IsMatch<object> selector = delegate { return true; };
+TopicSelector<object> topicMatcher = new TopicSelector<object>(selector);
+OnMessage<object>>> messageCount = delegate(IMessageHeader header, object msg)
+{
+  Console.WriteLine("Last Message : " + msg);
+};
+context.SubscribeToLast<object>(topicMatcher, messageCount, 1000);
+}}}
