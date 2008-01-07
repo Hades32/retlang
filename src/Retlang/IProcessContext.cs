@@ -16,17 +16,24 @@ namespace Retlang
         /// Posts a message to this context only. The message is not broadcast.
         /// Returns true if a subscriber is found.
         /// </summary>
-        /// <param name="topic"></param>
-        /// <param name="msg"></param>
         bool Post(object topic, object msg, object replyToTopic);
 
+        /// <summary>
+        /// A batch subscription that drops duplicates based upon the ResolveKey delegate provided.
+        /// </summary>
         IUnsubscriber SubscribeToKeyedBatch<K, V>(ITopicMatcher topic, ResolveKey<K, V> keyResolver,
                                                   On<IDictionary<K, IMessageEnvelope<V>>> target,
                                                   int minBatchIntervalInMs);
 
+        /// <summary>
+        /// A batch subscription that delivers a list of events to the subscriber.
+        /// </summary>
         IUnsubscriber SubscribeToBatch<T>(ITopicMatcher topic, On<IList<IMessageEnvelope<T>>> msg,
                                           int minBatchIntervalInMs);
 
+        /// <summary>
+        /// Batch subscription that only delivers the last event to the target delegate.
+        /// </summary>
         IUnsubscriber SubscribeToLast<T>(ITopicMatcher topic, OnMessage<T> msg, int minBatchIntervalInMs);
 
         IUnsubscriber Subscribe<T>(ITopicMatcher topic, OnMessage<T> msg);
