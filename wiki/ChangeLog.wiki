@@ -1,4 +1,4 @@
-= 0.2.8.0 (Unreleased) =
+= 0.2.8.0 =
   * Subscribe to last - A subscription for the last event received of the batching interval.
   * Post method to deliver events directory to a process.
 = 0.2.7.0 = 
