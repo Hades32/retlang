@@ -31,7 +31,7 @@ context.SubscribeToKeyedBatch<object, object>(topicMatcher, keyResolver, message
 
 = Subscribe To Last =
 
-The SubscribeToLast method batches events over a specified interval and then delivers the last event to the callback.
+The SubscribeToLast method batches events over a specified interval and then delivers the last event to the callback. During the batching interval, prior events will be dropped. A reference is kept only to the last event received.
 
 {{{
 IsMatch<object> selector = delegate { return true; };
