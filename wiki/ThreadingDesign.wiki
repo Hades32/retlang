@@ -3,8 +3,10 @@
 {{{
 ProcessContextFactory contextFactory = new ProcessContextFactory();
 contextFactory.Start();
+//Create a context with a dedicated thread
 IProcessContext context = contextFactory.CreateAndStart();
-IProcessContext pooledContext = contextFactory.CreatePooledAndStart();
+//Create a context that uses the thread pool
+IProcessBus pooledContext = contextFactory.CreatePooledAndStart();
 }}}
 
 The process context can use an exclusive thread or rely on a thread pool. By default, retlang uses the .NET thread pool for pooled contexts.Due to the sequential nature of the delivery, subscribers should minimize the amount of work done when receiving events so that the process thread can continue to service incoming events.  More contexts can always be created to load balance components across various threads. As long as the contexts are created from the same ProcessContextFactory then all publishers and subscribers will be able to exchange messages across all the threads. Different factories can be used to create exclusive messaging backbones. 
