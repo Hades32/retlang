@@ -1,6 +1,6 @@
 Messages can be broadcast to any subscriber or posted directly to a particular context.
 
-= Multicast Publishing =
+=== Multicast Publishing ===
 
 {{{
 IProcessContext context = ... resolve context
@@ -8,7 +8,7 @@ context.Publish("my.topic", "my.message");
 }}}
 
 
-= Posting Directory to a Context =
+=== Posting Directory to a Context ===
 
 {{{
 IProcessContext context = ... resolve context
