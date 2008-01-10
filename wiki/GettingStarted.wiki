@@ -11,9 +11,9 @@ thread.Start();
 or
 
 {{{
-object lock = new object();
+object lockObject = new object();
 
-lock ( object ) {
+lock ( lockObject ) {
 	// do something locked ...
 }
 }}}
