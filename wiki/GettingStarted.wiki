@@ -14,7 +14,7 @@ or
 object lockObject = new object();
 
 lock ( lockObject ) {
-	// do something locked ...
+	// work with some shared mutable object ...
 }
 }}}
 
