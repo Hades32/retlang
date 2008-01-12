@@ -1,135 +1,177 @@
 Example by OliverGugenheim.
 
+The purpose of this simple example is to show how an application can keep a mutable object safe while collecting data from multiple threads without locking.  The example creates three sources that each publishes a sequence of numbers to a topic and a sink that listens to the topic and adds up all the numbers received.  Once all the sources are exhausted, the threads are all shut down.  Notice that while three threads are publishing numbers the correct total is calculated without using any locking.
+
 {{{
-using System.Threading;
-using NUnit.Framework;
-using Retlang;
+    [TestFixture]
+    public class Demonstration
+    {
+        // This class is a producer or source.  It is given a topic on
+        // construction and will publish a sequence of ints starting 
+        // at one and continuing to the specified limit to that topic.
+        private class NumberSource
+        {
+            // The process (thread) that will run the code.
+            private readonly IProcessContext _processContext;
+            // The topic we wish to publish to.
+            private readonly object _topic;
+            // The highest number this number source will publish.
+            private readonly int _limit;
 
-namespace RetlangTests
-{
+            public NumberSource(IProcessContext processContext, object topic, int limit)
+            {
+                _processContext = processContext;
+                _limit = limit;
+                _topic = topic;
+                // To subscribe to a particular topic we provide a mechanism to 
+                // match the topic as well as a delegate to be invoked when 
+                // a message to be delivered.
+                ITopicMatcher matcher = new TopicEquals(_topic);
+                _processContext.Subscribe<string>(matcher, SubscribeToStart);
+            }
 
-	[TestFixture]
-	public class Demonstration
-	{
-		// This class is a producer or source.  It is given a topic on
-		// construction and will publish a sequence of ints starting 
-		// at one and continuing to the specified limit to that topic.
-		class NumberSource
-		{
-
-			// The process (thread) that will run the code.
-			private readonly IProcessContext _processContext;
-			// The topic we wish to publish to.
-			private readonly object _topic;
-			// The highest number this number source will publish.
-			private readonly int _limit;
-
-			public NumberSource(IProcessContext processContext, object topic, int limit)
-			{
-				_processContext = processContext;
-				_limit = limit;
-				_topic = topic;
-			}
-
-			// This method will send the numbers 1 to limit to the topic.
-			public void SendNumbers()
-			{
-				for (int idx = 1; idx <= _limit; idx++)
-				{
-					_processContext.Publish(_topic, idx);
-				}
-			}
-
-		}
-
-		// This class is a consumer or sink.  It listens for ints to be
-		// published on a specified topic and adds them to its internal sum.
-		class SummationSink
-		{
-			// The process (thread) that will listen for messages.
-			private readonly IProcessContext _processContext;
-		    private readonly AutoResetEvent _completionEvent;
-		    private readonly int _expectedSum;
-		    private int _sum = 0;
-
-			public SummationSink(IProcessContext processContext, object topic, AutoResetEvent completionEvent, int expectedSum)
-			{
-				_processContext = processContext;
-			    _completionEvent = completionEvent;
-			    _expectedSum = expectedSum;
-			    // We create a selector that will allow this class
-				// to subscribe to the topic.
-				TopicSelector<object> topicSelector = new TopicEquals(topic);
-				// The subscription demands a delegate to call upon
-				// receiving a message.
-				_processContext.Subscribe<int>(topicSelector, Add);
-			}
-
-			// Our summation method must implement this signature 
-			// as it functions as a delegate.  The header is 
-			// ignored in this simple example.
-			private void Add(IMessageHeader header, int amount)
-			{
-				_sum += amount;
-                if(_sum == _expectedSum)
+            // The signature of the delegate for the Subscribe method requires
+            // a message header and the type of the message being listened for.
+            private void SubscribeToStart(IMessageHeader header, string message)
+            {
+                if( message.Equals("Start"))
                 {
-                    _completionEvent.Set();
+                    Console.WriteLine("Starting source " + _limit);
+                    SendNumbers();
                 }
-			}
+            }
 
-			public int Sum
-			{
-				get { return _sum; }
-			}
-		}
+            // This method will send the numbers 1 to _limit to the topic and then the string "done"
+            private void SendNumbers()
+            {
+                for (int idx = 1; idx <= _limit; idx++)
+                {
+                    _processContext.Publish(_topic, idx);
+                    // Occasionally a number in the sequence is published to show interleaving.
+                    if (idx % 10 == 0)
+                    {
+                        Console.WriteLine("Source " + _limit + " publishing " + idx);
+                    }
+                }
+                _processContext.Publish(_topic, "Done with source for " + _limit);
+            }
+        }
 
-		[Test]
-		public void TestSummation()
-		{
+        // This class is a consumer or sink.  It listens for ints to be
+        // published on a specified topic and adds them to its internal sum.
+        private class SummationSink
+        {
+            // The process (thread) that will listen for messages.
+            private readonly IProcessContext _processContext;
+            private readonly AutoResetEvent _completionEvent;
+            private readonly int _expectedNumberSources;
+            private int _sum = 0;
+            private int _sourcesSignaledDone;
+            private readonly object _topic;
 
-			// A factory that will create some threads.
-			ProcessContextFactory pcf = new ProcessContextFactory();
-			pcf.Start();
+            public SummationSink(IProcessContext processContext, object topic, AutoResetEvent completionEvent,
+                                 int expectedNumberSources)
+            {
+                _processContext = processContext;
+                _completionEvent = completionEvent;
+                _expectedNumberSources = expectedNumberSources;
+                ITopicMatcher topicSelector = new TopicEquals(topic);
+                _processContext.Subscribe<int>(topicSelector, Add);
+                _processContext.Subscribe<string>(topicSelector, ListenForDone);
+                _topic = topic;
+            }
 
-			// We create three sources, each running on its own thread
-			// all publishing to the same topic.  We variously publish
-			// the numbers 1-100, 1-50 and 1-200.
-			IProcessContext processContextOne = pcf.Create();
-			NumberSource numberSourceOne = new NumberSource(processContextOne, "Summation Channel", 100);
+            // Our summation method must implement this signature 
+            // as it functions as a delegate.  The header is 
+            // ignored in this simple example.
+            private void Add(IMessageHeader header, int amount)
+            {
+                _sum += amount;
+            }
 
-			IProcessContext processContextTwo = pcf.Create();
-			NumberSource numberSourceTwo = new NumberSource(processContextTwo, "Summation Channel", 50);
+            public void SendStartSignal()
+            {
+                _processContext.Publish(_topic, "Start");
+            }
 
-			IProcessContext processContextThree = pcf.Create();
-			NumberSource numberSourceThree = new NumberSource(processContextThree, "Summation Channel", 200);
+            // This method will determine when a source is done sending more numbers.
+            private void ListenForDone(IMessageHeader header, string message)
+            {
+                if( message.StartsWith("Done"))
+                {
+                    Console.WriteLine(message);
+                     _sourcesSignaledDone += 1;
+                }
+                if(_sourcesSignaledDone == _expectedNumberSources)
+                {
+                    Console.WriteLine("All sources exhausted.");
+                    _completionEvent.Set();
+                }    
+            }
 
-			// We create one sink to listen to all the publishing threads.
-			IProcessContext processContextFour = pcf.Create();
-		    int expectedTotal = 26425;
-		    AutoResetEvent completionEvent = new AutoResetEvent(false);
-			SummationSink summationSink = new SummationSink(processContextFour, "Summation Channel", completionEvent, expectedTotal);
+            public int Sum
+            {
+                get { return _sum; }
+            }
+        }
 
-			// Start all the threads.
-			processContextOne.Start();
-			processContextTwo.Start();
-			processContextThree.Start();
-			processContextFour.Start();
+        [Test]
+        public void TestSummation()
+        {
+            // A factory that will create some threads.
+            ProcessContextFactory processContextFactory = new ProcessContextFactory();
+            processContextFactory.Start();
 
-			// send all the sequences from each source
-			numberSourceOne.SendNumbers();
-			numberSourceTwo.SendNumbers();
-			numberSourceThree.SendNumbers();
+            // We create three sources, each running on its own thread
+            // all publishing to the same topic.  We variously publish
+            // the numbers 1-100, 1-50 and 1-200.
+            IProcessContext processContextOne = processContextFactory.Create();
+            new NumberSource(processContextOne, "Summation Channel", 200);
 
-			// Pause to allow all the threads to complete.
-		    completionEvent.WaitOne(10000, false);
+            IProcessContext processContextTwo = processContextFactory.Create();
+            new NumberSource(processContextTwo, "Summation Channel", 50);
 
-			// And assert that the total is correct.
-			Assert.AreEqual(26425, summationSink.Sum);
+            IProcessContext processContextThree = processContextFactory.Create();
+            new NumberSource(processContextThree, "Summation Channel", 100);
 
-			// Notice that despite having three threads all contending to
-			// send messages to one place, our code has no locks and still
-			// preserves a single mutable total correctly.
-		}
-	}
-}
+            // We create one sink to listen to all the publishing threads.
+            IProcessContext processContextFour = processContextFactory.Create();
+            int numberSources = 3;
+            AutoResetEvent completionEvent = new AutoResetEvent(false);
+            SummationSink summationSink = new SummationSink(processContextFour, "Summation Channel", completionEvent, numberSources);
+
+            // Start all the threads.
+            processContextOne.Start();
+            processContextTwo.Start();
+            processContextThree.Start();
+            processContextFour.Start();
+
+            // send all the sequences from each source
+            summationSink.SendStartSignal();
+
+            // Pause to allow all the threads to complete.
+            completionEvent.WaitOne(10000, false);
+
+            Console.WriteLine("The total sum is " + summationSink.Sum);
+
+            // And assert that the total is correct.
+            Assert.AreEqual(26425, summationSink.Sum);
+
+            // Notice that despite having three threads all contending to
+            // send messages to one place, our code has no locks and still
+            // preserves a single mutable total correctly.
+
+            // some clean up is nice for tidiness
+            processContextOne.Stop();
+            processContextOne.Join();
+            processContextTwo.Stop();
+            processContextTwo.Join();
+            processContextThree.Stop();
+            processContextThree.Join();
+            processContextFour.Stop();
+            processContextFour.Join();
+            processContextFactory.Stop();
+            processContextFactory.Join();
+        }
+    }
 }}}
