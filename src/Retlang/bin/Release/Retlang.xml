@@ -25,6 +25,13 @@
             The topic and reply topic of the message.
             </summary>
         </member>
+        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
+            <summary>
+            
+            </summary>
+            <param name="envelope"></param>
+            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
+        </member>
         <member name="M:Retlang.IProcessBus.Post(System.Object,System.Object,System.Object)">
             <summary>
             Posts a message to this context only. The message is not broadcast.
@@ -51,13 +58,6 @@
             Callback from any and all publishing threads. Not Thread Safe.
             Will only happen if the max size of the queue and the max wait times are set.
             </summary>
-        </member>
-        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
-            <summary>
-            
-            </summary>
-            <param name="envelope"></param>
-            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
         </member>
         <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
             <summary>
