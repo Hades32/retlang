@@ -107,7 +107,21 @@ namespace RetlangTests
             Assert.IsTrue(_bus.Post("topic", "msg", null));
             Assert.IsTrue(reset.WaitOne(5000, false));
             _bus.Stop();
+        }
 
+        [Test]
+        public void SchedulingOrder()
+        {
+            _bus.Start();
+            int count = 0;
+            for (int i = 0; i < 20; i++)
+            {
+                int localCount = i;
+                _bus.Schedule(delegate { Assert.AreEqual(localCount, count++); }, 1);
+            }
+            ManualResetEvent reset = new ManualResetEvent(false);
+            _bus.Schedule(delegate {reset.Set();}, 1);
+            Assert.IsTrue(reset.WaitOne(10000, false));
         }
     }
 
