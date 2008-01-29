@@ -1,3 +1,7 @@
+= 0.2.9.0 =
+  * Threads defaulted to background threads
+  * Fixed slight memory leak with event scheduling
+
 = 0.2.8.0 =
   * Subscribe to last - A subscription for the last event received on the batching interval. Contributed by OliverGugenheim.
   * Post method to deliver events directory to a process.
