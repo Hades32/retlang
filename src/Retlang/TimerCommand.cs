@@ -54,18 +54,15 @@ namespace Retlang
             if (_intervalInMs == Timeout.Infinite || _cancelled)
             {
                 registry.Remove(this);
-            }
-            if (!_cancelled)
-            {
-                registry.EnqueueTask(ExecuteOnProcessThread);
-            }
-            else
-            {
                 if (_timer != null)
                 {
                     _timer.Dispose();
                     _timer = null;
                 }
+            }
+            if (!_cancelled)
+            {
+                registry.EnqueueTask(ExecuteOnProcessThread);
             }
         }
 
