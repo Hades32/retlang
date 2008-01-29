@@ -14,6 +14,24 @@ namespace RetlangTests
             return factory.CreateAndStart(this);
         }
 
+        /// <summary>
+        /// Infinite loop to check memory performance with scheduling. 
+        /// </summary>
+        [Test]
+        [Explicit]
+        public void TimerMemoryTest()
+        {
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+
+            IProcessContext pubContext = CreateContext(factory);
+            while(true)
+            {
+                pubContext.Schedule(delegate { }, 1);
+                Thread.Sleep(1);
+            }
+
+        }
+
         [Test]
         [Explicit]
         public void PubSub()
