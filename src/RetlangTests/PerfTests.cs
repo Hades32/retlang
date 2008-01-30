@@ -27,9 +27,42 @@ namespace RetlangTests
             while(true)
             {
                 pubContext.Schedule(delegate { }, 1);
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
             }
 
+        }
+
+        [Test]
+        [Explicit]
+        public void TimerMemoryTestWithTimerThread()
+        {
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+
+            IProcessContext pubContext = CreateContext(factory);
+            using (TimerThread timer = new TimerThread())
+            {
+                timer.Start();
+                while (true)
+                {
+                    timer.Schedule(pubContext, delegate { }, 1);
+                    Thread.Sleep(1);
+                }
+            }
+        }
+
+        [Test]
+        [Explicit]
+        public void TimerTestShortInterval()
+        {
+            ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
+
+            IProcessContext pubContext = CreateContext(factory);
+            using (TimerThread timer = new TimerThread())
+            {
+                timer.Start();
+                timer.ScheduleOnInterval(pubContext, delegate { }, 50, 50);
+                Thread.Sleep(Timeout.Infinite);
+            }
         }
 
         [Test]
@@ -117,11 +150,12 @@ namespace RetlangTests
 
         public static void Main(string[] args)
         {
-            new PerfTests().PubSub();
+            new PerfTests().TimerMemoryTestWithTimerThread();
         }
 
         private int count = 0;
         private int commandCount = 0;
+        private DateTime startTime = DateTime.Now;
 
         public void ExecuteAll(Command[] toExecute)
         {
@@ -135,10 +169,13 @@ namespace RetlangTests
             {
                 Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
                                   (commandCount/(double) count));
+
+                Console.WriteLine("Rate: " + (DateTime.Now - startTime).TotalMilliseconds/ commandCount);
                 count = 0;
                 commandCount = 0;
+                startTime = DateTime.Now;
             }
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
         }
     }
 }
