@@ -88,5 +88,21 @@
             to prevent any pending commands from being executed. 
             </summary>
         </member>
+        <member name="M:Retlang.IPendingEvent.Execute">
+            <summary>
+            Execute this event and optionally schedule another execution.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Retlang.IPendingEvent.Expiration">
+            <summary>
+            Time of expiration for this event
+            </summary>
+        </member>
+        <member name="T:Retlang.TimerThread">
+            <summary>
+            A Thread dedicated to event scheduling.
+            </summary>
+        </member>
     </members>
 </doc>
