@@ -82,12 +82,6 @@
             <param name="obj">data to publish</param>
             <param name="header">header</param>
         </member>
-        <member name="P:Retlang.CommandExecutor.IsEnabled">
-            <summary>
-            When disabled, commands will be ignored by executor. The executor is typically disabled at shutdown
-            to prevent any pending commands from being executed. 
-            </summary>
-        </member>
         <member name="M:Retlang.IPendingEvent.Execute">
             <summary>
             Execute this event and optionally schedule another execution.
@@ -102,6 +96,12 @@
         <member name="T:Retlang.TimerThread">
             <summary>
             A Thread dedicated to event scheduling.
+            </summary>
+        </member>
+        <member name="P:Retlang.CommandExecutor.IsEnabled">
+            <summary>
+            When disabled, commands will be ignored by executor. The executor is typically disabled at shutdown
+            to prevent any pending commands from being executed. 
             </summary>
         </member>
     </members>
