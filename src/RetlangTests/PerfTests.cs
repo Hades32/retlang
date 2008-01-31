@@ -150,7 +150,12 @@ namespace RetlangTests
 
         public static void Main(string[] args)
         {
-            new PerfTests().TimerMemoryTestWithTimerThread();
+            PerfTests tests = new PerfTests();
+            Console.WriteLine("PubSub with Threads");
+            tests.PubSub();
+
+            Console.WriteLine("Pub Sub With Pool");
+            tests.PubSubWithPool();
         }
 
         private int count = 0;
@@ -165,17 +170,16 @@ namespace RetlangTests
                 command();
                 commandCount++;
             }
-            if (count%1000 == 0)
+            if (count%100000 == 0)
             {
                 Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
                                   (commandCount/(double) count));
-
                 Console.WriteLine("Rate: " + (DateTime.Now - startTime).TotalMilliseconds/ commandCount);
                 count = 0;
                 commandCount = 0;
                 startTime = DateTime.Now;
             }
-            //Thread.Sleep(1);
+            Thread.Sleep(1);
         }
     }
 }
