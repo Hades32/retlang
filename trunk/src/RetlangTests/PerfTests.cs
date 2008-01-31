@@ -170,7 +170,7 @@ namespace RetlangTests
                 command();
                 commandCount++;
             }
-            if (commandCount % 10000 == 0)
+            if (commandCount > 500000)
             {
                 Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
                                   (commandCount/(double) count));
