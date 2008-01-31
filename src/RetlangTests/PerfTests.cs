@@ -170,7 +170,7 @@ namespace RetlangTests
                 command();
                 commandCount++;
             }
-            if (count%100000 == 0)
+            if (commandCount % 10000 == 0)
             {
                 Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
                                   (commandCount/(double) count));
