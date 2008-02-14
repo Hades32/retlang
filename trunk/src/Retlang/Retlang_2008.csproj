@@ -75,6 +75,7 @@
     <Compile Include="ProcessThreadFactory.cs" />
     <Compile Include="QueueFullException.cs" />
     <Compile Include="SubscriberRegistry.cs" />
+    <Compile Include="TimerThread.cs" />
     <Compile Include="TopicRegex.cs" />
     <Compile Include="TopicSelector.cs" />
     <Compile Include="XmlTransferEnvelope.cs" />
