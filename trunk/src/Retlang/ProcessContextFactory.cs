@@ -1,6 +1,6 @@
 namespace Retlang
 {
-    public interface IProcessContextFactory : IThreadController
+    public interface IProcessContextFactory : IThreadController, IObjectPublisher
     {
         IProcessContext CreateAndStart();
         IProcessContext Create();
@@ -150,6 +150,16 @@ namespace Retlang
             IProcessBus bus = CreatePooled(executor);
             bus.Start();
             return bus;
+        }
+
+        public void Publish(object topic, object msg, object replyToTopic)
+        {
+            _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));    
+        }
+
+        public void Publish(object topic, object msg)
+        {
+            Publish(topic, msg, null);
         }
     }
 }
