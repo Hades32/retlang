@@ -39,7 +39,18 @@ namespace RetlangTests
                 thread.Schedule(queue, two, 1);
                 Assert.IsTrue(reset.WaitOne(10000, false));
             }
-            
+        }
+
+        [Test]
+        public void TimeTilNext()
+        {
+            using (TimerThread timer = new TimerThread())
+            {
+                timer.Start();
+                TimeSpan result = TimeSpan.Zero;
+                Assert.IsFalse(timer.GetTimeTilNext(ref result));
+                Assert.AreEqual(TimeSpan.Zero, result);
+            }
         }
 
         [Test]
