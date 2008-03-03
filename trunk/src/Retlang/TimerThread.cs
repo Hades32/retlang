@@ -138,11 +138,17 @@ namespace Retlang
         {
             lock (_lock)
             {
-                if (!_pending.ContainsKey(pending.Expiration))
+                List<IPendingEvent> list = null;
+                if (!_pending.TryGetValue(pending.Expiration, out list))
                 {
-                    _pending[pending.Expiration] = new List<IPendingEvent>();
+                    list = new List<IPendingEvent>(2);
+                    _pending[pending.Expiration] = list;
+                    list.Add(pending);
                 }
-                _pending[pending.Expiration].Add(pending);
+                else
+                {
+                    list.Add(pending);
+                }
                 Monitor.Pulse(_lock);
             }
         }
@@ -182,7 +188,10 @@ namespace Retlang
                     }
                     if (_pending.Count > 0)
                     {
-                        TimeSpan timeInTicks = GetTimeTilNext();
+                        TimeSpan timeInTicks = TimeSpan.Zero;
+                        if(GetTimeTilNext(ref timeInTicks, DateTime.Now))
+                        {
+
                         if (timeInTicks != TimeSpan.Zero)
                         {
                             if (timeInTicks.TotalMilliseconds < 1)
@@ -193,6 +202,7 @@ namespace Retlang
                             {
                                 Monitor.Wait(_lock, timeInTicks, false);
                             }
+                        }
                         }
                     }
                     else
@@ -231,21 +241,21 @@ namespace Retlang
             }
         }
 
-        private TimeSpan GetTimeTilNext()
+        public bool GetTimeTilNext(ref TimeSpan time, DateTime now)
         {
             if (_pending.Count > 0)
             {
                 foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in _pending)
                 {
-                    DateTime now = DateTime.Now;
                     if(now >= pair.Key)
                     {
-                        return TimeSpan.Zero;
+                        return false;
                     }
-                    return (pair.Key - now);
+                    time = (pair.Key - now);
+                    return true;
                 }
             }
-            return TimeSpan.Zero;
+            return false;
         }
 
         public void Stop()
