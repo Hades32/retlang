@@ -48,7 +48,7 @@ namespace RetlangTests
             {
                 timer.Start();
                 TimeSpan result = TimeSpan.Zero;
-                Assert.IsFalse(timer.GetTimeTilNext(ref result));
+                Assert.IsFalse(timer.GetTimeTilNext(ref result, DateTime.Now));
                 Assert.AreEqual(TimeSpan.Zero, result);
             }
         }
