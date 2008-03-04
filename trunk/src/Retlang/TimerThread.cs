@@ -143,12 +143,8 @@ namespace Retlang
                 {
                     list = new List<IPendingEvent>(2);
                     _pending[pending.Expiration] = list;
-                    list.Add(pending);
                 }
-                else
-                {
-                    list.Add(pending);
-                }
+                list.Add(pending);
                 Monitor.Pulse(_lock);
             }
         }
