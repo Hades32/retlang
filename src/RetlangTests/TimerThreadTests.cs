@@ -8,7 +8,6 @@ namespace RetlangTests
     [TestFixture]
     public class TimerThreadTests
     {
-
         [Test]
         public void Schedule()
         {
@@ -42,7 +41,7 @@ namespace RetlangTests
         }
 
         [Test]
-        public void TimeTilNext()
+        public void TimeTilNextNothingQueued()
         {
             using (TimerThread timer = new TimerThread())
             {
@@ -50,6 +49,27 @@ namespace RetlangTests
                 TimeSpan result = TimeSpan.Zero;
                 Assert.IsFalse(timer.GetTimeTilNext(ref result, DateTime.Now));
                 Assert.AreEqual(TimeSpan.Zero, result);
+            }
+        }
+
+        [Test]
+        public void TimeTilNext()
+        {
+            SynchronousCommandQueue queue = new SynchronousCommandQueue();
+            queue.Run();
+            Command command = delegate{ Assert.Fail("Should not execute");};
+            using (TimerThread timer = new TimerThread())
+            {
+                DateTime now = DateTime.Now;
+                TimeSpan span = TimeSpan.Zero;
+                timer.QueueEvent(new SingleEvent(queue, command, 500, now));
+                Assert.IsTrue(timer.GetTimeTilNext(ref span, now));
+                Assert.AreEqual(500, span.TotalMilliseconds);
+                Assert.IsTrue(timer.GetTimeTilNext(ref span, now.AddMilliseconds(499)));
+                Assert.AreEqual(1, span.TotalMilliseconds);
+                Assert.IsFalse(timer.GetTimeTilNext(ref span, now.AddMilliseconds(500)));
+                Assert.AreEqual(0, span.TotalMilliseconds);
+  
             }
         }
 
