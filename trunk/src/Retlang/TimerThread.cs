@@ -18,16 +18,16 @@ namespace Retlang
         IPendingEvent Execute();
     }
 
-    internal class SingleEvent : IPendingEvent
+    public class SingleEvent : IPendingEvent
     {
         private readonly ICommandQueue _queue;
         private readonly Command _toExecute;
         private readonly DateTime _expiration;
         private bool _canceled;
 
-        public SingleEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs)
+        public SingleEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, DateTime now)
         {
-            _expiration = DateTime.Now.AddMilliseconds(scheduledTimeInMs);
+            _expiration = now.AddMilliseconds(scheduledTimeInMs);
             _queue = queue;
             _toExecute = toExecute;
         }
@@ -121,7 +121,7 @@ namespace Retlang
 
         public ITimerControl Schedule(ICommandQueue targetQueue, Command toExecute, long scheduledTimeInMs)
         {
-            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs);
+            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs, DateTime.Now);
             QueueEvent(pending);
             return pending;
         }
@@ -134,7 +134,7 @@ namespace Retlang
             return pending;
         }
 
-        private void QueueEvent(IPendingEvent pending)
+        public void QueueEvent(IPendingEvent pending)
         {
             lock (_lock)
             {
@@ -243,6 +243,7 @@ namespace Retlang
 
         public bool GetTimeTilNext(ref TimeSpan time, DateTime now)
         {
+            time = TimeSpan.Zero;
             if (_pending.Count > 0)
             {
                 foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in _pending)
