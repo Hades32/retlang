@@ -18,7 +18,7 @@ lock ( lockObject ) {
 }
 }}}
 
-Using the pub/sub paradigm, Retlang can be used to build highly concurrent applications based upon the [http://www.enterpriseintegrationpatterns.com/PipesAndFilters.html Pipes and Filters] design pattern. With this design, a Retlang IProcessBus (or IProcessContext) is created per filter. The Reltang message bus provides the pipe between filters. 
+Using the pub/sub paradigm, Retlang can be used to build highly concurrent applications based upon the [http://www.enterpriseintegrationpatterns.com/PipesAndFilters.html Pipes and Filters] design pattern. With this design, a Retlang IProcessBus (or IProcessContext) is created per filter. The Retlang message bus provides the pipe between filters. 
 
 This is accomplished by dividing your application into pieces that function independently (each on its own thread) and that communicate only by publishing and subscribing to messages.  The Retlang library will assure that the messages are delivered to each subscriber serially and in order.  The primary interface for application developers is the {{{IProcessBus}}}.  You can think of an {{{IProcessBus}}} as a thread. (In fact, one implementation of {{{IProcessBus}}}, the {{{ProcessContext}}}, each has its own backing thread.)  The most important methods for application developers on this interface are {{{Publish}}} and the various {{{Subscribe}}} methods.  To publish a message, your code simply calls the {{{Publish}}} method.  To subscribe to a message you indicate a topic (some key that determines what messages interest you) and a delegate to be executed when a message is received.  As long as two {{{IProcessBus}}}es were created from the same {{{ProcessContextFactory}}}, messages can be delivered between them.
 
