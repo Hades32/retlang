@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
@@ -146,6 +147,62 @@ namespace RetlangTests
             Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + totalMessages);
             Console.WriteLine("Avg Per Second: " + (totalMessages/watch.Elapsed.TotalSeconds));
         }
+
+        [Test]
+        [Explicit]
+        public void Multisubscriber()
+        {
+            int topicCount = 10;
+            int maxCount = 1000000;
+            ProcessContextFactory factory = new ProcessContextFactory();
+            factory.Start();
+            MessageBus bus = (MessageBus)factory.MessageBus;
+            bus.AsyncPublish = false;
+
+            List<object> topics = new List<object>();
+            for(int i = 0; i < topicCount; i++)
+            {
+                topics.Add(new object());
+            }
+
+            List<IProcessContext> contexts = new List<IProcessContext>();
+            List<AutoResetEvent> monitors = new List<AutoResetEvent>();
+            for(int i = 0; i < topicCount; i++)
+            {
+                IProcessContext context = factory.CreateAndStart();
+                AutoResetEvent reset = new AutoResetEvent(false);
+                int contextCount = 0;
+                OnMessage<string> onMessage = delegate
+                                                  {
+                                                      contextCount++;
+                                                      if (maxCount == contextCount)
+                                                      {
+                                                          Console.WriteLine("count: " + contextCount);
+                                                          reset.Set();
+                                                      }
+                                                  };
+                context.Subscribe(new TopicEquals(topics[i]), onMessage);
+                contexts.Add(factory.CreateAndStart());
+                monitors.Add(reset);
+            }
+
+            Stopwatch watch = Stopwatch.StartNew();
+            for(int i = 0; i < topicCount; i++)
+            {
+                object topic = topics[i];
+                 for (int p = 0; p < maxCount; p++)
+                     factory.Publish(topic, "data");
+                
+            }
+            foreach (AutoResetEvent monitor in monitors)
+            {
+                Assert.IsTrue(monitor.WaitOne(30000, false));
+            }
+            Console.WriteLine("Time: " + watch.ElapsedMilliseconds + " count: " + maxCount*topicCount);
+            Console.WriteLine("Avg Per Second: " + (maxCount*topicCount/watch.Elapsed.TotalSeconds));
+            //Console.WriteLine("Avg: " + );
+        }
+
 
 
         public static void Main(string[] args)
