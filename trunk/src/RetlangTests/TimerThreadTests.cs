@@ -46,9 +46,9 @@ namespace RetlangTests
             using (TimerThread timer = new TimerThread())
             {
                 timer.Start();
-                TimeSpan result = TimeSpan.Zero;
-                Assert.IsFalse(timer.GetTimeTilNext(ref result, DateTime.Now));
-                Assert.AreEqual(TimeSpan.Zero, result);
+                long result = 0;
+                Assert.IsFalse(timer.GetTimeTilNext(ref result, 100));
+                Assert.AreEqual(0, result);
             }
         }
 
@@ -60,21 +60,21 @@ namespace RetlangTests
             Command command = delegate{ Assert.Fail("Should not execute");};
             using (TimerThread timer = new TimerThread())
             {
-                DateTime now = DateTime.Now;
-                TimeSpan span = TimeSpan.Zero;
+                long now = 0;
+                long span = 0;
                 timer.QueueEvent(new SingleEvent(queue, command, 500, now));
-                Assert.IsTrue(timer.GetTimeTilNext(ref span, now));
-                Assert.AreEqual(500, span.TotalMilliseconds);
-                Assert.IsTrue(timer.GetTimeTilNext(ref span, now.AddMilliseconds(499)));
-                Assert.AreEqual(1, span.TotalMilliseconds);
-                Assert.IsFalse(timer.GetTimeTilNext(ref span, now.AddMilliseconds(500)));
-                Assert.AreEqual(0, span.TotalMilliseconds);
+                Assert.IsTrue(timer.GetTimeTilNext(ref span, 0));
+                Assert.AreEqual(500, span);
+                Assert.IsTrue(timer.GetTimeTilNext(ref span, 499));
+                Assert.AreEqual(1, span);
+                Assert.IsFalse(timer.GetTimeTilNext(ref span, 500));
+                Assert.AreEqual(0, span);
   
             }
         }
 
         [Test]
-        public void ScheduleOnInterval()
+        public void Schedule1000In1ms()
         {
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             queue.Run();
@@ -84,7 +84,7 @@ namespace RetlangTests
             Command one = delegate
                               {
                                   count++;
-                                  if(count == 10)
+                                  if(count == 1000)
                                   {
                                       reset.Set();
                                   }
@@ -93,8 +93,105 @@ namespace RetlangTests
             using (TimerThread thread = new TimerThread())
             {
                 thread.Start();
-                thread.ScheduleOnInterval(queue, one, 1, 1);
-                Assert.IsTrue(reset.WaitOne(20000, false));
+                for (int i = 0; i < 1000; i++)
+                {
+                    thread.Schedule(queue, one, 1);
+                }
+                Assert.IsTrue(reset.WaitOne(1000, false));
+            }
+
+        }
+
+        [Test]
+        [Explicit]
+        public void WaitForObject()
+        {
+            int count = 0;
+            AutoResetEvent waiter = new AutoResetEvent(false);
+            AutoResetEvent reset = new AutoResetEvent(false);
+            System.Diagnostics.Stopwatch stop = new System.Diagnostics.Stopwatch();
+            stop.Start();
+            WaitOrTimerCallback callback = delegate
+            {
+                if (count < 5000)
+                {
+                    count++;
+                    if (count == 5000)
+                    {
+                        reset.Set();
+                    }
+                    if (count % 100 == 0)
+                    {
+                        Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds + " avg: "
+                            + ((double)stop.ElapsedMilliseconds / (double)count));
+                    }
+                }
+            };
+            RegisteredWaitHandle regHandle = ThreadPool.RegisterWaitForSingleObject(waiter, callback, null, 5, false);
+            Assert.IsTrue(reset.WaitOne(30000, false));
+            regHandle.Unregister(waiter);
+            stop.Stop();
+            Assert.AreEqual(5000, count);
+        }
+
+
+
+        [Test]
+        [Explicit]
+        public void TimerInterval()
+        {
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 1000;
+            timer.AutoReset = true;
+            int count = 0;
+            AutoResetEvent reset = new AutoResetEvent(false);
+            System.Diagnostics.Stopwatch stop = new System.Diagnostics.Stopwatch();
+            stop.Start();
+            timer.Elapsed += delegate
+            {
+                if (count < 5000)
+                {
+                    count++;
+                    if (count == 5000)
+                    {
+                        reset.Set();
+                    }
+                    if (count % 2 == 0)
+                    {
+                        Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds + " avg: " 
+                            + ((double)stop.ElapsedMilliseconds/(double)count));
+                    }
+                }
+            };
+            timer.Start();
+            Assert.IsTrue(reset.WaitOne(30000, false));
+            timer.Stop();
+            stop.Stop();
+            Assert.AreEqual(5000, count);
+        }
+
+        [Test]
+        public void ScheduleOn1MsInterval()
+        {
+            SynchronousCommandQueue queue = new SynchronousCommandQueue();
+            queue.Run();
+
+            int count = 0;
+            AutoResetEvent reset = new AutoResetEvent(false);
+            Command one = delegate
+                              {
+                                  count++;
+                                  if (count == 10)
+                                  {
+                                      reset.Set();
+                                  }
+                              };
+
+            using (TimerThread thread = new TimerThread())
+            {
+                thread.Start();
+                thread.ScheduleOnInterval(queue, one, 100, 100);
+                Assert.IsTrue(reset.WaitOne(1100, false));
             }
 
         }
