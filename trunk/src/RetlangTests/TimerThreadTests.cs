@@ -181,7 +181,7 @@ namespace RetlangTests
             Command one = delegate
                               {
                                   count++;
-                                  if (count == 10)
+                                  if (count == 1000)
                                   {
                                       reset.Set();
                                   }
@@ -190,8 +190,8 @@ namespace RetlangTests
             using (TimerThread thread = new TimerThread())
             {
                 thread.Start();
-                thread.ScheduleOnInterval(queue, one, 100, 100);
-                Assert.IsTrue(reset.WaitOne(1100, false));
+                thread.ScheduleOnInterval(queue, one, 1, 1);
+                Assert.IsTrue(reset.WaitOne(10100, false));
             }
 
         }
