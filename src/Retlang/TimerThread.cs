@@ -108,13 +108,19 @@ namespace Retlang
 
         private readonly Stopwatch _timer = Stopwatch.StartNew();
 
-        private readonly AutoResetEvent _waiter = new AutoResetEvent(false);
-        private RegisteredWaitHandle _cancel = null;
+        private readonly ManualResetEvent _waiter = new ManualResetEvent(false);
+        //private RegisteredWaitHandle _cancel = null;
         private readonly object _lock = new object();
         private bool _running = true;
 
+        public TimerThread()
+        {
+            ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, "Initial", -1, true);
+        }
+
         public void Start()
         {
+         
         }
 
         public ITimerControl Schedule(ICommandQueue targetQueue, Command toExecute, long scheduledTimeInMs)
@@ -137,7 +143,7 @@ namespace Retlang
             lock (_lock)
             {
                 AddPending(pending);
-                OnTimeCheck(null, false);
+                _waiter.Set();
             }
         }
 
@@ -154,28 +160,29 @@ namespace Retlang
 
         private bool SetTimer()
         {
-            if (_cancel != null)
-            {
-                _cancel.Unregister(_waiter);
-            }
             if (_pending.Count > 0)
             {
                 long timeInMs = 0;
                 if (GetTimeTilNext(ref timeInMs, _timer.ElapsedMilliseconds))
                 {
-                    _cancel = ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, null,
+                    _waiter.Reset();
+                    ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, timeInMs,
                         (uint)timeInMs, true);
+                    //Console.WriteLine("Time till next: " + timeInMs);
                     return true;
                 }
                 return false;
             }
             else
             {
+                ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, -1,
+                 -1, true);
+             
                 return true;
             }
         }
 
-        void OnTimeCheck(object sender, bool e)
+        void OnTimeCheck(object sender, bool timeout)
         {
             if (!_running)
                 return;
