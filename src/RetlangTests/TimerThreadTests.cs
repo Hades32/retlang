@@ -95,9 +95,9 @@ namespace RetlangTests
                 thread.Start();
                 for (int i = 0; i < 1000; i++)
                 {
-                    thread.Schedule(queue, one, 1);
+                    thread.Schedule(queue, one, i);
                 }
-                Assert.IsTrue(reset.WaitOne(1000, false));
+                Assert.IsTrue(reset.WaitOne(1200, false));
             }
 
         }
