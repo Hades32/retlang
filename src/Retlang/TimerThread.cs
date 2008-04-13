@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
+using System.Diagnostics;
 
 namespace Retlang
 {
@@ -9,35 +11,35 @@ namespace Retlang
         /// <summary>
         /// Time of expiration for this event
         /// </summary>
-        DateTime Expiration { get; }
+        long Expiration { get; }
 
         /// <summary>
         /// Execute this event and optionally schedule another execution.
         /// </summary>
         /// <returns></returns>
-        IPendingEvent Execute();
+        IPendingEvent Execute(long currentTime);
     }
 
     public class SingleEvent : IPendingEvent
     {
         private readonly ICommandQueue _queue;
         private readonly Command _toExecute;
-        private readonly DateTime _expiration;
+        private readonly long _expiration;
         private bool _canceled;
 
-        public SingleEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, DateTime now)
+        public SingleEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, long now)
         {
-            _expiration = now.AddMilliseconds(scheduledTimeInMs);
+            _expiration = now + scheduledTimeInMs;
             _queue = queue;
             _toExecute = toExecute;
         }
 
-        public DateTime Expiration
+        public long Expiration
         {
             get { return _expiration; }
         }
 
-        public IPendingEvent Execute()
+        public IPendingEvent Execute(long currentTime)
         {
             if (!_canceled)
             {
@@ -57,12 +59,12 @@ namespace Retlang
         private readonly ICommandQueue _queue;
         private readonly Command _toExecute;
         private readonly long _regularInterval;
-        private DateTime _expiration;
+        private long _expiration;
         private bool _canceled;
 
-        public RecurringEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, long regularInterval)
+        public RecurringEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, long regularInterval, long currentTime)
         {
-            _expiration = CalculateExpiration(scheduledTimeInMs);
+            _expiration = currentTime + scheduledTimeInMs;
             _queue = queue;
             _toExecute = toExecute;
             _regularInterval = regularInterval;
@@ -73,17 +75,17 @@ namespace Retlang
             return DateTime.Now.AddMilliseconds(scheduledTimeInMs);
         }
 
-        public DateTime Expiration
+        public long Expiration
         {
             get { return _expiration; }
         }
 
-        public IPendingEvent Execute()
+        public IPendingEvent Execute(long currentTime)
         {
             if (!_canceled)
             {
                 _queue.Enqueue(_toExecute);
-                _expiration = CalculateExpiration(_regularInterval);
+                _expiration = currentTime +_regularInterval;
                 return this;
             }
             return null;
@@ -100,28 +102,24 @@ namespace Retlang
     /// </summary>
     public class TimerThread : IDisposable
     {
-        private readonly SortedList<DateTime, List<IPendingEvent>> _pending =
-            new SortedList<DateTime, List<IPendingEvent>>();
 
-        private readonly Thread _thread;
+        private readonly SortedList<long, List<IPendingEvent>> _pending =
+            new SortedList<long, List<IPendingEvent>>();
+
+        private readonly Stopwatch _timer = Stopwatch.StartNew();
+
+        private readonly AutoResetEvent _waiter = new AutoResetEvent(false);
+        private RegisteredWaitHandle _cancel = null;
         private readonly object _lock = new object();
         private bool _running = true;
 
-        public TimerThread()
-        {
-            _thread = new Thread(RunTimer);
-            _thread.Name = "RetlangTimerThread";
-            _thread.IsBackground = true;
-        }
-
         public void Start()
         {
-            _thread.Start();
         }
 
         public ITimerControl Schedule(ICommandQueue targetQueue, Command toExecute, long scheduledTimeInMs)
         {
-            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs, DateTime.Now);
+            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs, _timer.ElapsedMilliseconds);
             QueueEvent(pending);
             return pending;
         }
@@ -129,7 +127,7 @@ namespace Retlang
         public ITimerControl ScheduleOnInterval(ICommandQueue queue, Command toExecute, long scheduledTimeInMs,
                                                 long intervalInMs)
         {
-            RecurringEvent pending = new RecurringEvent(queue, toExecute, scheduledTimeInMs, intervalInMs);
+            RecurringEvent pending = new RecurringEvent(queue, toExecute, scheduledTimeInMs, intervalInMs, _timer.ElapsedMilliseconds);
             QueueEvent(pending);
             return pending;
         }
@@ -138,89 +136,103 @@ namespace Retlang
         {
             lock (_lock)
             {
-                List<IPendingEvent> list = null;
-                if (!_pending.TryGetValue(pending.Expiration, out list))
-                {
-                    list = new List<IPendingEvent>(2);
-                    _pending[pending.Expiration] = list;
-                }
-                list.Add(pending);
-                Monitor.Pulse(_lock);
+                AddPending(pending);
+                OnTimeCheck(null, false);
             }
         }
 
-        private void RunTimer(object state)
+        private void AddPending(IPendingEvent pending)
         {
-            while (_running)
+            List<IPendingEvent> list = null;
+            if (!_pending.TryGetValue(pending.Expiration, out list))
             {
-                SortedList<DateTime, List<IPendingEvent>> expired = RemoveExpired();
-                List<IPendingEvent> rescheduled = null;
-                if (expired.Count > 0)
-                {
-                    foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in expired)
-                    {
-                        foreach (IPendingEvent pendingEvent in pair.Value)
-                        {
-                            IPendingEvent next = pendingEvent.Execute();
-                            if (next != null)
-                            {
-                                if (rescheduled == null)
-                                {
-                                    rescheduled = new List<IPendingEvent>(1);
-                                }
-                                rescheduled.Add(next);
-                            }
-                        }
-                    }
-                }
-                lock (_lock)
-                {
-                    if(rescheduled != null)
-                    {
-                        foreach (IPendingEvent pendingEvent in rescheduled)
-                        {
-                            QueueEvent(pendingEvent);
-                        }
-                    }
-                    if (_pending.Count > 0)
-                    {
-                        TimeSpan timeInTicks = TimeSpan.Zero;
-                        if(GetTimeTilNext(ref timeInTicks, DateTime.Now))
-                        {
+                list = new List<IPendingEvent>(2);
+                _pending[pending.Expiration] = list;
+            }
+            list.Add(pending);
+        }
 
-                        if (timeInTicks != TimeSpan.Zero)
-                        {
-                            if (timeInTicks.TotalMilliseconds < 1)
-                            {
-                                Monitor.Wait(_lock, 1);
-                            }
-                            else
-                            {
-                                Monitor.Wait(_lock, timeInTicks, false);
-                            }
-                        }
-                        }
-                    }
-                    else
-                    {
-                        if (_running)
-                        {
-                            Monitor.Wait(_lock);
-                        }
-                    }
+        private bool SetTimer()
+        {
+            if (_cancel != null)
+            {
+                _cancel.Unregister(_waiter);
+            }
+            if (_pending.Count > 0)
+            {
+                long timeInMs = 0;
+                if (GetTimeTilNext(ref timeInMs, _timer.ElapsedMilliseconds))
+                {
+                    _cancel = ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, null,
+                        (uint)timeInMs, true);
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        void OnTimeCheck(object sender, bool e)
+        {
+            if (!_running)
+                return;
+            lock (_lock)
+            {
+                do
+                {
+                    List<IPendingEvent> rescheduled = ExecuteExpired();
+                    Queue(rescheduled);
+                } while (!SetTimer());
+            }
+        }
+
+        private void Queue(List<IPendingEvent> rescheduled)
+        {
+            if (rescheduled != null)
+            {
+                foreach (IPendingEvent pendingEvent in rescheduled)
+                {
+                    QueueEvent(pendingEvent);
                 }
             }
         }
 
-        private SortedList<DateTime, List<IPendingEvent>> RemoveExpired()
+        private List<IPendingEvent> ExecuteExpired()
+        {
+            SortedList<long, List<IPendingEvent>> expired = RemoveExpired();
+            List<IPendingEvent> rescheduled = null;
+            if (expired.Count > 0)
+            {
+                foreach (KeyValuePair<long, List<IPendingEvent>> pair in expired)
+                {
+                    foreach (IPendingEvent pendingEvent in pair.Value)
+                    {
+                        IPendingEvent next = pendingEvent.Execute(_timer.ElapsedMilliseconds);
+                        if (next != null)
+                        {
+                            if (rescheduled == null)
+                            {
+                                rescheduled = new List<IPendingEvent>(1);
+                            }
+                            rescheduled.Add(next);
+                        }
+                    }
+                }
+            }
+            return rescheduled;
+        }
+
+        private SortedList<long, List<IPendingEvent>> RemoveExpired()
         {
             lock (_lock)
             {
-                SortedList<DateTime, List<IPendingEvent>> expired = new SortedList<DateTime, List<IPendingEvent>>();
-                DateTime now = DateTime.Now;
-                foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in _pending)
+                SortedList<long, List<IPendingEvent>> expired = new SortedList<long, List<IPendingEvent>>();
+                foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
                 {
-                    if (now >= pair.Key)
+                    if (_timer.ElapsedMilliseconds >= pair.Key)
                     {
                         expired.Add(pair.Key, pair.Value);
                     }
@@ -229,7 +241,7 @@ namespace Retlang
                         break;
                     }
                 }
-                foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in expired)
+                foreach (KeyValuePair<long, List<IPendingEvent>> pair in expired)
                 {
                     _pending.Remove(pair.Key);
                 }
@@ -237,12 +249,12 @@ namespace Retlang
             }
         }
 
-        public bool GetTimeTilNext(ref TimeSpan time, DateTime now)
+        public bool GetTimeTilNext(ref long time, long now)
         {
-            time = TimeSpan.Zero;
+            time = 0;
             if (_pending.Count > 0)
             {
-                foreach (KeyValuePair<DateTime, List<IPendingEvent>> pair in _pending)
+                foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
                 {
                     if(now >= pair.Key)
                     {
@@ -257,11 +269,8 @@ namespace Retlang
 
         public void Stop()
         {
-            lock (_lock)
-            {
-                _running = false;
-                Monitor.Pulse(_lock);
-            }
+            _running = false;
+            _timer.Stop();
         }
 
         public void Dispose()
