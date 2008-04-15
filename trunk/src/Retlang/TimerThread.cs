@@ -70,11 +70,6 @@ namespace Retlang
             _regularInterval = regularInterval;
         }
 
-        private static DateTime CalculateExpiration(long scheduledTimeInMs)
-        {
-            return DateTime.Now.AddMilliseconds(scheduledTimeInMs);
-        }
-
         public long Expiration
         {
             get { return _expiration; }
@@ -86,6 +81,7 @@ namespace Retlang
             {
                 _queue.Enqueue(_toExecute);
                 _expiration = currentTime +_regularInterval;
+                //Console.WriteLine(currentTime + " - " + _expiration);
                 return this;
             }
             return null;
@@ -106,17 +102,14 @@ namespace Retlang
         private readonly SortedList<long, List<IPendingEvent>> _pending =
             new SortedList<long, List<IPendingEvent>>();
 
-        private readonly Stopwatch _timer = Stopwatch.StartNew();
+        private static readonly long _freq = Stopwatch.Frequency;
+        private static readonly double MsMultiplier = 1000.00 / _freq;
+        private readonly long _startTimeInTicks = Stopwatch.GetTimestamp();
 
-        private readonly ManualResetEvent _waiter = new ManualResetEvent(false);
+        private ManualResetEvent _waiter;
         //private RegisteredWaitHandle _cancel = null;
         private readonly object _lock = new object();
         private bool _running = true;
-
-        public TimerThread()
-        {
-            ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, "Initial", -1, true);
-        }
 
         public void Start()
         {
@@ -125,7 +118,7 @@ namespace Retlang
 
         public ITimerControl Schedule(ICommandQueue targetQueue, Command toExecute, long scheduledTimeInMs)
         {
-            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs, _timer.ElapsedMilliseconds);
+            SingleEvent pending = new SingleEvent(targetQueue, toExecute, scheduledTimeInMs, ElapsedMs());
             QueueEvent(pending);
             return pending;
         }
@@ -133,9 +126,14 @@ namespace Retlang
         public ITimerControl ScheduleOnInterval(ICommandQueue queue, Command toExecute, long scheduledTimeInMs,
                                                 long intervalInMs)
         {
-            RecurringEvent pending = new RecurringEvent(queue, toExecute, scheduledTimeInMs, intervalInMs, _timer.ElapsedMilliseconds);
+            RecurringEvent pending = new RecurringEvent(queue, toExecute, scheduledTimeInMs, intervalInMs, ElapsedMs());
             QueueEvent(pending);
             return pending;
+        }
+
+        private long ElapsedMs()
+        {
+            return (long)((Stopwatch.GetTimestamp() - _startTimeInTicks)* MsMultiplier);
         }
 
         public void QueueEvent(IPendingEvent pending)
@@ -143,7 +141,15 @@ namespace Retlang
             lock (_lock)
             {
                 AddPending(pending);
-                _waiter.Set();
+                if (_waiter != null)
+                {
+                    _waiter.Set();
+                    _waiter = null;
+                }
+                else
+                {
+                    OnTimeCheck(null, false);
+                }
             }
         }
 
@@ -163,9 +169,9 @@ namespace Retlang
             if (_pending.Count > 0)
             {
                 long timeInMs = 0;
-                if (GetTimeTilNext(ref timeInMs, _timer.ElapsedMilliseconds))
+                if (GetTimeTilNext(ref timeInMs, ElapsedMs()))
                 {
-                    _waiter.Reset();
+                    _waiter = new ManualResetEvent(false);
                     ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, timeInMs,
                         (uint)timeInMs, true);
                     //Console.WriteLine("Time till next: " + timeInMs);
@@ -175,9 +181,6 @@ namespace Retlang
             }
             else
             {
-                ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, -1,
-                 -1, true);
-             
                 return true;
             }
         }
@@ -217,7 +220,7 @@ namespace Retlang
                 {
                     foreach (IPendingEvent pendingEvent in pair.Value)
                     {
-                        IPendingEvent next = pendingEvent.Execute(_timer.ElapsedMilliseconds);
+                        IPendingEvent next = pendingEvent.Execute(ElapsedMs());
                         if (next != null)
                         {
                             if (rescheduled == null)
@@ -239,7 +242,7 @@ namespace Retlang
                 SortedList<long, List<IPendingEvent>> expired = new SortedList<long, List<IPendingEvent>>();
                 foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
                 {
-                    if (_timer.ElapsedMilliseconds >= pair.Key)
+                    if (ElapsedMs() >= pair.Key)
                     {
                         expired.Add(pair.Key, pair.Value);
                     }
@@ -277,7 +280,7 @@ namespace Retlang
         public void Stop()
         {
             _running = false;
-            _timer.Stop();
+ 
         }
 
         public void Dispose()

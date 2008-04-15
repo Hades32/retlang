@@ -71,6 +71,7 @@
     <Compile Include="FibonacciDemonstration.cs" />
     <Compile Include="LastSubscriberTests.cs" />
     <Compile Include="MessageHeaderTests.cs" />
+    <Compile Include="PerfSettings.cs" />
     <Compile Include="PoolQueueTests.cs" />
     <Compile Include="SubscriberRegistryTests.cs" />
     <Compile Include="SubstitutabilityBaseTest.cs" />
