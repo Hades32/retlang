@@ -4,11 +4,6 @@
         <name>Retlang</name>
     </assembly>
     <members>
-        <member name="T:Retlang.ObjectTransferEnvelope">
-            <summary>
-            Transfer objects between contexts without serialization.
-            </summary>
-        </member>
         <member name="T:Retlang.ITransferEnvelope">
             <summary>
             Packages a message for transfer between contexts.
@@ -30,11 +25,12 @@
             The topic and reply topic of the message.
             </summary>
         </member>
-        <member name="M:Retlang.ObjectTransferEnvelope.#ctor(System.Object,Retlang.IMessageHeader)">
+        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
             <summary>
+            
             </summary>
-            <param name="obj">data to publish</param>
-            <param name="header">header</param>
+            <param name="envelope"></param>
+            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
         </member>
         <member name="M:Retlang.IProcessBus.Post(System.Object,System.Object,System.Object)">
             <summary>
@@ -63,6 +59,29 @@
             Will only happen if the max size of the queue and the max wait times are set.
             </summary>
         </member>
+        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
+            <summary>
+            received on delivery thread
+            </summary>
+            <param name="header"></param>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
+            <summary>
+            Flushed from process thread
+            </summary>
+        </member>
+        <member name="T:Retlang.ObjectTransferEnvelope">
+            <summary>
+            Transfer objects between contexts without serialization.
+            </summary>
+        </member>
+        <member name="M:Retlang.ObjectTransferEnvelope.#ctor(System.Object,Retlang.IMessageHeader)">
+            <summary>
+            </summary>
+            <param name="obj">data to publish</param>
+            <param name="header">header</param>
+        </member>
         <member name="M:Retlang.IPendingEvent.Execute(System.Int64)">
             <summary>
             Execute this event and optionally schedule another execution.
@@ -85,21 +104,68 @@
             to prevent any pending commands from being executed. 
             </summary>
         </member>
-        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
+        <member name="T:Retlang.IChannel`1">
             <summary>
-            
+            A channel provides a conduit for messages. It provides methods for publishing and subscribing to messages. 
+            The class is thread safe.
             </summary>
-            <param name="envelope"></param>
-            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
+            <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
+        <member name="M:Retlang.IChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
+            <summary>
+             Subscrive to messages on this channel. The provided action will be invoked via a command on the provided queue.
+            </summary>
+            <param name="queue"></param>
+            <param name="receive"></param>
+            <returns>Unsubscriber object</returns>
+        </member>
+        <member name="M:Retlang.IChannel`1.Publish(`0)">
+            <summary>
+            Publish a message to all subscribers. Returns true if any subscribers are registered.
+            </summary>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.IChannel`1.ClearSubscribers">
+            <summary>
+            Removes all subscribers.
+            </summary>
+        </member>
+        <member name="M:Retlang.IChannel`1.SubscribeToBatch(Retlang.ICommandTimer,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+            <summary>
+            Subscribes to events on the channel in batch form. The events will be batched if the consumer is unable to process the events 
+            faster than the arrival rate.
+            </summary>
+            <param name="queue"></param>
+            <param name="receive"></param>
+            <param name="interval"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.IChannel`1.SubscribeToKeyedBatch``1(Retlang.ICommandTimer,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
+            <summary>
+             Batches events based upon keyed values allowing for duplicates to be dropped. 
+            </summary>
+            <param name="queue"></param>
+            <param name="keyResolver"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <typeparam name="K"></typeparam>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:Retlang.Channel`1">
+            <summary>
+             Default Channel Implementation.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.OnReceive(`1)">
             <summary>
             received on delivery thread
             </summary>
-            <param name="header"></param>
             <param name="msg"></param>
         </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
+        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.Flush">
             <summary>
             Flushed from process thread
             </summary>

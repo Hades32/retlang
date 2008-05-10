@@ -1,3 +1,5 @@
+using System;
+
 namespace Retlang
 {
     public interface IProcessContextFactory : IThreadController, IObjectPublisher
@@ -21,7 +23,7 @@ namespace Retlang
         IMessageBus MessageBus { get; }
     }
 
-    public class ProcessContextFactory : IProcessContextFactory
+    public class ProcessContextFactory : IProcessContextFactory, IDisposable
     {
         private MessageBus _bus;
         private ITransferEnvelopeFactory _envelopeFactory = new ObjectTransferEnvelopeFactory();
@@ -160,6 +162,11 @@ namespace Retlang
         public void Publish(object topic, object msg)
         {
             Publish(topic, msg, null);
+        }
+
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }
