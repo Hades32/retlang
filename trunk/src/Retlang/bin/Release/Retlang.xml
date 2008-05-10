@@ -25,13 +25,6 @@
             The topic and reply topic of the message.
             </summary>
         </member>
-        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
-            <summary>
-            
-            </summary>
-            <param name="envelope"></param>
-            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
-        </member>
         <member name="M:Retlang.IProcessBus.Post(System.Object,System.Object,System.Object)">
             <summary>
             Posts a message to this context only. The message is not broadcast.
@@ -59,17 +52,12 @@
             Will only happen if the max size of the queue and the max wait times are set.
             </summary>
         </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
+        <member name="M:Retlang.ISubscriber.Receive(Retlang.ITransferEnvelope,System.Boolean@)">
             <summary>
-            received on delivery thread
+            
             </summary>
-            <param name="header"></param>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
-            <summary>
-            Flushed from process thread
-            </summary>
+            <param name="envelope"></param>
+            <param name="consumed">set to true ONLY if the subscriber consumes the event. Do NOT set to false since events are invoked using a multicast event</param>
         </member>
         <member name="T:Retlang.ObjectTransferEnvelope">
             <summary>
@@ -81,6 +69,35 @@
             </summary>
             <param name="obj">data to publish</param>
             <param name="header">header</param>
+        </member>
+        <member name="P:Retlang.CommandExecutor.IsEnabled">
+            <summary>
+            When disabled, commands will be ignored by executor. The executor is typically disabled at shutdown
+            to prevent any pending commands from being executed. 
+            </summary>
+        </member>
+        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.OnReceive(`1)">
+            <summary>
+            received on delivery thread
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.Flush">
+            <summary>
+            Flushed from process thread
+            </summary>
+        </member>
+        <member name="M:Retlang.KeyedBatchSubscriber`2.ReceiveMessage(Retlang.IMessageHeader,`1)">
+            <summary>
+            received on delivery thread
+            </summary>
+            <param name="header"></param>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.KeyedBatchSubscriber`2.Flush">
+            <summary>
+            Flushed from process thread
+            </summary>
         </member>
         <member name="M:Retlang.IPendingEvent.Execute(System.Int64)">
             <summary>
@@ -98,12 +115,6 @@
             A Thread dedicated to event scheduling.
             </summary>
         </member>
-        <member name="P:Retlang.CommandExecutor.IsEnabled">
-            <summary>
-            When disabled, commands will be ignored by executor. The executor is typically disabled at shutdown
-            to prevent any pending commands from being executed. 
-            </summary>
-        </member>
         <member name="T:Retlang.IChannel`1">
             <summary>
             A channel provides a conduit for messages. It provides methods for publishing and subscribing to messages. 
@@ -115,7 +126,7 @@
             <summary>
              Subscrive to messages on this channel. The provided action will be invoked via a command on the provided queue.
             </summary>
-            <param name="queue"></param>
+            <param name="queue">the target context to receive the message</param>
             <param name="receive"></param>
             <returns>Unsubscriber object</returns>
         </member>
@@ -136,9 +147,9 @@
             Subscribes to events on the channel in batch form. The events will be batched if the consumer is unable to process the events 
             faster than the arrival rate.
             </summary>
-            <param name="queue"></param>
+            <param name="queue">The target context to execute the action</param>
             <param name="receive"></param>
-            <param name="interval"></param>
+            <param name="intervalInMs">Time in Ms to batch events. If 0 events will be delivered as fast as consumer can process</param>
             <returns></returns>
         </member>
         <member name="M:Retlang.IChannel`1.SubscribeToKeyedBatch``1(Retlang.ICommandTimer,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
@@ -158,17 +169,6 @@
              Default Channel Implementation.
             </summary>
             <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.OnReceive(`1)">
-            <summary>
-            received on delivery thread
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.ChannelKeyedBatchSubscriber`2.Flush">
-            <summary>
-            Flushed from process thread
-            </summary>
         </member>
     </members>
 </doc>

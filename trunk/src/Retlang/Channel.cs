@@ -15,7 +15,7 @@ namespace Retlang
         ///<summary>
         /// Subscrive to messages on this channel. The provided action will be invoked via a command on the provided queue.
         ///</summary>
-        ///<param name="queue"></param>
+        ///<param name="queue">the target context to receive the message</param>
         ///<param name="receive"></param>
         ///<returns>Unsubscriber object</returns>
         IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive);
@@ -35,11 +35,11 @@ namespace Retlang
         /// Subscribes to events on the channel in batch form. The events will be batched if the consumer is unable to process the events 
         /// faster than the arrival rate.
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="queue">The target context to execute the action</param>
         /// <param name="receive"></param>
-        /// <param name="interval"></param>
+        /// <param name="intervalInMs">Time in Ms to batch events. If 0 events will be delivered as fast as consumer can process</param>
         /// <returns></returns>
-        IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int interval);
+        IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs);
 
 
         ///<summary>
@@ -93,9 +93,9 @@ namespace Retlang
             _subscribers = null;
         }
 
-        public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int interval)
+        public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs)
         {
-            ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, interval);
+            ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, intervalInMs);
             _subscribers += batch.OnReceive;
             return new ChannelUnsubscriber<T>(batch.OnReceive, this);
         }
