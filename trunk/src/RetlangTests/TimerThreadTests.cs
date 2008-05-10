@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using NUnit.Framework;
 using Retlang;
@@ -170,9 +171,12 @@ namespace RetlangTests
             Assert.AreEqual(5000, count);
         }
 
-        [Test]
+        [Test,Explicit]
         public void ScheduleOn1MsInterval()
         {
+            TIMECAPS caps = new TIMECAPS();
+            PerfSettings.timeGetDevCaps(ref caps, Marshal.SizeOf(caps));
+            Console.WriteLine(caps.PeriodMin + "-" + caps.PeriodMax);
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             queue.Run();
 
@@ -191,7 +195,7 @@ namespace RetlangTests
             {
                 thread.Start();
                 thread.ScheduleOnInterval(queue, one, 1, 1);
-                Assert.IsTrue(reset.WaitOne(10100, false));
+                Assert.IsTrue(reset.WaitOne(10000, false));
             }
 
         }
