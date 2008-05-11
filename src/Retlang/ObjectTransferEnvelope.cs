@@ -24,21 +24,36 @@ namespace Retlang
             _header = header;
         }
 
+        /// <summary>
+        /// <see cref="ITransferEnvelope.MessageType"/>
+        /// </summary>
         public Type MessageType
         {
             get { return _obj.GetType(); }
         }
 
+        /// <summary>
+        /// <see cref="ITransferEnvelope.CanCastTo()"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public bool CanCastTo<T>()
         {
             return _obj is T;
         }
 
+        /// <summary>
+        /// <see cref="ITransferEnvelope.ResolveMessage()"/>
+        /// </summary>
+        /// <returns></returns>
         public object ResolveMessage()
         {
             return _obj;
         }
 
+        /// <summary>
+        /// <see cref="ITransferEnvelope.Header"/>
+        /// </summary>
         public IMessageHeader Header
         {
             get { return _header; }

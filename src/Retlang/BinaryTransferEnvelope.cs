@@ -4,12 +4,21 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Retlang
 {
-    public class BinaryTransferEnvelope : ITransferEnvelope
+    /// <summary>
+    /// Transfer Envelope that uses object serialization to create defensive copies when passing objects across thread.
+    /// </summary>
+    internal class BinaryTransferEnvelope : ITransferEnvelope
     {
         private readonly Type _messageType;
         private readonly byte[] _msg;
         private readonly IMessageHeader _header;
 
+        /// <summary>
+        /// Construct a new instance. Message is serialized to bytes during construction.
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="msg"></param>
+        /// <param name="replyTo"></param>
         public BinaryTransferEnvelope(object topic, object msg, object replyTo)
         {
             if (msg == null)
@@ -21,7 +30,7 @@ namespace Retlang
             _msg = ConvertToBytes(msg);
         }
 
-        protected byte[] ConvertToBytes(object obj)
+        internal byte[] ConvertToBytes(object obj)
         {
             using (MemoryStream stream = new MemoryStream())
             {

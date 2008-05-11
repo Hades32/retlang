@@ -6,6 +6,10 @@ using System.Diagnostics;
 
 namespace Retlang
 {
+
+    /// <summary>
+    /// A scheduled event.
+    /// </summary>
     public interface IPendingEvent : ITimerControl
     {
         /// <summary>
@@ -20,7 +24,7 @@ namespace Retlang
         IPendingEvent Execute(long currentTime);
     }
 
-    public class SingleEvent : IPendingEvent
+    internal class SingleEvent : IPendingEvent
     {
         private readonly ICommandQueue _queue;
         private readonly Command _toExecute;
@@ -96,7 +100,7 @@ namespace Retlang
     /// <summary>
     /// A Thread dedicated to event scheduling.
     /// </summary>
-    public class TimerThread : IDisposable
+    internal class TimerThread : IDisposable
     {
 
         private readonly SortedList<long, List<IPendingEvent>> _pending =

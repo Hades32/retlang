@@ -10,6 +10,8 @@
     <RootNamespace>RetlangTests</RootNamespace>
     <AssemblyName>RetlangTests</AssemblyName>
     <StartupObject>RetlangTests.PerfTests</StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>RetlangTests.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +79,9 @@
       <Project>{65ABCF4F-88F0-46EF-A6CF-71850019262E}</Project>
       <Name>Retlang</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RetlangTests.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

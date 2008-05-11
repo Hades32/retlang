@@ -8,8 +8,15 @@ namespace Retlang
 
     public delegate void OnException(Command command, Exception failure);
 
+    /// <summary>
+    /// Queue for command objects.
+    /// </summary>
     public interface ICommandQueue
     {
+        /// <summary>
+        /// Append command to end of queue.
+        /// </summary>
+        /// <param name="command"></param>
         void Enqueue(Command command);
     }
 

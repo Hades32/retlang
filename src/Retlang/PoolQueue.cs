@@ -3,13 +3,16 @@ using System.Threading;
 
 namespace Retlang
 {
-    public enum ExecutionState
+    internal enum ExecutionState
     {
         Created,
         Running,
         Stopped
     }
 
+    /// <summary>
+    /// Process Queue that uses a thread pool for execution.
+    /// </summary>
     public class PoolQueue : IProcessQueue
     {
         private bool _flushPending = false;
@@ -20,6 +23,11 @@ namespace Retlang
         private ExecutionState _started = ExecutionState.Created;
         private readonly ICommandExecutor _executor;
 
+        /// <summary>
+        /// Construct new instance.
+        /// </summary>
+        /// <param name="pool"></param>
+        /// <param name="executor"></param>
         public PoolQueue(IThreadPool pool, ICommandExecutor executor)
         {
             _timer = new CommandTimer(this);
@@ -27,6 +35,10 @@ namespace Retlang
             _executor = executor;
         }
 
+        /// <summary>
+        /// <see cref="ICommandQueue.Enqueue(Command)"/>
+        /// </summary>
+        /// <param name="command"></param>
         public void Enqueue(Command command)
         {
             if (_started == ExecutionState.Stopped)
@@ -81,16 +93,32 @@ namespace Retlang
             }
         }
 
+        /// <summary>
+        /// <see cref="ICommandTimer.Schedule(Command,long)"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="firstIntervalInMs"></param>
+        /// <returns></returns>
         public ITimerControl Schedule(Command command, long firstIntervalInMs)
         {
             return _timer.Schedule(command, firstIntervalInMs);
         }
 
+        /// <summary>
+        /// <see cref="ICommandTimer.ScheduleOnInterval(Command,long,long)"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="firstIntervalInMs"></param>
+        /// <param name="regularIntervalInMs"></param>
+        /// <returns></returns>
         public ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs)
         {
             return _timer.ScheduleOnInterval(command, firstIntervalInMs, regularIntervalInMs);
         }
 
+        /// <summary>
+        /// Start consuming events.
+        /// </summary>
         public void Start()
         {
             if(_started == ExecutionState.Running)
@@ -102,6 +130,9 @@ namespace Retlang
             Enqueue(delegate { });
         }
 
+        /// <summary>
+        /// Stop consuming events.
+        /// </summary>
         public void Stop()
         {
             _started = ExecutionState.Stopped;

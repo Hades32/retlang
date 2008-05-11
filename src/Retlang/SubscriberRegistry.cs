@@ -1,8 +1,13 @@
 namespace Retlang
 {
+    /// <summary>
+    /// Delegate for message delivery.
+    /// </summary>
+    /// <param name="envelope"></param>
+    /// <param name="received"></param>
     public delegate void OnReceive(ITransferEnvelope envelope, ref bool received);
 
-    public class SubscriberRegistry : ISubscriberRegistry
+    internal class SubscriberRegistry : ISubscriberRegistry
     {
         private event OnReceive ReceiveEvent;
 

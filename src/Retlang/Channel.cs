@@ -50,7 +50,6 @@ namespace Retlang
         ///<param name="receive"></param>
         ///<param name="intervalInMs"></param>
         ///<typeparam name="K"></typeparam>
-        ///<typeparam name="T"></typeparam>
         ///<returns></returns>
         IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue, 
                                                       Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs);
@@ -65,6 +64,12 @@ namespace Retlang
     {
         private event Action<T> _subscribers;
 
+        /// <summary>
+        /// <see cref="IChannel{T}.Subscribe(ICommandQueue,Action{T})"/>
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="receive"></param>
+        /// <returns></returns>
         public IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive)
         {
             ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
@@ -77,6 +82,11 @@ namespace Retlang
             _subscribers -= toUnsubscribe;
         }
 
+        /// <summary>
+        /// <see cref="IChannel{T}.Publish(T)"/>
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public bool Publish(T msg)
         {
             Action<T> evnt = _subscribers;
@@ -88,11 +98,21 @@ namespace Retlang
             return false;
         }
 
+        /// <summary>
+        /// Remove all subscribers.
+        /// </summary>
         public void ClearSubscribers()
         {
             _subscribers = null;
         }
 
+        /// <summary>
+        /// <see cref="IChannel{T}.SubscribeToBatch(ICommandTimer,Action{IList{T}},int)"/>
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
         public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs)
         {
             ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, intervalInMs);
@@ -100,6 +120,15 @@ namespace Retlang
             return new ChannelUnsubscriber<T>(batch.OnReceive, this);
         }
 
+        /// <summary>
+        /// <see cref="IChannel{T}.SubscribeToKeyedBatch{K}(ICommandTimer,Converter{T,K},Action{IDictionary{K,T}},int)"/>
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <param name="queue"></param>
+        /// <param name="keyResolver"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
         public IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue, 
             Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {

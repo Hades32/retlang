@@ -2,13 +2,23 @@ using System.Threading;
 
 namespace Retlang
 {
+    /// <summary>
+    /// Response to Request.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IReply<T>
     {
+        /// <summary>
+        /// The body of the reply
+        /// </summary>
         T Message { get; }
+        /// <summary>
+        /// Reply Header.
+        /// </summary>
         IMessageHeader Header { get; }
     }
 
-    public class Reply<T> : IReply<T>
+    internal class Reply<T> : IReply<T>
     {
         private readonly IMessageHeader _header;
         private readonly T _message;
@@ -30,12 +40,21 @@ namespace Retlang
         }
     }
 
+    /// <summary>
+    /// Blocking interface for a request.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRequestReply<T>
     {
+        /// <summary>
+        /// Returns immediately if reply has already been received. Blocks waiting for reply or timeout.
+        /// </summary>
+        /// <param name="waitTimeoutInMs"></param>
+        /// <returns></returns>
         IReply<T> Receive(int waitTimeoutInMs);
     }
 
-    public class TopicRequestReply<T> : IRequestReply<T>
+    internal class TopicRequestReply<T> : IRequestReply<T>
     {
         private object _lock = new object();
 
