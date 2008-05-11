@@ -2,8 +2,21 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
+    /// <summary>
+    /// Resolves a message to a key.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    /// <param name="header"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public delegate K ResolveKey<K, V>(IMessageHeader header, V value);
 
+    /// <summary>
+    /// Batches messages and drops duplicates based upon the resolved key.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     public class KeyedBatchSubscriber<K, V>
     {
         private readonly object _batchLock = new object();
@@ -15,6 +28,13 @@ namespace Retlang
 
         private Dictionary<K, IMessageEnvelope<V>> _pending = null;
 
+        /// <summary>
+        /// Constructs new instance.
+        /// </summary>
+        /// <param name="keyResolver"></param>
+        /// <param name="target"></param>
+        /// <param name="context"></param>
+        /// <param name="flushIntervalInMs"></param>
         public KeyedBatchSubscriber(
             ResolveKey<K, V> keyResolver,
             On<IDictionary<K, IMessageEnvelope<V>>> target,

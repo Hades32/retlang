@@ -36,17 +36,25 @@ namespace Retlang
             _onMessage = onMessage;
             _type = typeof (T);
         }
-
+        /// <summary>
+        /// Subscription topic
+        /// </summary>
         public ITopicMatcher Topic
         {
             get { return _topic; }
         }
-
+        /// <summary>
+        /// Expected Type.
+        /// </summary>
         public Type MessageType
         {
             get { return _type; }
         }
-
+        /// <summary>
+        /// Event received on delivery thread.
+        /// </summary>
+        /// <param name="envelope"></param>
+        /// <param name="consumed"></param>
         public void Receive(ITransferEnvelope envelope, ref bool consumed)
         {
             if (_topic.Matches(envelope.Header.Topic))
