@@ -2,7 +2,7 @@ using System.Threading;
 
 namespace Retlang
 {
-    public class PendingCommand : ITimerControl
+    internal class PendingCommand : ITimerControl
     {
         private readonly Command _toExecute;
         private bool _cancelled;
@@ -27,7 +27,7 @@ namespace Retlang
     }
 
 
-    public class TimerCommand : ITimerControl
+    internal class TimerCommand : ITimerControl
     {
         private readonly Command _command;
         private readonly long _firstIntervalInMs;

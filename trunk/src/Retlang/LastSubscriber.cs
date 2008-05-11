@@ -1,5 +1,9 @@
 namespace Retlang
 {
+    /// <summary>
+    /// Subscribes to last event from queue. Old events are discarded.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class LastSubscriber<T>
     {
         private readonly object _lock = new object();
@@ -10,6 +14,12 @@ namespace Retlang
 
         private IMessageEnvelope<T> _pending = null;
 
+        /// <summary>
+        /// New instance.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="context"></param>
+        /// <param name="flushIntervalInMs"></param>
         public LastSubscriber(OnMessage<T> target, ICommandTimer context, int flushIntervalInMs)
         {
             _context = context;
@@ -17,7 +27,11 @@ namespace Retlang
             _flushIntervalInMs = flushIntervalInMs;
         }
 
-        //received from message delivery thread
+        /// <summary>
+        /// Receives message from delivery thread.
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="msg"></param>
         public void ReceiveMessage(IMessageHeader header, T msg)
         {
             lock (_lock)
@@ -30,7 +44,9 @@ namespace Retlang
             }
         }
 
-        //flushed on process context thead
+        /// <summary>
+        /// Flushes on IProcessBus thread.
+        /// </summary>
         public void Flush()
         {
             IMessageEnvelope<T> toReturn = ClearPending();

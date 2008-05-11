@@ -4,8 +4,15 @@ using System.Threading;
 
 namespace Retlang
 {
+    /// <summary>
+    /// Command delegate.
+    /// </summary>
     public delegate void Command();
-
+    /// <summary>
+    /// An exception delegate for a command failure.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="failure"></param>
     public delegate void OnException(Command command, Exception failure);
 
     /// <summary>
@@ -19,13 +26,24 @@ namespace Retlang
         /// <param name="command"></param>
         void Enqueue(Command command);
     }
-
+    /// <summary>
+    /// A runable queue implementation.
+    /// </summary>
     public interface ICommandRunner : ICommandQueue
     {
+        /// <summary>
+        /// Consume events.
+        /// </summary>
         void Run();
+        /// <summary>
+        /// Stop consuming events.
+        /// </summary>
         void Stop();
     }
 
+    /// <summary>
+    /// Default implementation.
+    /// </summary>
     public class CommandQueue : ICommandRunner
     {
         private readonly object _lock = new object();
@@ -37,24 +55,34 @@ namespace Retlang
 
         private ICommandExecutor _commandRunner = new CommandExecutor();
 
+        /// <summary>
+        /// Executor for events.
+        /// </summary>
         public ICommandExecutor Executor
         {
             get { return _commandRunner; }
             set { _commandRunner = value; }
         }
-
+        /// <summary>
+        /// Max number of events to be queued.
+        /// </summary>
         public int MaxDepth
         {
             get { return _maxQueueDepth; }
             set { _maxQueueDepth = value; }
         }
-
+        /// <summary>
+        /// Max time to wait for space in the queue.
+        /// </summary>
         public int MaxEnqueueWaitTime
         {
             get { return _maxEnqueueWaitTime; }
             set { _maxEnqueueWaitTime = value; }
         }
-
+        /// <summary>
+        /// <see cref="ICommandQueue.Enqueue(Command)"/>
+        /// </summary>
+        /// <param name="command"></param>
         public void Enqueue(Command command)
         {
             lock (_lock)
@@ -95,6 +123,10 @@ namespace Retlang
             return true;
         }
 
+        /// <summary>
+        /// Remove all commands.
+        /// </summary>
+        /// <returns></returns>
         public Command[] DequeueAll()
         {
             lock (_lock)
@@ -125,7 +157,10 @@ namespace Retlang
             }
             return true;
         }
-
+        /// <summary>
+        /// Remove all commands and execute.
+        /// </summary>
+        /// <returns></returns>
         public bool ExecuteNextBatch()
         {
             Command[] toExecute = DequeueAll();
@@ -136,7 +171,9 @@ namespace Retlang
             _commandRunner.ExecuteAll(toExecute);
             return true;
         }
-
+        /// <summary>
+        /// Execute commands until stopped.
+        /// </summary>
         public void Run()
         {
             while (ExecuteNextBatch())
@@ -144,6 +181,9 @@ namespace Retlang
             }
         }
 
+        /// <summary>
+        /// Stop consuming events.
+        /// </summary>
         public void Stop()
         {
             lock (_lock)
