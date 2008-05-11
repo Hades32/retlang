@@ -61,6 +61,10 @@
     <Compile Include="AsyncRequestSubscriber.cs" />
     <Compile Include="BatchSubscriber.cs" />
     <Compile Include="BinaryTransferEnvelope.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="ChannelBatchSubscriber.cs" />
+    <Compile Include="ChannelKeyedBatchSubscriber.cs" />
+    <Compile Include="ChannelSubscription.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
