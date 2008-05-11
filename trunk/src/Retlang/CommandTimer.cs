@@ -3,24 +3,58 @@ using System.Threading;
 
 namespace Retlang
 {
+    /// <summary>
+    /// Stores and removes pending commands.
+    /// </summary>
     public interface IPendingCommandRegistry
     {
+        /// <summary>
+        /// Remove timer
+        /// </summary>
+        /// <param name="timer"></param>
         void Remove(ITimerControl timer);
+        
+        /// <summary>
+        /// Queue event to target queue.
+        /// </summary>
+        /// <param name="command"></param>
         void EnqueueTask(Command command);
     }
 
+    /// <summary>
+    /// Controller to cancel event timer.
+    /// </summary>
     public interface ITimerControl
     {
+        /// <summary>
+        /// Cancels scheduled timer.
+        /// </summary>
         void Cancel();
     }
 
+    /// <summary>
+    /// Methods for schedule events that will be executed in the future.
+    /// </summary>
     public interface ICommandTimer
     {
+        /// <summary>
+        /// Schedules an event to be executes once.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="firstIntervalInMs"></param>
+        /// <returns>a controller to cancel the event.</returns>
         ITimerControl Schedule(Command command, long firstIntervalInMs);
+        /// <summary>
+        /// Schedule an event on a recurring interval.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="firstIntervalInMs"></param>
+        /// <param name="regularIntervalInMs"></param>
+        /// <returns>controller to cancel timer.</returns>
         ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs);
     }
 
-    public class CommandTimer : IPendingCommandRegistry, ICommandTimer
+    internal class CommandTimer : IPendingCommandRegistry, ICommandTimer
     {
         private readonly ICommandQueue _queue;
         private readonly List<ITimerControl> _pending = new List<ITimerControl>();

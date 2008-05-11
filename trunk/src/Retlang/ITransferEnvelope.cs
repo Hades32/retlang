@@ -23,6 +23,11 @@ namespace Retlang
         /// <returns></returns>
         object ResolveMessage();
 
+        /// <summary>
+        /// Determines whether the message can be cast to the generic type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         bool CanCastTo<T>();
     }
 }

@@ -1,9 +1,17 @@
 namespace Retlang
 {
+
+    /// <summary>
+    /// Default command executor.
+    /// </summary>
     public class CommandExecutor : ICommandExecutor
     {
         private bool _running = true;
 
+        /// <summary>
+        /// <see cref="ICommandExecutor.ExecuteAll(Command[])"/>
+        /// </summary>
+        /// <param name="toExecute"></param>
         public void ExecuteAll(Command[] toExecute)
         {
             foreach (Command command in toExecute)

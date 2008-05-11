@@ -2,6 +2,9 @@ using System;
 
 namespace Retlang
 {
+    /// <summary>
+    /// Subscriber for message bus events.
+    /// </summary>
     public interface ISubscriber
     {
         /// <summary>
@@ -12,12 +15,21 @@ namespace Retlang
         void Receive(ITransferEnvelope envelope, ref bool consumed);
     }
 
+    /// <summary>
+    /// Default message bus subscriber implementation.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class TopicSubscriber<T> : ISubscriber
     {
         private readonly ITopicMatcher _topic;
         private readonly OnMessage<T> _onMessage;
         private readonly Type _type;
 
+        /// <summary>
+        /// Create new instance.
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="onMessage"></param>
         public TopicSubscriber(ITopicMatcher topic, OnMessage<T> onMessage)
         {
             _topic = topic;

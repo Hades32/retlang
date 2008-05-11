@@ -1,11 +1,17 @@
 namespace Retlang
 {
+    /// <summary>
+    /// Unsubscribe controller.
+    /// </summary>
     public interface IUnsubscriber
     {
+        /// <summary>
+        /// Unsubscribe.
+        /// </summary>
         void Unsubscribe();
     }
 
-    public class Unsubscriber : IUnsubscriber
+    internal class Unsubscriber : IUnsubscriber
     {
         private readonly ISubscriberRegistry _bus;
         private readonly ISubscriber _sub;

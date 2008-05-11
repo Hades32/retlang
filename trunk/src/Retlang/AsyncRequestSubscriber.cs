@@ -1,6 +1,6 @@
 namespace Retlang
 {
-    public class AsyncRequestSubscriber<T>
+    internal class AsyncRequestSubscriber<T>
     {
         private IUnsubscriber _replyTopic;
         private ITimerControl _timeoutControl;
@@ -25,14 +25,14 @@ namespace Retlang
             set { _timeoutControl = value; }
         }
 
-        public void OnTimeout()
+        internal void OnTimeout()
         {
             _replyTopic.Unsubscribe();
             if(_onTimeout != null)
                 _onTimeout();
         }
 
-        public void OnReceive(IMessageHeader header, T msg)
+        internal void OnReceive(IMessageHeader header, T msg)
         {
             if (_timeoutControl != null)
             {

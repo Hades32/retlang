@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public class BatchSubscriber<T>
+    internal class BatchSubscriber<T>
     {
         private readonly object _batchLock = new object();
 

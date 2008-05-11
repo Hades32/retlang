@@ -51,7 +51,7 @@ namespace RetlangTests
             {
                 _bus.Start();
                 Assert.Fail("Should not Start");
-            }catch(ThreadStateException failed)
+            }catch(ThreadStateException)
             {
                 
             }
