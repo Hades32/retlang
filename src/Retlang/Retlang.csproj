@@ -54,6 +54,7 @@
     <Compile Include="ITopicMatcher.cs" />
     <Compile Include="LastSubscriber.cs" />
     <Compile Include="ProcessBus.cs" />
+    <Compile Include="RequestReplyChannel.cs" />
     <Compile Include="TimerCommand.cs" />
     <Compile Include="PoolQueue.cs" />
     <Compile Include="ProcessThreadFactory.cs" />
