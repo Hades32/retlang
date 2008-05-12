@@ -57,6 +57,7 @@
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTimer.cs" />
     <Compile Include="PoolQueueTests.cs" />
+    <Compile Include="RequestReplyChannelTests.cs" />
     <Compile Include="SubscriberRegistryTests.cs" />
     <Compile Include="SubstitutabilityBaseTest.cs" />
     <Compile Include="TimerCommandTests.cs" />
