@@ -73,8 +73,7 @@ namespace Retlang
         public IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive)
         {
             ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
-            _subscribers += subscriber.OnReceive;
-            return new ChannelUnsubscriber<T>(subscriber.OnReceive, this);
+            return SubscribeOnProducerThreads(subscriber.OnReceive);
         }
 
         internal void Unsubscribe(Action<T> toUnsubscribe)
@@ -116,8 +115,7 @@ namespace Retlang
         public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs)
         {
             ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, intervalInMs);
-            _subscribers += batch.OnReceive;
-            return new ChannelUnsubscriber<T>(batch.OnReceive, this);
+            return SubscribeOnProducerThreads(batch.OnReceive);
         }
 
         /// <summary>
@@ -133,8 +131,19 @@ namespace Retlang
             Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {
             ChannelKeyedBatchSubscriber<K,T> batch = new ChannelKeyedBatchSubscriber<K,T>(keyResolver, receive, queue, intervalInMs);
-            _subscribers += batch.OnReceive;
-            return new ChannelUnsubscriber<T>(batch.OnReceive, this);
+            return SubscribeOnProducerThreads(batch.OnReceive);
+        }
+
+        /// <summary>
+        /// Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
+        /// Action may be invoked on multiple threads.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber)
+        {
+            _subscribers += subscriber;
+            return new ChannelUnsubscriber<T>(subscriber, this);
         }
     }
 
