@@ -1655,6 +1655,11 @@
             <param name="replyMsg"></param>
             <returns></returns>
         </member>
+        <member name="P:Retlang.IChannelRequest`2.Request">
+            <summary>
+            Request Message
+            </summary>
+        </member>
         <member name="T:Retlang.IChannelReply`1">
             <summary>
             Used to receive one or more replies.
