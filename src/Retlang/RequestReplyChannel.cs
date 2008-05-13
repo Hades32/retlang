@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Retlang
@@ -47,6 +46,10 @@ namespace Retlang
     public interface IChannelRequest<R, M>
     {
         /// <summary>
+        /// Request Message
+        /// </summary>
+        R Request { get; }
+        /// <summary>
         /// Send one or more responses.
         /// </summary>
         /// <param name="replyMsg"></param>
@@ -65,6 +68,8 @@ namespace Retlang
         {
             _req = req;
         }
+
+        public R Request {get{ return _req;}}
 
         public bool SendReply(M response)
         {
