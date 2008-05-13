@@ -4,7 +4,7 @@ namespace Retlang
     /// Subscribes to last event from queue. Old events are discarded.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class LastSubscriber<T>
+    internal class LastSubscriber<T>
     {
         private readonly object _lock = new object();
 

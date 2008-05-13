@@ -17,7 +17,7 @@ namespace Retlang
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class KeyedBatchSubscriber<K, V>
+    internal class KeyedBatchSubscriber<K, V>
     {
         private readonly object _batchLock = new object();
 
