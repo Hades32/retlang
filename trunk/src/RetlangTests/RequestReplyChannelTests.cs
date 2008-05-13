@@ -35,15 +35,15 @@ namespace RetlangTests
             using (ProcessContextFactory fact = ProcessFactoryFixture.CreateAndStart())
             {
                 IProcessBus responder = fact.CreatePooledAndStart();
-                RequestReplyChannel<string, int> timeCheck = new RequestReplyChannel<string, int>();
+                RequestReplyChannel<string, int> countChannel = new RequestReplyChannel<string, int>();
                 Action<IChannelRequest<string, int>> onRequest =
                 delegate(IChannelRequest<string, int> req)
                 {
                     for (int i = 0; i <= 5; i++ )
                         req.SendReply(i);
                 };
-                timeCheck.Subscribe(responder, onRequest);
-                IChannelReply<int> response = timeCheck.SendRequest("hello");
+                countChannel.Subscribe(responder, onRequest);
+                IChannelReply<int> response = countChannel.SendRequest("hello");
                 int result;
                 using (response)
                 {

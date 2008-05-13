@@ -58,7 +58,7 @@ namespace Retlang
     {
         private readonly object _lock = new object();
         private readonly R _req;
-        private Queue<M> _resp = new Queue<M>();
+        private readonly Queue<M> _resp = new Queue<M>();
         private bool _disposed;
 
         public ChannelRequest(R req)
@@ -84,7 +84,7 @@ namespace Retlang
         {
             lock (_lock)
             {
-                if (_resp != null && _resp.Count > 0)
+                if (_resp.Count > 0)
                 {
                     result = _resp.Dequeue();
                     return true;
@@ -95,7 +95,7 @@ namespace Retlang
                     return false;
                 }
                 Monitor.Wait(_lock, timeout);
-                if (_resp != null && _resp.Count > 0)
+                if (_resp.Count > 0)
                 {
                     result = _resp.Dequeue();
                     return true;
