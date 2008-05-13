@@ -13,7 +13,7 @@ namespace Retlang
     public interface IChannel<T>
     {
         ///<summary>
-        /// Subscrive to messages on this channel. The provided action will be invoked via a command on the provided queue.
+        /// Subscribe to messages on this channel. The provided action will be invoked via a command on the provided queue.
         ///</summary>
         ///<param name="queue">the target context to receive the message</param>
         ///<param name="receive"></param>

@@ -28,7 +28,7 @@ namespace Retlang
         internal void OnTimeout()
         {
             _replyTopic.Unsubscribe();
-            if(_onTimeout != null)
+            if (_onTimeout != null)
                 _onTimeout();
         }
 
@@ -41,6 +41,5 @@ namespace Retlang
             _replyTopic.Unsubscribe();
             _onMsg(header, msg);
         }
-
     }
 }
