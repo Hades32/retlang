@@ -111,6 +111,42 @@ namespace RetlangTests
             Assert.AreEqual(1, queue.Scheduled.Count);
         }
 
+
+        [Test]
+        public void SubscribeToLast()
+        {
+            Channel<int> channel = new Channel<int>();
+            StubCommandContext queue = new StubCommandContext();
+            bool received = false;
+            int lastReceived = -1;
+            Action<int> onReceive = delegate(int data)
+                                           {
+                                               lastReceived = data;
+                                               received = true;
+                                           };
+            channel.SubscribeToLast(queue, onReceive, 0);
+
+            for (int i = 0; i < 5; i++)
+            {
+                channel.Publish(i);
+            }
+            Assert.AreEqual(1, queue.Scheduled.Count);
+            Assert.IsFalse(received);
+            Assert.AreEqual(-1, lastReceived);
+            queue.Scheduled[0]();
+            Assert.IsTrue(received);
+            Assert.AreEqual(4, lastReceived);
+            queue.Scheduled.Clear();
+            received = false;
+            lastReceived = -1;
+            channel.Publish(5);
+            Assert.IsFalse(received);
+            Assert.AreEqual(1, queue.Scheduled.Count);
+            queue.Scheduled[0]();
+            Assert.IsTrue(received);
+            Assert.AreEqual(5, lastReceived);
+        }
+
         [Test]
         public void AsyncRequestReplyWithPrivateChannel()
         {
@@ -146,7 +182,7 @@ namespace RetlangTests
             {
                 Channel<int> channel = new Channel<int>();
                 IProcessBus bus = factory.CreatePooledAndStart();
-                int max = 3000000;
+                int max = 5000000;
                 AutoResetEvent reset = new AutoResetEvent(false);
                 Action<int> onMsg = delegate(int count)
                                         {

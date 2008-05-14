@@ -6,11 +6,10 @@ namespace Retlang
 {
 
     /// <summary>
-    /// A channel provides a conduit for messages. It provides methods for publishing and subscribing to messages. 
-    /// The class is thread safe.
+    /// Channel subscription methods.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IChannel<T>
+    public interface IChannelSubscriber<T>
     {
         ///<summary>
         /// Subscribe to messages on this channel. The provided action will be invoked via a command on the provided queue.
@@ -19,13 +18,6 @@ namespace Retlang
         ///<param name="receive"></param>
         ///<returns>Unsubscriber object</returns>
         IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive);
-
-        /// <summary>
-        /// Publish a message to all subscribers. Returns true if any subscribers are registered.
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        bool Publish(T msg);
         /// <summary>
         /// Removes all subscribers.
         /// </summary>
@@ -51,13 +43,36 @@ namespace Retlang
         ///<param name="intervalInMs"></param>
         ///<typeparam name="K"></typeparam>
         ///<returns></returns>
-        IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue, 
+        IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue,
                                                       Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs);
+
     }
 
+    /// <summary>
+    /// Channel publishing interface.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IChannelPublisher<T>
+    {
+        /// <summary>
+        /// Publish a message to all subscribers. Returns true if any subscribers are registered.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        bool Publish(T msg);
+    }
+
+    /// <summary>
+    /// A channel provides a conduit for messages. It provides methods for publishing and subscribing to messages. 
+    /// The class is thread safe.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IChannel<T>: IChannelSubscriber<T>, IChannelPublisher<T>
+    {
+    }
 
     ///<summary>
-    /// Default Channel Implementation.
+    /// Default Channel Implementation. Methods are thread safe.
     ///</summary>
     ///<typeparam name="T"></typeparam>
     public class Channel<T>: IChannel<T>
@@ -65,7 +80,7 @@ namespace Retlang
         private event Action<T> _subscribers;
 
         /// <summary>
-        /// <see cref="IChannel{T}.Subscribe(ICommandQueue,Action{T})"/>
+        /// <see cref="IChannelSubscriber{T}.Subscribe(ICommandQueue,Action{T})"/>
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="receive"></param>
@@ -82,7 +97,7 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="IChannel{T}.Publish(T)"/>
+        /// <see cref="IChannelPublisher{T}.Publish(T)"/>
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
@@ -106,7 +121,7 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="IChannel{T}.SubscribeToBatch(ICommandTimer,Action{IList{T}},int)"/>
+        /// <see cref="IChannelSubscriber{T}.SubscribeToBatch(ICommandTimer,Action{IList{T}},int)"/>
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="receive"></param>
@@ -119,7 +134,7 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="IChannel{T}.SubscribeToKeyedBatch{K}(ICommandTimer,Converter{T,K},Action{IDictionary{K,T}},int)"/>
+        /// <see cref="IChannelSubscriber{T}.SubscribeToKeyedBatch{K}(ICommandTimer,Converter{T,K},Action{IDictionary{K,T}},int)"/>
         /// </summary>
         /// <typeparam name="K"></typeparam>
         /// <param name="queue"></param>
@@ -144,6 +159,20 @@ namespace Retlang
         {
             _subscribers += subscriber;
             return new ChannelUnsubscriber<T>(subscriber, this);
+        }
+
+        /// <summary>
+        /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+        /// has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeToLast(ICommandTimer queue, Action<T> receive, int intervalInMs)
+        {
+            ChannelLastSubscriber<T> sub = new ChannelLastSubscriber<T>(receive, queue, intervalInMs);
+            return SubscribeOnProducerThreads(sub.OnReceive);
         }
     }
 
