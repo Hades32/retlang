@@ -18,3 +18,6 @@ Publishing to a process context is always thread safe. The publisher doesn't nee
 == Subscribing == 
 
 The registration of a subscription is also thread safe. Once the subscription is in place, events will be deliver sequentially on the process thread. The receiving delegate will never be executed concurrently. 
+
+== Further Reading ==
+The [http://lamp.epfl.ch/~phaller/doc/haller07actorsunify.pdf Actors that Unify Threads and Events] provides a wealth of information on message based concurrency in [http://www.scala-lang.org/ Scala]. Although Retlang is not based on Scala Actors, the designs are similar.
