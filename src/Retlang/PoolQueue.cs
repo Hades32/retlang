@@ -36,6 +36,14 @@ namespace Retlang
         }
 
         /// <summary>
+        /// Create a pool queue with the default thread pool and command executor.
+        /// </summary>
+        public PoolQueue(): this(new DefaultThreadPool(), new CommandExecutor())
+        {
+            
+        }
+
+        /// <summary>
         /// <see cref="ICommandQueue.Enqueue(Command)"/>
         /// </summary>
         /// <param name="command"></param>
