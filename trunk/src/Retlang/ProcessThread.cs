@@ -54,6 +54,14 @@ namespace Retlang
         }
 
         /// <summary>
+        /// Create a process thread with a default queue.
+        /// </summary>
+        public ProcessThread(): this(new CommandQueue())
+        {
+            
+        }
+
+        /// <summary>
         /// Creates a new thread.
         /// </summary>
         /// <param name="queue">The queue</param>

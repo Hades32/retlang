@@ -974,6 +974,11 @@
             <param name="pool"></param>
             <param name="executor"></param>
         </member>
+        <member name="M:Retlang.PoolQueue.#ctor">
+            <summary>
+            Create a pool queue with the default thread pool and command executor.
+            </summary>
+        </member>
         <member name="M:Retlang.PoolQueue.Enqueue(Retlang.Command)">
             <summary>
             <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command)"/>
@@ -1559,6 +1564,11 @@
             Creates a new thread with the backing runner.
             </summary>
             <param name="queue"></param>
+        </member>
+        <member name="M:Retlang.ProcessThread.#ctor">
+            <summary>
+            Create a process thread with a default queue.
+            </summary>
         </member>
         <member name="M:Retlang.ProcessThread.#ctor(Retlang.ICommandRunner,System.String)">
             <summary>
