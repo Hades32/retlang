@@ -1655,7 +1655,7 @@
             <typeparam name="R"></typeparam>
             <typeparam name="M"></typeparam>
         </member>
-        <member name="M:Retlang.RequestReplyChannel`2.Subscribe(Retlang.IProcessBus,System.Action{Retlang.IChannelRequest{`0,`1}})">
+        <member name="M:Retlang.RequestReplyChannel`2.Subscribe(Retlang.ICommandQueue,System.Action{Retlang.IChannelRequest{`0,`1}})">
             <summary>
             Subscribe to requests.
             </summary>

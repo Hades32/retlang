@@ -19,7 +19,7 @@ namespace Retlang
         /// <param name="responder"></param>
         /// <param name="onRequest"></param>
         /// <returns></returns>
-        public IUnsubscriber Subscribe(IProcessBus responder, Action<IChannelRequest<R, M>> onRequest)
+        public IUnsubscriber Subscribe(ICommandQueue responder, Action<IChannelRequest<R, M>> onRequest)
         {
             return _requestChannel.Subscribe(responder, onRequest);
         }
