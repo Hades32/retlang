@@ -6,6 +6,9 @@ Channels were introduced in 0.3.0.0 as a lighter weight, higher performance alte
   * Cheap to create - Simple objects that can be used and discarded
   * Fully Typed
   * High Performance - Millions of messages per second
+  * Message Multicast
+  * Request Reply
+  * Batching
 
 == Basic Pub/Sub ==
 
@@ -27,4 +30,3 @@ This test creates a pool based queue then subscribes it to a channel.
             Assert.IsTrue(reset.WaitOne(10000, false));
         }
 }}}
-
