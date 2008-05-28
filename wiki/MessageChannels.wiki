@@ -1,0 +1,30 @@
+= Introduction =
+
+Channels were introduced in 0.3.0.0 as a lighter weight, higher performance alternative to context messaging with topics.
+
+== Features ==
+  * Cheap to create - Simple objects that can be used and discarded
+  * Fully Typed
+  * High Performance - Millions of messages per second
+
+== Basic Pub/Sub ==
+
+This test creates a pool based queue then subscribes it to a channel.
+{{{
+[Test]
+        public void BasicPubSubWithPoolQueue()
+        {
+            PoolQueue queue = new PoolQueue();
+            Channel<string> hello = new Channel<string>();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            Action<string> receiveHello = delegate(string str)
+                                              {
+                                                  Assert.AreEqual("hello", str);
+                                                  reset.Set();
+                                              };
+            hello.Subscribe(queue, receiveHello);
+            Assert.IsTrue(hello.Publish("hello"));
+            Assert.IsTrue(reset.WaitOne(10000, false));
+        }
+}}}
+
