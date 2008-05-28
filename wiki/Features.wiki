@@ -1,5 +1,5 @@
 #labels Featured
-  * Message Based Concurrency
+  * Message Based Concurrency - See ThreadingDesign
   * Asynchronous Event Processing
   * No polling or event loops required
   * Multithreaded for full utilization of multi-core machines.
