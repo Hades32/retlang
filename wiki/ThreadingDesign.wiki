@@ -1,10 +1,11 @@
 == Design Guidelines ==
 Retlang was designed based upon the following threading principles for robust multithreaded code:
-* Minimize Lock Contention
-* Minimize Blocking
-* Minimize Deadlock possibilities
-* Allow for thread reuse and pooling
-* Consuming/Publishing code should be explicit and testable
+
+  * Minimize Lock Contention
+  * Minimize Blocking
+  * Minimize Deadlock possibilities
+  * Allow for thread reuse and pooling
+  * Consuming/Publishing code should be explicit and testable
 
 == The Process Context ==
 
