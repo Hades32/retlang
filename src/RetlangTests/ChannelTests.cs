@@ -202,6 +202,22 @@ namespace RetlangTests
                 }
             }
         }
+
+        [Test]
+        public void BasicPubSubWithPoolQueue()
+        {
+            IProcessQueue queue = new PoolQueue();
+            Channel<string> hello = new Channel<string>();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            Action<string> receiveHello = delegate(string str)
+                                              {
+                                                  Assert.AreEqual("hello", str);
+                                                  reset.Set();
+                                              };
+            hello.Subscribe(queue, receiveHello);
+            Assert.IsTrue(hello.Publish("hello"));
+            Assert.IsTrue(reset.WaitOne(10000, false));
+        }
     }
 
     
