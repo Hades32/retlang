@@ -30,3 +30,7 @@ This test creates a pool based queue then subscribes it to a channel.
             Assert.IsTrue(reset.WaitOne(10000, false));
         }
 }}}
+
+== More Examples ==
+
+[http://code.google.com/p/retlang/source/browse/trunk/src/RetlangTests/ChannelTests.cs Channel Unit Tests]
