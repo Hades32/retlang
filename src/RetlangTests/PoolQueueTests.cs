@@ -33,5 +33,17 @@ namespace RetlangTests
             Assert.IsTrue(reset.WaitOne(10000, false));
             Assert.AreEqual(100, count);
         }
+
+        [Test]
+        public void ExecuteOnlyAfterStart()
+        {
+            PoolQueue queue = new PoolQueue();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            queue.Enqueue(delegate { reset.Set(); });
+            Assert.IsFalse(reset.WaitOne(1, false));
+            queue.Start();
+            Assert.IsTrue(reset.WaitOne(1000, false));
+            queue.Stop();
+        }
     }
 }

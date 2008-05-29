@@ -1808,6 +1808,16 @@
             <typeparam name="K"></typeparam>
             <returns></returns>
         </member>
+        <member name="M:Retlang.IChannelSubscriber`1.SubscribeToLast(Retlang.ICommandTimer,System.Action{`0},System.Int32)">
+            <summary>
+            Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+            has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+            </summary>
+            <param name="queue"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
         <member name="T:Retlang.IChannelPublisher`1">
             <summary>
             Channel publishing interface.

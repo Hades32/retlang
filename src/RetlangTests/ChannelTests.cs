@@ -54,15 +54,15 @@ namespace RetlangTests
             StubCommandContext queue = new StubCommandContext();
             bool received = false;
             Action<IList<string>> onReceive = delegate(IList<string> data)
-                                           {
-                                               Assert.AreEqual(5, data.Count);
-                                               Assert.AreEqual("0", data[0]);
-                                               Assert.AreEqual("4", data[4]);
-                                               received = true;
-                                           };
+                                                  {
+                                                      Assert.AreEqual(5, data.Count);
+                                                      Assert.AreEqual("0", data[0]);
+                                                      Assert.AreEqual("4", data[4]);
+                                                      received = true;
+                                                  };
             channel.SubscribeToBatch(queue, onReceive, 0);
 
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 channel.Publish(i.ToString());
             }
@@ -83,17 +83,16 @@ namespace RetlangTests
             Channel<KeyValuePair<string, string>> channel = new Channel<KeyValuePair<string, string>>();
             StubCommandContext queue = new StubCommandContext();
             bool received = false;
-            Action<IDictionary<string, KeyValuePair<string, string>>> onReceive = delegate(IDictionary<string, KeyValuePair<string, string>> data)
-                                           {
-                                               Assert.AreEqual(2, data.Keys.Count);
-                                               Assert.AreEqual(data["0"], new KeyValuePair<string,string>("0","4"));
-                                               Assert.AreEqual(data["1"], new KeyValuePair<string, string>("1", "3"));
-                                               received = true;
-                                           };
-            Converter<KeyValuePair<string, string>, string> key = delegate(KeyValuePair<string, string> pair)
-                                                                      {
-                                                                          return pair.Key;
-                                                                      };
+            Action<IDictionary<string, KeyValuePair<string, string>>> onReceive =
+                delegate(IDictionary<string, KeyValuePair<string, string>> data)
+                    {
+                        Assert.AreEqual(2, data.Keys.Count);
+                        Assert.AreEqual(data["0"], new KeyValuePair<string, string>("0", "4"));
+                        Assert.AreEqual(data["1"], new KeyValuePair<string, string>("1", "3"));
+                        received = true;
+                    };
+            Converter<KeyValuePair<string, string>, string> key =
+                delegate(KeyValuePair<string, string> pair) { return pair.Key; };
             channel.SubscribeToKeyedBatch(queue, key, onReceive, 0);
 
             for (int i = 0; i < 5; i++)
@@ -120,10 +119,10 @@ namespace RetlangTests
             bool received = false;
             int lastReceived = -1;
             Action<int> onReceive = delegate(int data)
-                                           {
-                                               lastReceived = data;
-                                               received = true;
-                                           };
+                                        {
+                                            lastReceived = data;
+                                            received = true;
+                                        };
             channel.SubscribeToLast(queue, onReceive, 0);
 
             for (int i = 0; i < 5; i++)
@@ -152,33 +151,55 @@ namespace RetlangTests
         {
             using (ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart())
             {
-
                 Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
                 Channel<string> replyChannel = new Channel<string>();
                 IProcessBus responder = factory.CreatePooledAndStart();
                 IProcessBus receiver = factory.CreatePooledAndStart();
                 AutoResetEvent reset = new AutoResetEvent(false);
-                Action<Channel<string>> onRequest = delegate(Channel<string> reply)
-                                                        {
-                                                            reply.Publish("hello");
-                                                        };
+                Action<Channel<string>> onRequest = delegate(Channel<string> reply) { reply.Publish("hello"); };
                 requestChannel.Subscribe(responder, onRequest);
                 Action<string> onMsg = delegate(string msg)
-                        {
-                            Assert.AreEqual("hello", msg);
-                            reset.Set();
-                        };
+                                           {
+                                               Assert.AreEqual("hello", msg);
+                                               reset.Set();
+                                           };
                 replyChannel.Subscribe(receiver, onMsg);
                 Assert.IsTrue(requestChannel.Publish(replyChannel));
                 Assert.IsTrue(reset.WaitOne(10000, false));
             }
-
         }
+
+        [Test]
+        public void AsyncRequestReplyWithPrivateChannelUsingThreads()
+        {
+            IProcessQueue responder = new ProcessThread();
+            responder.Start();
+            IProcessQueue receiver = new ProcessThread();
+            receiver.Start();
+
+            Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
+            Channel<string> replyChannel = new Channel<string>();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            Action<Channel<string>> onRequest = delegate(Channel<string> reply) { reply.Publish("hello"); };
+            requestChannel.Subscribe(responder, onRequest);
+            Action<string> onMsg = delegate(string msg)
+                                       {
+                                           Assert.AreEqual("hello", msg);
+                                           reset.Set();
+                                       };
+            replyChannel.Subscribe(receiver, onMsg);
+            Assert.IsTrue(requestChannel.Publish(replyChannel));
+            Assert.IsTrue(reset.WaitOne(10000, false));
+
+            responder.Stop();
+            receiver.Stop();
+        }
+
 
         [Test, Explicit]
         public void PointToPointPerfTest()
         {
-            using(ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart())
+            using (ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart())
             {
                 Channel<int> channel = new Channel<int>();
                 IProcessBus bus = factory.CreatePooledAndStart();
@@ -207,7 +228,10 @@ namespace RetlangTests
         public void BasicPubSubWithPoolQueue()
         {
             IProcessQueue queue = new PoolQueue();
+            queue.Start();
             Channel<string> hello = new Channel<string>();
+            Channel<string> hello2 = new Channel<string>();
+
             AutoResetEvent reset = new AutoResetEvent(false);
             Action<string> receiveHello = delegate(string str)
                                               {
@@ -215,13 +239,15 @@ namespace RetlangTests
                                                   reset.Set();
                                               };
             hello.Subscribe(queue, receiveHello);
+            hello2.Subscribe(queue, receiveHello);
             Assert.IsTrue(hello.Publish("hello"));
             Assert.IsTrue(reset.WaitOne(10000, false));
+            queue.Stop();
         }
     }
 
-    
-    public class StubCommandContext: ICommandTimer
+
+    public class StubCommandContext : ICommandTimer
     {
         public List<Command> Scheduled = new List<Command>();
 
@@ -237,5 +263,4 @@ namespace RetlangTests
             return null;
         }
     }
-
 }
