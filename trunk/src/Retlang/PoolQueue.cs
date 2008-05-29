@@ -57,6 +57,10 @@ namespace Retlang
             lock (_lock)
             {
                 _queue.Add(command);
+                if(_started == ExecutionState.Created)
+                {
+                    return;
+                }
                 if (!_flushPending)
                 {
                     _pool.Queue(Flush);

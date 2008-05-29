@@ -46,6 +46,16 @@ namespace Retlang
         IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue,
                                                       Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs);
 
+        /// <summary>
+        /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+        /// has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
+        IUnsubscriber SubscribeToLast(ICommandTimer queue, Action<T> receive, int intervalInMs);
+
     }
 
     /// <summary>
@@ -69,6 +79,7 @@ namespace Retlang
     /// <typeparam name="T"></typeparam>
     public interface IChannel<T>: IChannelSubscriber<T>, IChannelPublisher<T>
     {
+       
     }
 
     ///<summary>
