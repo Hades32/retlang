@@ -51,9 +51,9 @@ namespace RetlangTests
             {
                 _bus.Start();
                 Assert.Fail("Should not Start");
-            }catch(ThreadStateException)
+            }
+            catch (ThreadStateException)
             {
-                
             }
         }
 
@@ -61,10 +61,7 @@ namespace RetlangTests
         public void AsyncRequestTimeout()
         {
             ManualResetEvent reset = new ManualResetEvent(false);
-            Command onTimeout = delegate
-                                    {
-                                        reset.Set();
-                                    };
+            Command onTimeout = delegate { reset.Set(); };
             _bus.Start();
             OnMessage<string> reply = delegate { Assert.Fail("Should not be called"); };
             _bus.SendAsyncRequest(new object(), "msg", reply, onTimeout, 1);
@@ -77,15 +74,10 @@ namespace RetlangTests
             IProcessBus replyBus = CreateBus(_contextFactory);
             replyBus.Start();
             string requestTopic = "request";
-            OnMessage<string> onMsg = delegate(IMessageHeader header, string msg)
-                                          {
-                                              replyBus.Publish(header.ReplyTo, msg);
-                                          };
+            OnMessage<string> onMsg =
+                delegate(IMessageHeader header, string msg) { replyBus.Publish(header.ReplyTo, msg); };
             replyBus.Subscribe(new TopicEquals(requestTopic), onMsg);
-            Command onTimeout = delegate
-                                    {
-                                        Assert.Fail("Should not timeout");
-                                    };
+            Command onTimeout = delegate { Assert.Fail("Should not timeout"); };
             _bus.Start();
             ManualResetEvent reset = new ManualResetEvent(false);
             OnMessage<string> reply = delegate { reset.Set(); };
@@ -98,10 +90,7 @@ namespace RetlangTests
         public void Post()
         {
             ManualResetEvent reset = new ManualResetEvent(false);
-            OnMessage<string> onMsg = delegate(IMessageHeader header, string msg)
-                                          {
-                                              reset.Set();
-                                          };
+            OnMessage<string> onMsg = delegate(IMessageHeader header, string msg) { reset.Set(); };
             _bus.Subscribe(new TopicEquals("topic"), onMsg);
             _bus.Start();
             Assert.IsTrue(_bus.Post("topic", "msg", null));
@@ -123,7 +112,7 @@ namespace RetlangTests
                 _bus.Schedule(delegate { Assert.AreEqual(localCount, count++); }, 1);
             }
             ManualResetEvent reset = new ManualResetEvent(false);
-            _bus.Schedule(delegate {reset.Set();}, 1);
+            _bus.Schedule(delegate { reset.Set(); }, 1);
             Assert.IsTrue(reset.WaitOne(10000, false));
         }
     }

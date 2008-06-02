@@ -17,14 +17,8 @@ namespace RetlangTests
 
             int count = 0;
             AutoResetEvent reset = new AutoResetEvent(false);
-            Command one = delegate
-                              {
-                                  Assert.AreEqual(0, count++);
-                              };
-            Command two = delegate
-                              {
-                                  Assert.AreEqual(1, count++);
-                              };
+            Command one = delegate { Assert.AreEqual(0, count++); };
+            Command two = delegate { Assert.AreEqual(1, count++); };
             Command three = delegate
                                 {
                                     Assert.AreEqual(2, count++);
@@ -58,7 +52,7 @@ namespace RetlangTests
         {
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             queue.Run();
-            Command command = delegate{ Assert.Fail("Should not execute");};
+            Command command = delegate { Assert.Fail("Should not execute"); };
             using (TimerThread timer = new TimerThread())
             {
                 long now = 0;
@@ -70,7 +64,6 @@ namespace RetlangTests
                 Assert.AreEqual(1, span);
                 Assert.IsFalse(timer.GetTimeTilNext(ref span, 500));
                 Assert.AreEqual(0, span);
-  
             }
         }
 
@@ -85,7 +78,7 @@ namespace RetlangTests
             Command one = delegate
                               {
                                   count++;
-                                  if(count == 1000)
+                                  if (count == 1000)
                                   {
                                       reset.Set();
                                   }
@@ -100,7 +93,6 @@ namespace RetlangTests
                 }
                 Assert.IsTrue(reset.WaitOne(1200, false));
             }
-
         }
 
         [Test]
@@ -113,28 +105,30 @@ namespace RetlangTests
             System.Diagnostics.Stopwatch stop = new System.Diagnostics.Stopwatch();
             stop.Start();
             WaitOrTimerCallback callback = delegate
-            {
-                if (count < 5000)
-                {
-                    count++;
-                    if (count == 5000)
-                    {
-                        reset.Set();
-                    }
-                    if (count % 100 == 0)
-                    {
-                        Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds + " avg: "
-                            + ((double)stop.ElapsedMilliseconds / (double)count));
-                    }
-                }
-            };
+                                               {
+                                                   if (count < 5000)
+                                                   {
+                                                       count++;
+                                                       if (count == 5000)
+                                                       {
+                                                           reset.Set();
+                                                       }
+                                                       if (count%100 == 0)
+                                                       {
+                                                           Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds +
+                                                                             " avg: "
+                                                                             +
+                                                                             ((double) stop.ElapsedMilliseconds/
+                                                                              (double) count));
+                                                       }
+                                                   }
+                                               };
             RegisteredWaitHandle regHandle = ThreadPool.RegisterWaitForSingleObject(waiter, callback, null, 5, false);
             Assert.IsTrue(reset.WaitOne(30000, false));
             regHandle.Unregister(waiter);
             stop.Stop();
             Assert.AreEqual(5000, count);
         }
-
 
 
         [Test]
@@ -149,21 +143,21 @@ namespace RetlangTests
             System.Diagnostics.Stopwatch stop = new System.Diagnostics.Stopwatch();
             stop.Start();
             timer.Elapsed += delegate
-            {
-                if (count < 5000)
-                {
-                    count++;
-                    if (count == 5000)
-                    {
-                        reset.Set();
-                    }
-                    if (count % 2 == 0)
-                    {
-                        Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds + " avg: " 
-                            + ((double)stop.ElapsedMilliseconds/(double)count));
-                    }
-                }
-            };
+                                 {
+                                     if (count < 5000)
+                                     {
+                                         count++;
+                                         if (count == 5000)
+                                         {
+                                             reset.Set();
+                                         }
+                                         if (count%2 == 0)
+                                         {
+                                             Console.WriteLine(count + "in: " + stop.ElapsedMilliseconds + " avg: "
+                                                               + ((double) stop.ElapsedMilliseconds/(double) count));
+                                         }
+                                     }
+                                 };
             timer.Start();
             Assert.IsTrue(reset.WaitOne(30000, false));
             timer.Stop();
@@ -171,7 +165,7 @@ namespace RetlangTests
             Assert.AreEqual(5000, count);
         }
 
-        [Test,Explicit]
+        [Test, Explicit]
         public void ScheduleOn1MsInterval()
         {
             TIMECAPS caps = new TIMECAPS();
@@ -197,7 +191,6 @@ namespace RetlangTests
                 thread.ScheduleOnInterval(queue, one, 1, 1);
                 Assert.IsTrue(reset.WaitOne(10000, false));
             }
-
         }
     }
 }

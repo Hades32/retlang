@@ -25,12 +25,11 @@ namespace RetlangTests
             ProcessContextFactory factory = ProcessFactoryFixture.CreateAndStart();
 
             IProcessContext pubContext = CreateContext(factory);
-            while(true)
+            while (true)
             {
                 pubContext.Schedule(delegate { }, 1);
                 //Thread.Sleep(1);
             }
-
         }
 
         [Test]
@@ -156,18 +155,18 @@ namespace RetlangTests
             int maxCount = 1000000;
             ProcessContextFactory factory = new ProcessContextFactory();
             factory.Start();
-            MessageBus bus = (MessageBus)factory.MessageBus;
+            MessageBus bus = (MessageBus) factory.MessageBus;
             bus.AsyncPublish = false;
 
             List<object> topics = new List<object>();
-            for(int i = 0; i < topicCount; i++)
+            for (int i = 0; i < topicCount; i++)
             {
                 topics.Add(new object());
             }
 
             List<IProcessContext> contexts = new List<IProcessContext>();
             List<AutoResetEvent> monitors = new List<AutoResetEvent>();
-            for(int i = 0; i < topicCount; i++)
+            for (int i = 0; i < topicCount; i++)
             {
                 IProcessContext context = factory.CreateAndStart();
                 AutoResetEvent reset = new AutoResetEvent(false);
@@ -187,12 +186,11 @@ namespace RetlangTests
             }
 
             Stopwatch watch = Stopwatch.StartNew();
-            for(int i = 0; i < topicCount; i++)
+            for (int i = 0; i < topicCount; i++)
             {
                 object topic = topics[i];
-                 for (int p = 0; p < maxCount; p++)
-                     factory.Publish(topic, "data");
-                
+                for (int p = 0; p < maxCount; p++)
+                    factory.Publish(topic, "data");
             }
             foreach (AutoResetEvent monitor in monitors)
             {
@@ -202,7 +200,6 @@ namespace RetlangTests
             Console.WriteLine("Avg Per Second: " + (maxCount*topicCount/watch.Elapsed.TotalSeconds));
             //Console.WriteLine("Avg: " + );
         }
-
 
 
         public static void Main(string[] args)
@@ -231,7 +228,7 @@ namespace RetlangTests
             {
                 Console.WriteLine("Count: " + count + " Execs: " + commandCount + " Avg: " +
                                   (commandCount/(double) count));
-                Console.WriteLine("Rate: " + (DateTime.Now - startTime).TotalMilliseconds/ commandCount);
+                Console.WriteLine("Rate: " + (DateTime.Now - startTime).TotalMilliseconds/commandCount);
                 count = 0;
                 commandCount = 0;
                 startTime = DateTime.Now;

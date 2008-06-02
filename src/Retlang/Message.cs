@@ -10,6 +10,7 @@ namespace Retlang
         /// Topic and reply to
         /// </summary>
         IMessageHeader Header { get; }
+
         /// <summary>
         /// Body
         /// </summary>
@@ -36,6 +37,7 @@ namespace Retlang
             _header = header;
             _msg = msg;
         }
+
         /// <summary>
         /// <see cref="IMessageEnvelope{T}.Header"/>
         /// </summary>

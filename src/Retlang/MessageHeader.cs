@@ -9,6 +9,7 @@ namespace Retlang
         /// The published topic
         /// </summary>
         object Topic { get; }
+
         /// <summary>
         /// optional reply topic
         /// </summary>
@@ -33,6 +34,7 @@ namespace Retlang
             _topic = topic;
             _replyTo = replyTo;
         }
+
         /// <summary>
         /// <see cref="IMessageHeader.Topic"/>
         /// </summary>
@@ -40,6 +42,7 @@ namespace Retlang
         {
             get { return _topic; }
         }
+
         /// <summary>
         /// <see cref="IMessageHeader.ReplyTo"/>
         /// </summary>
@@ -56,6 +59,7 @@ namespace Retlang
         {
             return Topic.GetHashCode();
         }
+
         /// <summary>
         /// Compares topic and replyTo properties.
         /// <see cref="object.Equals(object)"/>

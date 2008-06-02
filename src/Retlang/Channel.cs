@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Retlang;
 
 namespace Retlang
 {
-
     /// <summary>
     /// Channel subscription methods.
     /// </summary>
@@ -18,6 +16,7 @@ namespace Retlang
         ///<param name="receive"></param>
         ///<returns>Unsubscriber object</returns>
         IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive);
+
         /// <summary>
         /// Removes all subscribers.
         /// </summary>
@@ -44,7 +43,8 @@ namespace Retlang
         ///<typeparam name="K"></typeparam>
         ///<returns></returns>
         IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue,
-                                                      Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs);
+                                               Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive,
+                                               int intervalInMs);
 
         /// <summary>
         /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
@@ -70,7 +70,6 @@ namespace Retlang
         /// <param name="subscriber"></param>
         /// <returns></returns>
         IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber);
-
     }
 
     /// <summary>
@@ -92,16 +91,15 @@ namespace Retlang
     /// The class is thread safe.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IChannel<T>: IChannelSubscriber<T>, IChannelPublisher<T>
+    public interface IChannel<T> : IChannelSubscriber<T>, IChannelPublisher<T>
     {
-       
     }
 
     ///<summary>
     /// Default Channel Implementation. Methods are thread safe.
     ///</summary>
     ///<typeparam name="T"></typeparam>
-    public class Channel<T>: IChannel<T>
+    public class Channel<T> : IChannel<T>
     {
         private event Action<T> _subscribers;
 
@@ -115,7 +113,6 @@ namespace Retlang
         {
             ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
             return SubscribeOnProducerThreads(subscriber);
-       
         }
 
         internal void Unsubscribe(Action<T> toUnsubscribe)
@@ -131,7 +128,7 @@ namespace Retlang
         public bool Publish(T msg)
         {
             Action<T> evnt = _subscribers;
-            if(evnt != null)
+            if (evnt != null)
             {
                 evnt(msg);
                 return true;
@@ -169,10 +166,12 @@ namespace Retlang
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue, 
-            Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
+        public IUnsubscriber SubscribeToKeyedBatch<K>(ICommandTimer queue,
+                                                      Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive,
+                                                      int intervalInMs)
         {
-            ChannelKeyedBatchSubscriber<K,T> batch = new ChannelKeyedBatchSubscriber<K,T>(keyResolver, receive, queue, intervalInMs);
+            ChannelKeyedBatchSubscriber<K, T> batch =
+                new ChannelKeyedBatchSubscriber<K, T>(keyResolver, receive, queue, intervalInMs);
             return SubscribeOnProducerThreads(batch);
         }
 
@@ -213,7 +212,7 @@ namespace Retlang
         }
     }
 
-    internal class ChannelUnsubscriber<T>: IUnsubscriber
+    internal class ChannelUnsubscriber<T> : IUnsubscriber
     {
         private readonly Action<T> _receiveMethod;
         private readonly Channel<T> _channel;

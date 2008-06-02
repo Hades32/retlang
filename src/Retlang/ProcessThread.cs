@@ -11,6 +11,7 @@ namespace Retlang
         /// Start consuming events.
         /// </summary>
         void Start();
+
         /// <summary>
         /// Stop consuming events.
         /// </summary>
@@ -56,9 +57,8 @@ namespace Retlang
         /// <summary>
         /// Create a process thread with a default queue.
         /// </summary>
-        public ProcessThread(): this(new CommandQueue())
+        public ProcessThread() : this(new CommandQueue())
         {
-            
         }
 
         /// <summary>

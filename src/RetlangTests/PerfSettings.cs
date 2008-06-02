@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace RetlangTests
@@ -19,6 +18,5 @@ namespace RetlangTests
 
         [DllImport("winmm.dll")]
         public static extern int timeGetDevCaps(ref TIMECAPS lpTimeCaps, int uSize);
-
     }
 }

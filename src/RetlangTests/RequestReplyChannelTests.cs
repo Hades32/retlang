@@ -1,7 +1,7 @@
-using Retlang;
-using NUnit.Framework;
 using System;
 using System.Threading;
+using NUnit.Framework;
+using Retlang;
 
 namespace RetlangTests
 {
@@ -16,16 +16,13 @@ namespace RetlangTests
                 IProcessBus responder = fact.CreatePooledAndStart();
                 RequestReplyChannel<string, DateTime> timeCheck = new RequestReplyChannel<string, DateTime>();
                 DateTime now = DateTime.Now;
-                Action<IChannelRequest<string,DateTime>> onRequest = 
-                delegate(IChannelRequest<string,DateTime> req){
-                    req.SendReply(now);
-                };
+                Action<IChannelRequest<string, DateTime>> onRequest =
+                    delegate(IChannelRequest<string, DateTime> req) { req.SendReply(now); };
                 timeCheck.Subscribe(responder, onRequest);
                 IChannelReply<DateTime> response = timeCheck.SendRequest("hello");
                 DateTime result;
                 Assert.IsTrue(response.Receive(10000, out result));
                 Assert.AreEqual(result, now);
-
             }
         }
 
@@ -40,12 +37,12 @@ namespace RetlangTests
 
                 AutoResetEvent allSent = new AutoResetEvent(false);
                 Action<IChannelRequest<string, int>> onRequest =
-                delegate(IChannelRequest<string, int> req)
-                {
-                    for (int i = 0; i <= 5; i++ )
-                        req.SendReply(i);
-                    allSent.Set();
-                };
+                    delegate(IChannelRequest<string, int> req)
+                        {
+                            for (int i = 0; i <= 5; i++)
+                                req.SendReply(i);
+                            allSent.Set();
+                        };
                 countChannel.Subscribe(responder, onRequest);
                 IChannelReply<int> response = countChannel.SendRequest("hello");
                 int result;
@@ -53,7 +50,6 @@ namespace RetlangTests
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        
                         Assert.IsTrue(response.Receive(10000, out result));
                         Assert.AreEqual(result, i);
                     }

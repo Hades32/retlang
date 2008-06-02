@@ -71,6 +71,7 @@ namespace Retlang
                 return formatter.Deserialize(stream);
             }
         }
+
         /// <summary>
         /// <see cref="ITransferEnvelope.Header"/>
         /// </summary>

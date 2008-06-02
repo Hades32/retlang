@@ -9,9 +9,9 @@ namespace Retlang
     /// </summary>
     /// <typeparam name="R"></typeparam>
     /// <typeparam name="M"></typeparam>
-    public class RequestReplyChannel<R,M>
+    public class RequestReplyChannel<R, M>
     {
-        private readonly Channel<IChannelRequest<R,M>> _requestChannel = new Channel<IChannelRequest<R,M>>();
+        private readonly Channel<IChannelRequest<R, M>> _requestChannel = new Channel<IChannelRequest<R, M>>();
 
         /// <summary>
         /// Subscribe to requests.
@@ -49,6 +49,7 @@ namespace Retlang
         /// Request Message
         /// </summary>
         R Request { get; }
+
         /// <summary>
         /// Send one or more responses.
         /// </summary>
@@ -57,7 +58,7 @@ namespace Retlang
         bool SendReply(M replyMsg);
     }
 
-    internal class ChannelRequest<R, M>: IChannelRequest<R,M>, IChannelReply<M>
+    internal class ChannelRequest<R, M> : IChannelRequest<R, M>, IChannelReply<M>
     {
         private readonly object _lock = new object();
         private readonly R _req;
@@ -69,7 +70,10 @@ namespace Retlang
             _req = req;
         }
 
-        public R Request {get{ return _req;}}
+        public R Request
+        {
+            get { return _req; }
+        }
 
         public bool SendReply(M response)
         {
@@ -94,7 +98,7 @@ namespace Retlang
                     result = _resp.Dequeue();
                     return true;
                 }
-                if(_disposed)
+                if (_disposed)
                 {
                     result = default(M);
                     return false;
@@ -127,7 +131,7 @@ namespace Retlang
     /// Used to receive one or more replies.
     /// </summary>
     /// <typeparam name="M"></typeparam>
-    public interface IChannelReply<M>: IDisposable
+    public interface IChannelReply<M> : IDisposable
     {
         /// <summary>
         /// Receive a single response. Can be called repeatedly for multiple replies.

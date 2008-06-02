@@ -265,7 +265,8 @@ namespace Retlang
         /// <param name="onReply"></param>
         /// <param name="onTimeout"></param>
         /// <param name="requestTimeout"></param>
-        public void SendAsyncRequest<T>(object topic, object msg, OnMessage<T> onReply, Command onTimeout, long requestTimeout)
+        public void SendAsyncRequest<T>(object topic, object msg, OnMessage<T> onReply, Command onTimeout,
+                                        long requestTimeout)
         {
             AsyncRequestSubscriber<T> sub = new AsyncRequestSubscriber<T>(onReply, onTimeout);
             object replyTopic = CreateUniqueTopic();

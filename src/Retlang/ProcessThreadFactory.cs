@@ -11,12 +11,14 @@ namespace Retlang
         /// <param name="executor"></param>
         /// <returns></returns>
         IProcessThread CreateProcessThread(ICommandExecutor executor);
+
         /// <summary>
         /// Create thread for message bus
         /// </summary>
         /// <param name="executor"></param>
         /// <returns></returns>
         IProcessThread CreateMessageBusThread(ICommandExecutor executor);
+
         /// <summary>
         /// Create named process thread.
         /// </summary>
@@ -24,6 +26,7 @@ namespace Retlang
         /// <param name="threadName"></param>
         /// <returns></returns>
         IProcessThread CreateProcessThread(ICommandExecutor executor, string threadName);
+
         /// <summary>
         /// Create named message bus thread.
         /// </summary>
@@ -58,6 +61,7 @@ namespace Retlang
             get { return _maxEnqueueWaitTime; }
             set { _maxEnqueueWaitTime = value; }
         }
+
         /// <summary>
         /// <see cref="IProcessThreadFactory.CreateProcessThread(ICommandExecutor)"/>
         /// </summary>
@@ -80,6 +84,7 @@ namespace Retlang
             }
             return queue;
         }
+
         /// <summary>
         /// <see cref="IProcessThreadFactory.CreateMessageBusThread(ICommandExecutor)"/>
         /// </summary>
@@ -89,6 +94,7 @@ namespace Retlang
         {
             return CreateProcessThread(executor);
         }
+
         /// <summary>
         /// <see cref="IProcessThreadFactory.CreateProcessThread(ICommandExecutor,string)"/>
         /// </summary>
@@ -100,6 +106,7 @@ namespace Retlang
             CommandQueue queue = CreateQueue(executor);
             return new ProcessThread(queue, threadName);
         }
+
         /// <summary>
         /// <see cref="IProcessThreadFactory.CreateMessageBusThread(ICommandExecutor,string)"/>
         /// </summary>

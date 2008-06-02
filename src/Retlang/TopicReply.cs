@@ -12,6 +12,7 @@ namespace Retlang
         /// The body of the reply
         /// </summary>
         T Message { get; }
+
         /// <summary>
         /// Reply Header.
         /// </summary>

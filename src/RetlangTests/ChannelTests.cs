@@ -35,17 +35,14 @@ namespace RetlangTests
             SynchronousCommandQueue queue = new SynchronousCommandQueue();
             int received = 0;
             Action<int> onReceive = delegate(int data)
-                                           {
-                                               Assert.IsTrue(data % 2 == 0);
-                                               received++;
-                                           };
+                                        {
+                                            Assert.IsTrue(data%2 == 0);
+                                            received++;
+                                        };
             ChannelSubscription<int> subber = new ChannelSubscription<int>(queue, onReceive);
-            subber.FilterOnProducerThread = delegate(int msg)
-            {
-                return msg % 2 == 0;
-            };
+            subber.FilterOnProducerThread = delegate(int msg) { return msg%2 == 0; };
             channel.SubscribeOnProducerThreads(subber);
-            for(int i = 0; i <=4; i++)
+            for (int i = 0; i <= 4; i++)
             {
                 channel.Publish(i);
             }

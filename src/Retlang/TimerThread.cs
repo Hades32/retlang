@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Timers;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Retlang
 {
-
     /// <summary>
     /// A scheduled event.
     /// </summary>
@@ -66,7 +64,8 @@ namespace Retlang
         private long _expiration;
         private bool _canceled;
 
-        public RecurringEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, long regularInterval, long currentTime)
+        public RecurringEvent(ICommandQueue queue, Command toExecute, long scheduledTimeInMs, long regularInterval,
+                              long currentTime)
         {
             _expiration = currentTime + scheduledTimeInMs;
             _queue = queue;
@@ -84,7 +83,7 @@ namespace Retlang
             if (!_canceled)
             {
                 _queue.Enqueue(_toExecute);
-                _expiration = currentTime +_regularInterval;
+                _expiration = currentTime + _regularInterval;
                 //Console.WriteLine(currentTime + " - " + _expiration);
                 return this;
             }
@@ -102,12 +101,11 @@ namespace Retlang
     /// </summary>
     internal class TimerThread : IDisposable
     {
-
         private readonly SortedList<long, List<IPendingEvent>> _pending =
             new SortedList<long, List<IPendingEvent>>();
 
         private static readonly long _freq = Stopwatch.Frequency;
-        private static readonly double MsMultiplier = 1000.00 / _freq;
+        private static readonly double MsMultiplier = 1000.00/_freq;
         private readonly long _startTimeInTicks = Stopwatch.GetTimestamp();
 
         private ManualResetEvent _waiter;
@@ -117,7 +115,6 @@ namespace Retlang
 
         public void Start()
         {
-         
         }
 
         public ITimerControl Schedule(ICommandQueue targetQueue, Command toExecute, long scheduledTimeInMs)
@@ -137,7 +134,7 @@ namespace Retlang
 
         private long ElapsedMs()
         {
-            return (long)((Stopwatch.GetTimestamp() - _startTimeInTicks)* MsMultiplier);
+            return (long) ((Stopwatch.GetTimestamp() - _startTimeInTicks)*MsMultiplier);
         }
 
         public void QueueEvent(IPendingEvent pending)
@@ -177,7 +174,7 @@ namespace Retlang
                 {
                     _waiter = new ManualResetEvent(false);
                     ThreadPool.RegisterWaitForSingleObject(_waiter, OnTimeCheck, timeInMs,
-                        (uint)timeInMs, true);
+                                                           (uint) timeInMs, true);
                     //Console.WriteLine("Time till next: " + timeInMs);
                     return true;
                 }
@@ -189,7 +186,7 @@ namespace Retlang
             }
         }
 
-        void OnTimeCheck(object sender, bool timeout)
+        private void OnTimeCheck(object sender, bool timeout)
         {
             if (!_running)
                 return;
@@ -270,7 +267,7 @@ namespace Retlang
             {
                 foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
                 {
-                    if(now >= pair.Key)
+                    if (now >= pair.Key)
                     {
                         return false;
                     }
@@ -284,7 +281,6 @@ namespace Retlang
         public void Stop()
         {
             _running = false;
- 
         }
 
         public void Dispose()

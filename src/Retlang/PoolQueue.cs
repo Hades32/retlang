@@ -38,9 +38,8 @@ namespace Retlang
         /// <summary>
         /// Create a pool queue with the default thread pool and command executor.
         /// </summary>
-        public PoolQueue(): this(new DefaultThreadPool(), new CommandExecutor())
+        public PoolQueue() : this(new DefaultThreadPool(), new CommandExecutor())
         {
-            
         }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace Retlang
             lock (_lock)
             {
                 _queue.Add(command);
-                if(_started == ExecutionState.Created)
+                if (_started == ExecutionState.Created)
                 {
                     return;
                 }
@@ -133,7 +132,7 @@ namespace Retlang
         /// </summary>
         public void Start()
         {
-            if(_started == ExecutionState.Running)
+            if (_started == ExecutionState.Running)
             {
                 throw new ThreadStateException("Already Started");
             }

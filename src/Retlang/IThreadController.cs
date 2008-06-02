@@ -9,10 +9,12 @@ namespace Retlang
         /// Starts thread execution.
         /// </summary>
         void Start();
+
         /// <summary>
         /// Stops thread
         /// </summary>
         void Stop();
+
         /// <summary>
         /// Waits for thread to finish.
         /// </summary>
