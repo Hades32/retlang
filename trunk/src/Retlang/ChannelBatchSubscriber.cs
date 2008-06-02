@@ -3,7 +3,11 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public class ChannelBatchSubscriber<T>: BaseSubscription<T>, IChannelSubscription<T>
+    /// <summary>
+    /// Batches events for the consuming thread.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ChannelBatchSubscriber<T>: BaseSubscription<T>
     {
         private readonly object _lock = new object();
         private readonly ICommandTimer _queue;
@@ -12,6 +16,13 @@ namespace Retlang
         private readonly int _interval;
         private List<T> _pending;
 
+        /// <summary>
+        /// Construct new instance.
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="channel"></param>
+        /// <param name="receive"></param>
+        /// <param name="interval"></param>
         public ChannelBatchSubscriber(ICommandTimer queue, Channel<T> channel, Action<IList<T>> receive, int interval)
         {
             _queue = queue;
@@ -20,6 +31,10 @@ namespace Retlang
             _interval = interval;
         }
 
+        /// <summary>
+        /// Receives message and batches as needed.
+        /// </summary>
+        /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
                 lock (_lock)

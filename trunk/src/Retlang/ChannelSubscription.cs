@@ -2,61 +2,32 @@ using System;
 
 namespace Retlang
 {
-    public delegate bool Filter<T>(T msg);
 
-    public interface IProducerThreadSubscriber<T>
+   
+    /// <summary>
+    /// Subscription for events on a channel.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ChannelSubscription<T>: BaseSubscription<T>
     {
-        void ReceiveOnProducerThread(T msg);
-    }
-    
+        private readonly Action<T> _receiveMethod;
+        private readonly ICommandQueue _targetQueue;
 
-    public interface IChannelSubscription<T>: IProducerThreadSubscriber<T>
-    {
-        Filter<T> FilterOnProducerThread
-        {
-            get;
-            set;
-        }
-
-    }
-
-    public abstract class BaseSubscription<T>
-    {
-        private Filter<T> _filterOnProducerThread;
-
-        public Filter<T> FilterOnProducerThread
-        {
-            get { return _filterOnProducerThread; }
-            set { _filterOnProducerThread = value; }
-        }
-
-        private bool PassesProducerThreadFilter(T msg)
-        {
-            return _filterOnProducerThread == null || _filterOnProducerThread(msg);
-        }
-
-        public void ReceiveOnProducerThread(T msg)
-        {
-            if (PassesProducerThreadFilter(msg))
-            {
-                OnMessageOnProducerThread(msg);
-            }
-        }
-
-        protected abstract void OnMessageOnProducerThread(T msg);
-    }
-
-    public class ChannelSubscription<T>: BaseSubscription<T>, IChannelSubscription<T>
-    {
-        private Action<T> _receiveMethod;
-        private ICommandQueue _targetQueue;
-
+        /// <summary>
+        /// Construct the subscription
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="receiveMethod"></param>
         public ChannelSubscription(ICommandQueue queue, Action<T> receiveMethod)
         {
             _receiveMethod = receiveMethod;
             _targetQueue = queue;
         }
 
+        /// <summary>
+        /// Receives the event and queues the execution on the target queue.
+        /// </summary>
+        /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
                 Command asyncExec = delegate { _receiveMethod(msg); };

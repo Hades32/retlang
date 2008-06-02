@@ -44,7 +44,7 @@ namespace RetlangTests
             {
                 return msg % 2 == 0;
             };
-            channel.Subscribe(subber);
+            channel.SubscribeOnProducerThreads(subber);
             for(int i = 0; i <=4; i++)
             {
                 channel.Publish(i);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -54,10 +55,11 @@ namespace Retlang
         ITimerControl ScheduleOnInterval(Command command, long firstIntervalInMs, long regularIntervalInMs);
     }
 
-    internal class CommandTimer : IPendingCommandRegistry, ICommandTimer
+    internal class CommandTimer : IPendingCommandRegistry, ICommandTimer, IDisposable
     {
+        private volatile bool _running = true;
         private readonly ICommandQueue _queue;
-        private readonly List<ITimerControl> _pending = new List<ITimerControl>();
+        private List<ITimerControl> _pending = new List<ITimerControl>();
 
         public CommandTimer(ICommandQueue queue)
         {
@@ -102,10 +104,22 @@ namespace Retlang
         {
             Command addCommand = delegate
                                      {
-                                         _pending.Add(pending);
-                                         pending.Schedule(this);
+                                         if (_running)
+                                         {
+                                             _pending.Add(pending);
+                                             pending.Schedule(this);
+                                         }
                                      };
             _queue.Enqueue(addCommand);
+        }
+
+        public void Dispose(){
+            _running = false;
+            List<ITimerControl> old = Interlocked.Exchange(ref _pending, new List<ITimerControl>());
+            foreach (ITimerControl control in old)
+            {
+                control.Cancel();
+            }
         }
     }
 }

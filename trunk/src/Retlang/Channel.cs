@@ -64,6 +64,13 @@ namespace Retlang
         /// <returns></returns>
         IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber);
 
+        /// <summary>
+        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <returns></returns>
+        IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber);
+
     }
 
     /// <summary>
@@ -107,7 +114,7 @@ namespace Retlang
         public IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive)
         {
             ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
-            return Subscribe(subscriber);
+            return SubscribeOnProducerThreads(subscriber);
        
         }
 
@@ -150,7 +157,7 @@ namespace Retlang
         public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs)
         {
             ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, intervalInMs);
-            return Subscribe(batch);
+            return SubscribeOnProducerThreads(batch);
         }
 
         /// <summary>
@@ -166,10 +173,15 @@ namespace Retlang
             Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {
             ChannelKeyedBatchSubscriber<K,T> batch = new ChannelKeyedBatchSubscriber<K,T>(keyResolver, receive, queue, intervalInMs);
-            return Subscribe(batch);
+            return SubscribeOnProducerThreads(batch);
         }
 
-        public IUnsubscriber Subscribe(IProducerThreadSubscriber<T> subscriber)
+        /// <summary>
+        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber)
         {
             return SubscribeOnProducerThreads(subscriber.ReceiveOnProducerThread);
         }
@@ -197,7 +209,7 @@ namespace Retlang
         public IUnsubscriber SubscribeToLast(ICommandTimer queue, Action<T> receive, int intervalInMs)
         {
             ChannelLastSubscriber<T> sub = new ChannelLastSubscriber<T>(receive, queue, intervalInMs);
-            return Subscribe(sub);
+            return SubscribeOnProducerThreads(sub);
         }
     }
 

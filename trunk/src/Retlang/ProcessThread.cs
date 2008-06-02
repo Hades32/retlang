@@ -140,6 +140,7 @@ namespace Retlang
         /// </summary>
         public void Stop()
         {
+            _scheduler.Dispose();
             _queue.Stop();
         }
 
