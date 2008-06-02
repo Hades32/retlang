@@ -65,6 +65,5 @@ namespace Retlang
                 return toReturn;
             }
         }
-
     }
 }

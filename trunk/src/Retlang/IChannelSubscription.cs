@@ -1,23 +1,16 @@
 namespace Retlang
 {
-
-
     /// <summary>
     /// Callback method and parameters for a channel subscription
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IChannelSubscription<T>: IProducerThreadSubscriber<T>
+    public interface IChannelSubscription<T> : IProducerThreadSubscriber<T>
     {
         /// <summary>
         /// Filter called from producer threads. Should be thread safe as it may be called from
         /// multiple threads.
         /// </summary>
-        Filter<T> FilterOnProducerThread
-        {
-            get;
-            set;
-        }
-
+        Filter<T> FilterOnProducerThread { get; set; }
     }
 
     /// <summary>

@@ -18,11 +18,11 @@ namespace RetlangTests
             ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
             OnMessage<string> callback = delegate(IMessageHeader header, string received)
-                                                    {
-                                                        Assert.AreEqual(message, received);
-                                                        receivedCallback = true;
-                                                        manualResetEvent.Set();
-                                                    };
+                                             {
+                                                 Assert.AreEqual(message, received);
+                                                 receivedCallback = true;
+                                                 manualResetEvent.Set();
+                                             };
 
             ICommandTimer timer = mockRepository.CreateMock<ICommandTimer>();
             IMessageHeader messageHeader = mockRepository.CreateMock<IMessageHeader>();
@@ -56,12 +56,12 @@ namespace RetlangTests
             ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
             OnMessage<string> callback = delegate(IMessageHeader header, string received)
-                                                    {
-                                                        Assert.AreEqual(lastMessage, received);
-                                                        receivedCallback = true;
-                                                        timesCalled++;
-                                                        manualResetEvent.Set();
-                                                    };
+                                             {
+                                                 Assert.AreEqual(lastMessage, received);
+                                                 receivedCallback = true;
+                                                 timesCalled++;
+                                                 manualResetEvent.Set();
+                                             };
 
             ICommandTimer timer = mockRepository.CreateMock<ICommandTimer>();
             IMessageHeader messageHeader = mockRepository.CreateMock<IMessageHeader>();
@@ -83,7 +83,6 @@ namespace RetlangTests
             Assert.AreEqual(1, timesCalled);
 
             mockRepository.VerifyAll();
-            
         }
     }
 }

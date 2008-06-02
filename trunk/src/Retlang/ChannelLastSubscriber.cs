@@ -6,8 +6,8 @@ namespace Retlang
     /// Subscribes to last event received on the channel. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ChannelLastSubscriber<T>: BaseSubscription<T>
-    { 
+    public class ChannelLastSubscriber<T> : BaseSubscription<T>
+    {
         private readonly object _lock = new object();
 
         private readonly ICommandTimer _context;
@@ -36,15 +36,15 @@ namespace Retlang
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-                lock (_lock)
+            lock (_lock)
+            {
+                if (!_flushPending)
                 {
-                    if (!_flushPending)
-                    {
-                        _context.Schedule(Flush, _flushIntervalInMs);
-                        _flushPending = true;
-                    }
-                    _pending = msg;
+                    _context.Schedule(Flush, _flushIntervalInMs);
+                    _flushPending = true;
                 }
+                _pending = msg;
+            }
         }
 
         /// <summary>
@@ -64,6 +64,5 @@ namespace Retlang
                 return _pending;
             }
         }
-
     }
 }

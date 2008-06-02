@@ -1,6 +1,5 @@
 namespace Retlang
 {
-
     /// <summary>
     /// Message delivery delegate.
     /// </summary>
@@ -27,6 +26,7 @@ namespace Retlang
         /// </summary>
         /// <param name="subscriber"></param>
         void Subscribe(ISubscriber subscriber);
+
         /// <summary>
         /// Unsubscribe.
         /// </summary>

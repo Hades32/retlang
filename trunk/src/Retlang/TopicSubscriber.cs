@@ -36,6 +36,7 @@ namespace Retlang
             _onMessage = onMessage;
             _type = typeof (T);
         }
+
         /// <summary>
         /// Subscription topic
         /// </summary>
@@ -43,6 +44,7 @@ namespace Retlang
         {
             get { return _topic; }
         }
+
         /// <summary>
         /// Expected Type.
         /// </summary>
@@ -50,6 +52,7 @@ namespace Retlang
         {
             get { return _type; }
         }
+
         /// <summary>
         /// Event received on delivery thread.
         /// </summary>

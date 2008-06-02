@@ -20,7 +20,6 @@ namespace Retlang
     /// </summary>
     public class ObjectTransferEnvelopeFactory : ITransferEnvelopeFactory
     {
-
         /// <summary>
         /// <see cref="ITransferEnvelopeFactory.Create(object,object,object)"/>
         /// </summary>

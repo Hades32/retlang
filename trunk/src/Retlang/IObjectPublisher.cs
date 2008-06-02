@@ -12,6 +12,7 @@ namespace Retlang
         /// <param name="msg"></param>
         /// <param name="replyToTopic"></param>
         void Publish(object topic, object msg, object replyToTopic);
+
         /// <summary>
         /// Publish message on the given topic.
         /// </summary>

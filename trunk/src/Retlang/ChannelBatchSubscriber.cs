@@ -7,7 +7,7 @@ namespace Retlang
     /// Batches events for the consuming thread.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ChannelBatchSubscriber<T>: BaseSubscription<T>
+    public class ChannelBatchSubscriber<T> : BaseSubscription<T>
     {
         private readonly object _lock = new object();
         private readonly ICommandTimer _queue;
@@ -37,20 +37,20 @@ namespace Retlang
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-                lock (_lock)
+            lock (_lock)
+            {
+                if (_pending == null)
                 {
-                    if (_pending == null)
-                    {
-                        _pending = new List<T>();
-                        _queue.Schedule(Flush, _interval);
-                    }
-                    _pending.Add(msg);
+                    _pending = new List<T>();
+                    _queue.Schedule(Flush, _interval);
                 }
-           }
+                _pending.Add(msg);
+            }
+        }
 
         private void Flush()
         {
-            IList<T> toFlush= null;
+            IList<T> toFlush = null;
             lock (_lock)
             {
                 if (_pending != null)

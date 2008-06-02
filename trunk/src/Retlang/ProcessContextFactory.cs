@@ -2,7 +2,6 @@ using System;
 
 namespace Retlang
 {
-
     /// <summary>
     /// Creates process bus objects using the backing thread pool or dedicated threads. 
     /// <see cref="IProcessBus"/>
@@ -27,7 +26,7 @@ namespace Retlang
         /// <param name="executor"></param>
         /// <returns></returns>
         IProcessContext CreateAndStart(ICommandExecutor executor);
-        
+
         /// <summary>
         /// Creates a thread backed context with the provided executor.
         /// </summary>
@@ -41,7 +40,7 @@ namespace Retlang
         /// <param name="threadName"></param>
         /// <returns></returns>
         IProcessContext CreateAndStart(string threadName);
-        
+
         /// <summary>
         /// Creates a context with a named thread.
         /// </summary>
@@ -56,7 +55,7 @@ namespace Retlang
         /// <param name="threadName"></param>
         /// <returns></returns>
         IProcessContext CreateAndStart(ICommandExecutor executor, string threadName);
-        
+
         /// <summary>
         /// Creates thread backed context with the provided thread name and executor.
         /// </summary>
@@ -84,7 +83,7 @@ namespace Retlang
         /// <param name="executor"></param>
         /// <returns></returns>
         IProcessBus CreatePooled(ICommandExecutor executor);
-        
+
         /// <summary>
         /// Create a pool backed process bus.
         /// </summary>
@@ -315,6 +314,7 @@ namespace Retlang
             bus.Start();
             return bus;
         }
+
         /// <summary>
         /// Publishes message to the underlying message bus.
         /// </summary>
@@ -323,7 +323,7 @@ namespace Retlang
         /// <param name="replyToTopic"></param>
         public void Publish(object topic, object msg, object replyToTopic)
         {
-            _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));    
+            _bus.Publish(_envelopeFactory.Create(topic, msg, replyToTopic));
         }
 
         /// <summary>

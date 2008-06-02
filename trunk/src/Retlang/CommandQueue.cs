@@ -8,6 +8,7 @@ namespace Retlang
     /// Command delegate.
     /// </summary>
     public delegate void Command();
+
     /// <summary>
     /// An exception delegate for a command failure.
     /// </summary>
@@ -26,6 +27,7 @@ namespace Retlang
         /// <param name="command"></param>
         void Enqueue(Command command);
     }
+
     /// <summary>
     /// A runable queue implementation.
     /// </summary>
@@ -35,6 +37,7 @@ namespace Retlang
         /// Consume events.
         /// </summary>
         void Run();
+
         /// <summary>
         /// Stop consuming events.
         /// </summary>
@@ -63,6 +66,7 @@ namespace Retlang
             get { return _commandRunner; }
             set { _commandRunner = value; }
         }
+
         /// <summary>
         /// Max number of events to be queued.
         /// </summary>
@@ -71,6 +75,7 @@ namespace Retlang
             get { return _maxQueueDepth; }
             set { _maxQueueDepth = value; }
         }
+
         /// <summary>
         /// Max time to wait for space in the queue.
         /// </summary>
@@ -79,6 +84,7 @@ namespace Retlang
             get { return _maxEnqueueWaitTime; }
             set { _maxEnqueueWaitTime = value; }
         }
+
         /// <summary>
         /// <see cref="ICommandQueue.Enqueue(Command)"/>
         /// </summary>
@@ -157,6 +163,7 @@ namespace Retlang
             }
             return true;
         }
+
         /// <summary>
         /// Remove all commands and execute.
         /// </summary>
@@ -171,6 +178,7 @@ namespace Retlang
             _commandRunner.ExecuteAll(toExecute);
             return true;
         }
+
         /// <summary>
         /// Execute commands until stopped.
         /// </summary>

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-
     /// <summary>
     /// Channel subscription that drops duplicates based upon a key.
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="T"></typeparam>
-    public class ChannelKeyedBatchSubscriber<K, T>: BaseSubscription<T>
+    public class ChannelKeyedBatchSubscriber<K, T> : BaseSubscription<T>
     {
         private readonly object _batchLock = new object();
 
@@ -43,17 +42,17 @@ namespace Retlang
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-                lock (_batchLock)
+            lock (_batchLock)
+            {
+                K key = _keyResolver(msg);
+                if (_pending == null)
                 {
-                    K key = _keyResolver(msg);
-                    if (_pending == null)
-                    {
-                        _pending = new Dictionary<K, T>();
-                        _context.Schedule(Flush, _flushIntervalInMs);
-                    }
-                    _pending[key] = msg;
+                    _pending = new Dictionary<K, T>();
+                    _context.Schedule(Flush, _flushIntervalInMs);
                 }
-          }
+                _pending[key] = msg;
+            }
+        }
 
         /// <summary>
         /// Flushed from process thread

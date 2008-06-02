@@ -6,6 +6,7 @@ namespace Retlang
     public class SynchronousCommandQueue : ICommandQueue, ICommandRunner
     {
         private bool _running = true;
+
         /// <summary>
         /// <see cref="ICommandQueue.Enqueue"/>
         /// </summary>
@@ -15,6 +16,7 @@ namespace Retlang
             if (_running)
                 command();
         }
+
         /// <summary>
         /// Start Consuming events.
         /// </summary>
@@ -22,6 +24,7 @@ namespace Retlang
         {
             _running = true;
         }
+
         /// <summary>
         /// Stop consuming events.
         /// </summary>

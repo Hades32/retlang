@@ -2,13 +2,11 @@ using System;
 
 namespace Retlang
 {
-
-   
     /// <summary>
     /// Subscription for events on a channel.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ChannelSubscription<T>: BaseSubscription<T>
+    public class ChannelSubscription<T> : BaseSubscription<T>
     {
         private readonly Action<T> _receiveMethod;
         private readonly ICommandQueue _targetQueue;
@@ -30,8 +28,8 @@ namespace Retlang
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-                Command asyncExec = delegate { _receiveMethod(msg); };
-                _targetQueue.Enqueue(asyncExec);
-         }
+            Command asyncExec = delegate { _receiveMethod(msg); };
+            _targetQueue.Enqueue(asyncExec);
+        }
     }
 }

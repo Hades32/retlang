@@ -14,7 +14,7 @@ namespace Retlang
         /// </summary>
         /// <param name="timer"></param>
         void Remove(ITimerControl timer);
-        
+
         /// <summary>
         /// Queue event to target queue.
         /// </summary>
@@ -45,6 +45,7 @@ namespace Retlang
         /// <param name="firstIntervalInMs"></param>
         /// <returns>a controller to cancel the event.</returns>
         ITimerControl Schedule(Command command, long firstIntervalInMs);
+
         /// <summary>
         /// Schedule an event on a recurring interval.
         /// </summary>
@@ -113,7 +114,8 @@ namespace Retlang
             _queue.Enqueue(addCommand);
         }
 
-        public void Dispose(){
+        public void Dispose()
+        {
             _running = false;
             List<ITimerControl> old = Interlocked.Exchange(ref _pending, new List<ITimerControl>());
             foreach (ITimerControl control in old)

@@ -1,6 +1,5 @@
 namespace Retlang
 {
-
     /// <summary>
     /// Default command executor.
     /// </summary>

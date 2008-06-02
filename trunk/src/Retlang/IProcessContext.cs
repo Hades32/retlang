@@ -2,7 +2,6 @@
 
 namespace Retlang
 {
-
     /// <summary>
     /// Provides methods for publishing and subscribing to events. Events will be delivered sequentially. 
     /// </summary>
@@ -69,7 +68,7 @@ namespace Retlang
         /// <param name="msg"></param>
         /// <returns></returns>
         IRequestReply<T> SendRequest<T>(object topic, object msg);
-        
+
         /// <summary>
         /// Send async request. The timeout command will be invoked if a reply is not returned within the timeout period.
         /// </summary>
@@ -109,6 +108,7 @@ namespace Retlang
         /// Wait for underlying thread to complete.
         /// </summary>
         void Join();
+
         /// <summary>
         /// Wait for underlying thread to complete or for the timeout to expire.
         /// </summary>

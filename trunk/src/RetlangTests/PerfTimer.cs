@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace RetlangTests
 {
-    public class PerfTimer: IDisposable
+    public class PerfTimer : IDisposable
     {
         private readonly int _count;
         private Stopwatch _stopWatch;

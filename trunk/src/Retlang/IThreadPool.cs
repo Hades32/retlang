@@ -13,6 +13,7 @@ namespace Retlang
         /// <param name="callback"></param>
         void Queue(WaitCallback callback);
     }
+
     /// <summary>
     /// Default implementation that uses the .NET thread pool.
     /// </summary>
