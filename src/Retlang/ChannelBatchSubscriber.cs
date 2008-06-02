@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    internal class ChannelBatchSubscriber<T> : IUnsubscriber
+    public class ChannelBatchSubscriber<T>: BaseSubscription<T>, IChannelSubscription<T>
     {
         private readonly object _lock = new object();
         private readonly ICommandTimer _queue;
@@ -20,18 +20,18 @@ namespace Retlang
             _interval = interval;
         }
 
-        public void OnReceive(T msg)
+        protected override void OnMessageOnProducerThread(T msg)
         {
-            lock (_lock)
-            {
-                if (_pending == null)
+                lock (_lock)
                 {
-                    _pending = new List<T>();
-                    _queue.Schedule(Flush, _interval);
+                    if (_pending == null)
+                    {
+                        _pending = new List<T>();
+                        _queue.Schedule(Flush, _interval);
+                    }
+                    _pending.Add(msg);
                 }
-                _pending.Add(msg);
-            }
-        }
+           }
 
         private void Flush()
         {
@@ -48,11 +48,6 @@ namespace Retlang
             {
                 _receive(toFlush);
             }
-        }
-
-        public void Unsubscribe()
-        {
-            _channel.Unsubscribe(OnReceive);
         }
     }
 }
