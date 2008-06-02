@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    internal class ChannelKeyedBatchSubscriber<K, T>
+    public class ChannelKeyedBatchSubscriber<K, T>: BaseSubscription<T>, IChannelSubscription<T>
     {
         private readonly object _batchLock = new object();
 
@@ -28,19 +28,19 @@ namespace Retlang
         /// received on delivery thread
         /// </summary>
         /// <param name="msg"></param>
-        public void OnReceive(T msg)
+        protected override void OnMessageOnProducerThread(T msg)
         {
-            lock (_batchLock)
-            {
-                K key = _keyResolver(msg);
-                if (_pending == null)
+                lock (_batchLock)
                 {
-                    _pending = new Dictionary<K, T>();
-                    _context.Schedule(Flush, _flushIntervalInMs);
+                    K key = _keyResolver(msg);
+                    if (_pending == null)
+                    {
+                        _pending = new Dictionary<K, T>();
+                        _context.Schedule(Flush, _flushIntervalInMs);
+                    }
+                    _pending[key] = msg;
                 }
-                _pending[key] = msg;
-            }
-        }
+          }
 
         /// <summary>
         /// Flushed from process thread

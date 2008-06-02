@@ -2,21 +2,65 @@ using System;
 
 namespace Retlang
 {
-    internal class ChannelSubscription<T>
+    public delegate bool Filter<T>(T msg);
+
+    public interface IProducerThreadSubscriber<T>
     {
-        private readonly ICommandQueue _queue;
-        private readonly Action<T> _receive;
+        void ReceiveOnProducerThread(T msg);
+    }
+    
 
-        public ChannelSubscription(ICommandQueue queue, Action<T> receive)
+    public interface IChannelSubscription<T>: IProducerThreadSubscriber<T>
+    {
+        Filter<T> FilterOnProducerThread
         {
-            _queue = queue;
-            _receive = receive;
+            get;
+            set;
         }
 
-        public void OnReceive(T msg)
+    }
+
+    public abstract class BaseSubscription<T>
+    {
+        private Filter<T> _filterOnProducerThread;
+
+        public Filter<T> FilterOnProducerThread
         {
-            Command asyncExec = delegate { _receive(msg); };
-            _queue.Enqueue(asyncExec);
+            get { return _filterOnProducerThread; }
+            set { _filterOnProducerThread = value; }
         }
+
+        private bool PassesProducerThreadFilter(T msg)
+        {
+            return _filterOnProducerThread == null || _filterOnProducerThread(msg);
+        }
+
+        public void ReceiveOnProducerThread(T msg)
+        {
+            if (PassesProducerThreadFilter(msg))
+            {
+                OnMessageOnProducerThread(msg);
+            }
+        }
+
+        protected abstract void OnMessageOnProducerThread(T msg);
+    }
+
+    public class ChannelSubscription<T>: BaseSubscription<T>, IChannelSubscription<T>
+    {
+        private Action<T> _receiveMethod;
+        private ICommandQueue _targetQueue;
+
+        public ChannelSubscription(ICommandQueue queue, Action<T> receiveMethod)
+        {
+            _receiveMethod = receiveMethod;
+            _targetQueue = queue;
+        }
+
+        protected override void OnMessageOnProducerThread(T msg)
+        {
+                Command asyncExec = delegate { _receiveMethod(msg); };
+                _targetQueue.Enqueue(asyncExec);
+         }
     }
 }

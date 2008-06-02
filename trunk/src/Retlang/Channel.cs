@@ -56,6 +56,14 @@ namespace Retlang
         /// <returns></returns>
         IUnsubscriber SubscribeToLast(ICommandTimer queue, Action<T> receive, int intervalInMs);
 
+        /// <summary>
+        /// Subscribes to messages on producer threads. Action will be invoked on producer thread. Action must
+        /// be thread safe.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <returns></returns>
+        IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber);
+
     }
 
     /// <summary>
@@ -99,7 +107,8 @@ namespace Retlang
         public IUnsubscriber Subscribe(ICommandQueue queue, Action<T> receive)
         {
             ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
-            return SubscribeOnProducerThreads(subscriber.OnReceive);
+            return Subscribe(subscriber);
+       
         }
 
         internal void Unsubscribe(Action<T> toUnsubscribe)
@@ -141,7 +150,7 @@ namespace Retlang
         public IUnsubscriber SubscribeToBatch(ICommandTimer queue, Action<IList<T>> receive, int intervalInMs)
         {
             ChannelBatchSubscriber<T> batch = new ChannelBatchSubscriber<T>(queue, this, receive, intervalInMs);
-            return SubscribeOnProducerThreads(batch.OnReceive);
+            return Subscribe(batch);
         }
 
         /// <summary>
@@ -157,7 +166,12 @@ namespace Retlang
             Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {
             ChannelKeyedBatchSubscriber<K,T> batch = new ChannelKeyedBatchSubscriber<K,T>(keyResolver, receive, queue, intervalInMs);
-            return SubscribeOnProducerThreads(batch.OnReceive);
+            return Subscribe(batch);
+        }
+
+        public IUnsubscriber Subscribe(IProducerThreadSubscriber<T> subscriber)
+        {
+            return SubscribeOnProducerThreads(subscriber.ReceiveOnProducerThread);
         }
 
         /// <summary>
@@ -183,7 +197,7 @@ namespace Retlang
         public IUnsubscriber SubscribeToLast(ICommandTimer queue, Action<T> receive, int intervalInMs)
         {
             ChannelLastSubscriber<T> sub = new ChannelLastSubscriber<T>(receive, queue, intervalInMs);
-            return SubscribeOnProducerThreads(sub.OnReceive);
+            return Subscribe(sub);
         }
     }
 

@@ -1,6 +1,7 @@
 using Retlang;
 using NUnit.Framework;
 using System;
+using System.Threading;
 
 namespace RetlangTests
 {
@@ -36,11 +37,14 @@ namespace RetlangTests
             {
                 IProcessBus responder = fact.CreatePooledAndStart();
                 RequestReplyChannel<string, int> countChannel = new RequestReplyChannel<string, int>();
+
+                AutoResetEvent allSent = new AutoResetEvent(false);
                 Action<IChannelRequest<string, int>> onRequest =
                 delegate(IChannelRequest<string, int> req)
                 {
                     for (int i = 0; i <= 5; i++ )
                         req.SendReply(i);
+                    allSent.Set();
                 };
                 countChannel.Subscribe(responder, onRequest);
                 IChannelReply<int> response = countChannel.SendRequest("hello");
@@ -53,6 +57,7 @@ namespace RetlangTests
                         Assert.IsTrue(response.Receive(10000, out result));
                         Assert.AreEqual(result, i);
                     }
+                    allSent.WaitOne(10000, false);
                 }
                 Assert.IsTrue(response.Receive(30000, out result));
                 Assert.AreEqual(5, result);

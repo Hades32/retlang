@@ -2,7 +2,7 @@ using System;
 
 namespace Retlang
 {
-    internal class ChannelLastSubscriber<T>
+    public class ChannelLastSubscriber<T>: BaseSubscription<T>, IChannelSubscription<T>
     { 
         private readonly object _lock = new object();
 
@@ -30,17 +30,17 @@ namespace Retlang
         /// Receives message from producer thread.
         /// </summary>
         /// <param name="msg"></param>
-        public void OnReceive(T msg)
+        protected override void OnMessageOnProducerThread(T msg)
         {
-            lock (_lock)
-            {
-                if (!_flushPending)
+                lock (_lock)
                 {
-                    _context.Schedule(Flush, _flushIntervalInMs);
-                    _flushPending = true;
+                    if (!_flushPending)
+                    {
+                        _context.Schedule(Flush, _flushIntervalInMs);
+                        _flushPending = true;
+                    }
+                    _pending = msg;
                 }
-                _pending = msg;
-            }
         }
 
         /// <summary>
