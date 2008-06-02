@@ -50,6 +50,7 @@
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="CommandTimer.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
+    <Compile Include="IChannelSubscription.cs" />
     <Compile Include="IProcessContext.cs" />
     <Compile Include="IThreadPool.cs" />
     <Compile Include="ITopicMatcher.cs" />

@@ -147,6 +147,7 @@ namespace Retlang
         /// </summary>
         public void Stop()
         {
+            _timer.Dispose();
             _started = ExecutionState.Stopped;
         }
     }

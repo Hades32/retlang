@@ -2,7 +2,11 @@ using System;
 
 namespace Retlang
 {
-    public class ChannelLastSubscriber<T>: BaseSubscription<T>, IChannelSubscription<T>
+    /// <summary>
+    /// Subscribes to last event received on the channel. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ChannelLastSubscriber<T>: BaseSubscription<T>
     { 
         private readonly object _lock = new object();
 

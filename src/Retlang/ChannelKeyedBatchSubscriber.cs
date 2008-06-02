@@ -3,7 +3,13 @@ using System.Collections.Generic;
 
 namespace Retlang
 {
-    public class ChannelKeyedBatchSubscriber<K, T>: BaseSubscription<T>, IChannelSubscription<T>
+
+    /// <summary>
+    /// Channel subscription that drops duplicates based upon a key.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="T"></typeparam>
+    public class ChannelKeyedBatchSubscriber<K, T>: BaseSubscription<T>
     {
         private readonly object _batchLock = new object();
 
@@ -14,6 +20,13 @@ namespace Retlang
 
         private Dictionary<K, T> _pending = null;
 
+        /// <summary>
+        /// Construct new instance.
+        /// </summary>
+        /// <param name="keyResolver"></param>
+        /// <param name="target"></param>
+        /// <param name="context"></param>
+        /// <param name="flushIntervalInMs"></param>
         public ChannelKeyedBatchSubscriber(Converter<T, K> keyResolver,
                                            Action<IDictionary<K, T>> target,
                                            ICommandTimer context, int flushIntervalInMs)
