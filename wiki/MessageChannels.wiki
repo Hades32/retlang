@@ -18,6 +18,7 @@ This test creates a pool based queue then subscribes it to a channel.
         public void BasicPubSubWithPoolQueue()
         {
             PoolQueue queue = new PoolQueue();
+            queue.Start();
             Channel<string> hello = new Channel<string>();
             AutoResetEvent reset = new AutoResetEvent(false);
             Action<string> receiveHello = delegate(string str)
