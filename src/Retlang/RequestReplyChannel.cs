@@ -5,11 +5,51 @@ using System.Threading;
 namespace Retlang
 {
     /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="R"></typeparam>
+    /// <typeparam name="M"></typeparam>
+    public interface IRequestPublisher<R, M>
+    {
+        /// <summary>
+        /// Send request on the channel.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        IChannelReply<M> SendRequest(R request);
+    }
+
+    /// <summary>
+    /// Methods for working with a replyChannel
+    /// </summary>
+    /// <typeparam name="R"></typeparam>
+    /// <typeparam name="M"></typeparam>
+    public interface IReplySubscriber<R, M>
+    {
+        /// <summary>
+        /// Subscribe to a request on the channel.
+        /// </summary>
+        /// <param name="responder"></param>
+        /// <param name="onRequest"></param>
+        /// <returns></returns>
+        IUnsubscriber Subscribe(ICommandQueue responder, Action<IChannelRequest<R, M>> onRequest);
+    }
+
+    /// <summary>
+    /// Typed channel for request/reply
+    /// </summary>
+    /// <typeparam name="R"></typeparam>
+    /// <typeparam name="M"></typeparam>
+    public interface IRequestReplyChannel<R, M>: IRequestPublisher<R, M>, IReplySubscriber<R,M>
+    {        
+    }
+
+    /// <summary>
     /// Channel for synchronous and asynchronous requests.
     /// </summary>
     /// <typeparam name="R"></typeparam>
     /// <typeparam name="M"></typeparam>
-    public class RequestReplyChannel<R, M>
+    public class RequestReplyChannel<R, M>: IRequestReplyChannel<R,M>
     {
         private readonly Channel<IChannelRequest<R, M>> _requestChannel = new Channel<IChannelRequest<R, M>>();
 
