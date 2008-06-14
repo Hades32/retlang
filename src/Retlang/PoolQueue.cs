@@ -149,5 +149,13 @@ namespace Retlang
             _timer.Dispose();
             _started = ExecutionState.Stopped;
         }
+
+        /// <summary>
+        /// Stops the queue.
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
+        }
     }
 }
