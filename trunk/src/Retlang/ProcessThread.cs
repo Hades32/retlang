@@ -1,11 +1,12 @@
 using System.Threading;
+using System;
 
 namespace Retlang
 {
     /// <summary>
     /// Queues pending events for the process.
     /// </summary>
-    public interface IProcessQueue : ICommandQueue, ICommandTimer
+    public interface IProcessQueue : ICommandQueue, ICommandTimer, IDisposable
     {
         /// <summary>
         /// Start consuming events.
@@ -158,6 +159,14 @@ namespace Retlang
         public void Join()
         {
             _thread.Join();
+        }
+
+        /// <summary>
+        /// Stops the thread.
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }
