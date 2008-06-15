@@ -31,20 +31,26 @@ namespace Retlang
         private void ConsumeNext()
         {
 
-            T msg;
-            if (_channel.Pop(out msg))
+            try
             {
-                _callback(msg);
-            }
-            lock (this)
-            {
-                if (_channel.Count == 0)
+                T msg;
+                if (_channel.Pop(out msg))
                 {
-                    _flushPending = false;
+                    _callback(msg);
                 }
-                else
+            }
+            finally
+            {
+                lock (this)
                 {
-                    _target.Enqueue(ConsumeNext);
+                    if (_channel.Count == 0)
+                    {
+                        _flushPending = false;
+                    }
+                    else
+                    {
+                        _target.Enqueue(ConsumeNext);
+                    }
                 }
             }
 
@@ -90,10 +96,9 @@ namespace Retlang
     /// <typeparam name="T"></typeparam>
     public class QueueChannel<T>: IQueueChannel<T>
     {
-        private Queue<T> _queue = new Queue<T>();
+        private readonly Queue<T> _queue = new Queue<T>();
         internal event Command SignalEvent;
-        private Channel<T> _messageChannel = new Channel<T>();
-
+  
         /// <summary>
         /// Subscribe to queue messages. 
         /// </summary>
@@ -116,9 +121,9 @@ namespace Retlang
                     msg = _queue.Dequeue();
                     return true;
                 }
-                msg = default(T);
-                return false;
             }
+            msg = default(T);
+            return false;
         }
 
         internal int Count

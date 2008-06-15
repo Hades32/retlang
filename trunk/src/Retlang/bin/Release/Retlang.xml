@@ -1442,6 +1442,47 @@
             <param name="replyTo"></param>
             <returns></returns>
         </member>
+        <member name="T:Retlang.IQueueChannel`1">
+            <summary>
+            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
+            multiple subscribers to the queue.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.IQueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
+            <summary>
+            Subscribe to the queue.
+            </summary>
+            <param name="queue"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.IQueueChannel`1.Publish(`0)">
+            <summary>
+            Pushes a message into the queue. Message will be processed by first available consumer.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Retlang.QueueChannel`1">
+            <summary>
+            Default QueueChannel implementation. Once and only once delivery to first available consumer.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.QueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
+            <summary>
+            Subscribe to queue messages. 
+            </summary>
+            <param name="queue"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.QueueChannel`1.Publish(`0)">
+            <summary>
+            Publish message onto queue. Notify consumers of message.
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="T:Retlang.IMessageHeader">
             <summary>
             The topic and reply topic for the message.
@@ -2086,47 +2127,6 @@
             <summary>
             Max time to wait for space in the queue.
             </summary>
-        </member>
-        <member name="T:Retlang.IQueueChannel`1">
-            <summary>
-            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
-            multiple subscribers to the queue.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.IQueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
-            <summary>
-            Subscribe to the queue.
-            </summary>
-            <param name="queue"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.IQueueChannel`1.Publish(`0)">
-            <summary>
-            Pushes a message into the queue. Message will be processed by first available consumer.
-            </summary>
-            <param name="message"></param>
-        </member>
-        <member name="T:Retlang.QueueChannel`1">
-            <summary>
-            Default QueueChannel implementation. Once and only once delivery to first available consumer.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.QueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
-            <summary>
-            Subscribe to queue messages. 
-            </summary>
-            <param name="queue"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.QueueChannel`1.Publish(`0)">
-            <summary>
-            Publish message onto queue. Notify consumers of message.
-            </summary>
-            <param name="message"></param>
         </member>
     </members>
 </doc>
