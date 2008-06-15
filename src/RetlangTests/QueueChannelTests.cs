@@ -38,6 +38,33 @@ namespace RetlangTests
         }
 
         [Test]
+        public void SingleConsumerWithExceptionx()
+        {
+            StubExecutor exec = new StubExecutor();
+            PoolQueue one = new PoolQueue(new DefaultThreadPool(), exec);
+            one.Start();
+            AutoResetEvent reset = new AutoResetEvent(false);
+            using (one)
+            {
+                QueueChannel<int> channel = new QueueChannel<int>();
+                Action<int> onMsg = delegate(int num)
+                {
+                    if (num == 0)
+                    {
+                        throw new Exception();
+                    }
+                    reset.Set();
+                };
+                channel.Subscribe(one, onMsg);
+                channel.Publish(0);
+                channel.Publish(1);
+                Assert.IsTrue(reset.WaitOne(10000, false));
+                Assert.AreEqual(1, exec.failed.Count);
+            }
+        }
+
+
+        [Test]
         public void Multiple()
         {
             List<IProcessQueue> queues = new List<IProcessQueue>();
@@ -72,7 +99,26 @@ namespace RetlangTests
             }
             Assert.IsTrue(reset.WaitOne(10000, false));
             queues.ForEach(delegate(IProcessQueue q) { q.Stop(); });
+        }
+    }
 
+    public class StubExecutor : ICommandExecutor
+    {
+        public List<Exception> failed = new List<Exception>();
+
+        public void ExecuteAll(Command[] toExecute)
+        {
+            foreach (Command c in toExecute)
+            {
+                try
+                {
+                    c();
+                }
+                catch (Exception e)
+                {
+                    failed.Add(e);
+                }
+            }
         }
 
     }
