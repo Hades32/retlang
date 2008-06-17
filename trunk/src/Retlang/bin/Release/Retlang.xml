@@ -892,86 +892,6 @@
             <param name="envelope"></param>
             <param name="received"></param>
         </member>
-        <member name="T:Retlang.IChannelSubscription`1">
-            <summary>
-            Callback method and parameters for a channel subscription
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:Retlang.IProducerThreadSubscriber`1">
-            <summary>
-            Event Subscriber that receives events on producer thread.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)">
-            <summary>
-            Method called from producer threads
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="P:Retlang.IChannelSubscription`1.FilterOnProducerThread">
-            <summary>
-            Filter called from producer threads. Should be thread safe as it may be called from
-            multiple threads.
-            </summary>
-        </member>
-        <member name="T:Retlang.Filter`1">
-            <summary>
-            Message filter delegate
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="msg"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.BaseSubscription`1">
-            <summary>
-            Base implementation for subscription
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.BaseSubscription`1.ReceiveOnProducerThread(`0)">
-            <summary>
-            <see cref="M:Retlang.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)"/>
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.BaseSubscription`1.OnMessageOnProducerThread(`0)">
-            <summary>
-            Called after message has been filtered.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="P:Retlang.BaseSubscription`1.FilterOnProducerThread">
-            <summary>
-            <see cref="P:Retlang.IChannelSubscription`1.FilterOnProducerThread"/>
-            </summary>
-        </member>
-        <member name="T:Retlang.ChannelLastSubscriber`1">
-            <summary>
-            Subscribes to last event received on the channel. 
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.ChannelLastSubscriber`1.#ctor(System.Action{`0},Retlang.ICommandTimer,System.Int32)">
-            <summary>
-            New instance.
-            </summary>
-            <param name="target"></param>
-            <param name="context"></param>
-            <param name="flushIntervalInMs"></param>
-        </member>
-        <member name="M:Retlang.ChannelLastSubscriber`1.OnMessageOnProducerThread(`0)">
-            <summary>
-            Receives message from producer thread.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.ChannelLastSubscriber`1.Flush">
-            <summary>
-            Flushes on IProcessTimer thread.
-            </summary>
-        </member>
         <member name="T:Retlang.IChannelSubscriber`1">
             <summary>
             Channel subscription methods.
@@ -1442,47 +1362,6 @@
             <param name="replyTo"></param>
             <returns></returns>
         </member>
-        <member name="T:Retlang.IQueueChannel`1">
-            <summary>
-            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
-            multiple subscribers to the queue.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.IQueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
-            <summary>
-            Subscribe to the queue.
-            </summary>
-            <param name="queue"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.IQueueChannel`1.Publish(`0)">
-            <summary>
-            Pushes a message into the queue. Message will be processed by first available consumer.
-            </summary>
-            <param name="message"></param>
-        </member>
-        <member name="T:Retlang.QueueChannel`1">
-            <summary>
-            Default QueueChannel implementation. Once and only once delivery to first available consumer.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.QueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
-            <summary>
-            Subscribe to queue messages. 
-            </summary>
-            <param name="queue"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.QueueChannel`1.Publish(`0)">
-            <summary>
-            Publish message onto queue. Notify consumers of message.
-            </summary>
-            <param name="message"></param>
-        </member>
         <member name="T:Retlang.IMessageHeader">
             <summary>
             The topic and reply topic for the message.
@@ -1532,102 +1411,6 @@
         <member name="P:Retlang.MessageHeader.ReplyTo">
             <summary>
             <see cref="P:Retlang.IMessageHeader.ReplyTo"/>
-            </summary>
-        </member>
-        <member name="T:Retlang.IRequestPublisher`2">
-            <summary>
-            
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.IRequestPublisher`2.SendRequest(`0)">
-            <summary>
-            Send request on the channel.
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.IReplySubscriber`2">
-            <summary>
-            Methods for working with a replyChannel
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.IReplySubscriber`2.Subscribe(Retlang.ICommandQueue,System.Action{Retlang.IChannelRequest{`0,`1}})">
-            <summary>
-            Subscribe to a request on the channel.
-            </summary>
-            <param name="responder"></param>
-            <param name="onRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.IRequestReplyChannel`2">
-            <summary>
-            Typed channel for request/reply
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="T:Retlang.RequestReplyChannel`2">
-            <summary>
-            Channel for synchronous and asynchronous requests.
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.RequestReplyChannel`2.Subscribe(Retlang.ICommandQueue,System.Action{Retlang.IChannelRequest{`0,`1}})">
-            <summary>
-            Subscribe to requests.
-            </summary>
-            <param name="responder"></param>
-            <param name="onRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.RequestReplyChannel`2.SendRequest(`0)">
-            <summary>
-            Send request to any and all subscribers.
-            </summary>
-            <param name="p"></param>
-            <returns>null if no subscribers registered for request.</returns>
-        </member>
-        <member name="T:Retlang.IChannelRequest`2">
-            <summary>
-            A request object that can be used to send 1 or many responses to the initial request.
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.IChannelRequest`2.SendReply(`1)">
-            <summary>
-            Send one or more responses.
-            </summary>
-            <param name="replyMsg"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.IChannelRequest`2.Request">
-            <summary>
-            Request Message
-            </summary>
-        </member>
-        <member name="T:Retlang.IChannelReply`1">
-            <summary>
-            Used to receive one or more replies.
-            </summary>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.IChannelReply`1.Receive(System.Int32,`0@)">
-            <summary>
-            Receive a single response. Can be called repeatedly for multiple replies.
-            </summary>
-            <param name="timeout"></param>
-            <param name="result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.ChannelRequest`2.Dispose">
-            <summary>
-            Stop receiving replies.
             </summary>
         </member>
         <member name="T:Retlang.XmlTransferEnvelope">
@@ -1893,6 +1676,53 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Retlang.BaseSubscription`1">
+            <summary>
+            Base implementation for subscription
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.IChannelSubscription`1">
+            <summary>
+            Callback method and parameters for a channel subscription
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.IProducerThreadSubscriber`1">
+            <summary>
+            Event Subscriber that receives events on producer thread.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)">
+            <summary>
+            Method called from producer threads
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="P:Retlang.IChannelSubscription`1.FilterOnProducerThread">
+            <summary>
+            Filter called from producer threads. Should be thread safe as it may be called from
+            multiple threads.
+            </summary>
+        </member>
+        <member name="M:Retlang.BaseSubscription`1.ReceiveOnProducerThread(`0)">
+            <summary>
+            <see cref="M:Retlang.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)"/>
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.BaseSubscription`1.OnMessageOnProducerThread(`0)">
+            <summary>
+            Called after message has been filtered.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="P:Retlang.BaseSubscription`1.FilterOnProducerThread">
+            <summary>
+            <see cref="P:Retlang.IChannelSubscription`1.FilterOnProducerThread"/>
+            </summary>
+        </member>
         <member name="M:Retlang.ChannelSubscription`1.#ctor(Retlang.ICommandQueue,System.Action{`0})">
             <summary>
             Construct the subscription
@@ -2127,6 +1957,80 @@
             <summary>
             Max time to wait for space in the queue.
             </summary>
+        </member>
+        <member name="T:Retlang.ChannelLastSubscriber`1">
+            <summary>
+            Subscribes to last event received on the channel. 
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.ChannelLastSubscriber`1.#ctor(System.Action{`0},Retlang.ICommandTimer,System.Int32)">
+            <summary>
+            New instance.
+            </summary>
+            <param name="target"></param>
+            <param name="context"></param>
+            <param name="flushIntervalInMs"></param>
+        </member>
+        <member name="M:Retlang.ChannelLastSubscriber`1.OnMessageOnProducerThread(`0)">
+            <summary>
+            Receives message from producer thread.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.ChannelLastSubscriber`1.Flush">
+            <summary>
+            Flushes on IProcessTimer thread.
+            </summary>
+        </member>
+        <member name="T:Retlang.IQueueChannel`1">
+            <summary>
+            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
+            multiple subscribers to the queue.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.IQueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
+            <summary>
+            Subscribe to the queue.
+            </summary>
+            <param name="queue"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.IQueueChannel`1.Publish(`0)">
+            <summary>
+            Pushes a message into the queue. Message will be processed by first available consumer.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Retlang.QueueChannel`1">
+            <summary>
+            Default QueueChannel implementation. Once and only once delivery to first available consumer.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.QueueChannel`1.Subscribe(Retlang.ICommandQueue,System.Action{`0})">
+            <summary>
+            Subscribe to queue messages. 
+            </summary>
+            <param name="queue"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.QueueChannel`1.Publish(`0)">
+            <summary>
+            Publish message onto queue. Notify consumers of message.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Retlang.Filter`1">
+            <summary>
+            Message filter delegate
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="msg"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
