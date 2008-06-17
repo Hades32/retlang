@@ -1,3 +1,5 @@
+The following examples demonstrate batching with topic based messages. Batching can also be done directly on MessageChannels.
+
 = Example: Receive All Events Batched Every Second =
 
 This example batches *_all_* events being published on any process in a second.
