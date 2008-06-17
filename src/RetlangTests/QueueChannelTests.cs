@@ -38,7 +38,7 @@ namespace RetlangTests
         }
 
         [Test]
-        public void SingleConsumerWithExceptionx()
+        public void SingleConsumerWithException()
         {
             StubExecutor exec = new StubExecutor();
             PoolQueue one = new PoolQueue(new DefaultThreadPool(), exec);
