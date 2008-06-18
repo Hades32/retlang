@@ -24,8 +24,8 @@ namespace Retlang
         /// <summary>
         /// Append command to end of queue.
         /// </summary>
-        /// <param name="command"></param>
-        void Enqueue(Command command);
+        /// <param name="commands"></param>
+        void Enqueue(params Command[] commands);
     }
 
     /// <summary>
@@ -86,28 +86,28 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="ICommandQueue.Enqueue(Command)"/>
+        /// <see cref="ICommandQueue.Enqueue(Command[])"/>
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Command command)
+        /// <param name="commands"></param>
+        public void Enqueue(params Command[] commands)
         {
             lock (_lock)
             {
-                if (SpaceAvailable())
+                if (SpaceAvailable(commands.Length))
                 {
-                    _commands.Add(command);
+                    _commands.AddRange(commands);
                     Monitor.PulseAll(_lock);
                 }
             }
         }
 
-        private bool SpaceAvailable()
+        private bool SpaceAvailable(int toAdd)
         {
             if (!_running)
             {
                 return false;
             }
-            while (_maxQueueDepth > 0 && _commands.Count >= _maxQueueDepth)
+            while (_maxQueueDepth > 0 && _commands.Count + toAdd > _maxQueueDepth)
             {
                 if (_maxEnqueueWaitTime <= 0)
                 {
@@ -120,7 +120,7 @@ namespace Retlang
                     {
                         return false;
                     }
-                    if (_maxQueueDepth > 0 && _commands.Count >= _maxQueueDepth)
+                    if (_maxQueueDepth > 0 && _commands.Count + toAdd > _maxQueueDepth)
                     {
                         throw new QueueFullException(_commands.Count);
                     }

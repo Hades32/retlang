@@ -10,11 +10,16 @@ namespace Retlang
         /// <summary>
         /// <see cref="ICommandQueue.Enqueue"/>
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Command command)
+        /// <param name="commands"></param>
+        public void Enqueue(params Command[] commands)
         {
             if (_running)
-                command();
+            {
+                foreach (Command toExecute in commands)
+                {
+                    toExecute();
+                }
+            }
         }
 
         /// <summary>
