@@ -1,4 +1,4 @@
 #labels Featured
 === Downloadable CHM Docs ===
 
-[http://retlang.googlecode.com/files/Retlang.0.3.0.0.dll.chm 0.3.0.0]
+[http://retlang.googlecode.com/files/Retlang.0.3.0.2.dll.chm 0.3.0.2]
