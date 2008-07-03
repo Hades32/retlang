@@ -78,12 +78,21 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="ICommandQueue.Enqueue(Command[])"/>
+        /// <see cref="ICommandQueue.EnqueueAll(Command[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
-            _processThread.Enqueue(commands);
+            _processThread.EnqueueAll(commands);
+        }
+
+        /// <summary>
+        /// Queue single command.
+        /// </summary>
+        /// <param name="comm"></param>
+        public void Enqueue(Command comm)
+        {
+            _processThread.Enqueue(comm);
         }
 
         /// <summary>

@@ -106,12 +106,21 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="ICommandQueue.Enqueue(Command[])"/>
+        /// <see cref="ICommandQueue.EnqueueAll(Command[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
-            _queue.Enqueue(commands);
+            _queue.EnqueueAll(commands);
+        }
+
+        /// <summary>
+        /// Queue command.
+        /// </summary>
+        /// <param name="command"></param>
+        public void Enqueue(Command command)
+        {
+            _queue.Enqueue(command);
         }
 
         /// <summary>

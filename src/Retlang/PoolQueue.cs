@@ -43,10 +43,10 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="ICommandQueue.Enqueue(Command[])"/>
+        /// <see cref="ICommandQueue.EnqueueAll(Command[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -56,6 +56,33 @@ namespace Retlang
             lock (_lock)
             {
                 _queue.AddRange(commands);
+                if (_started == ExecutionState.Created)
+                {
+                    return;
+                }
+                if (!_flushPending)
+                {
+                    _pool.Queue(Flush);
+                    _flushPending = true;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Queue command.
+        /// </summary>
+        /// <param name="commands"></param>
+        public void Enqueue(Command commands)
+        {
+            if (_started == ExecutionState.Stopped)
+            {
+                return;
+            }
+
+            lock (_lock)
+            {
+                _queue.Add(commands);
                 if (_started == ExecutionState.Created)
                 {
                     return;

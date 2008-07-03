@@ -25,7 +25,13 @@ namespace Retlang
         /// Append command to end of queue.
         /// </summary>
         /// <param name="commands"></param>
-        void Enqueue(params Command[] commands);
+        void EnqueueAll(params Command[] commands);
+
+        /// <summary>
+        /// Enqueue a single command.
+        /// </summary>
+        /// <param name="command"></param>
+        void Enqueue(Command command);
     }
 
     /// <summary>
@@ -86,16 +92,32 @@ namespace Retlang
         }
 
         /// <summary>
-        /// <see cref="ICommandQueue.Enqueue(Command[])"/>
+        /// <see cref="ICommandQueue.EnqueueAll(Command[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
             lock (_lock)
             {
                 if (SpaceAvailable(commands.Length))
                 {
                     _commands.AddRange(commands);
+                    Monitor.PulseAll(_lock);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Queue command.
+        /// </summary>
+        /// <param name="command"></param>
+        public void Enqueue(Command command)
+        {
+            lock (_lock)
+            {
+                if (SpaceAvailable(1))
+                {
+                    _commands.Add(command);
                     Monitor.PulseAll(_lock);
                 }
             }
