@@ -146,7 +146,7 @@ namespace RetlangTests
 
         public delegate bool OnSubscribe(ISubscriber subscriber);
 
-        public delegate bool OnCommand(params Command[] commands);
+        public delegate bool OnCommand(Command commands);
 
         [Test]
         public void UnsubscribeAllOnStop()
@@ -155,12 +155,9 @@ namespace RetlangTests
             IMessageBus bus = repo.CreateMock<IMessageBus>();
             IProcessThread thread = repo.CreateMock<IProcessThread>();
 
-            OnCommand executor = delegate(Command[] commands)
+            OnCommand executor = delegate(Command commands)
                                      {
-                                         foreach (Command command in commands)
-                                         {
-                                             command();
-                                         }
+                                         commands();
 
                                          return true;
                                      };

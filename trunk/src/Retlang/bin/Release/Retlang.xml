@@ -217,11 +217,17 @@
             Queue for command objects.
             </summary>
         </member>
-        <member name="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.ICommandQueue.EnqueueAll(Retlang.Command[])">
             <summary>
             Append command to end of queue.
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.ICommandQueue.Enqueue(Retlang.Command)">
+            <summary>
+            Enqueue a single command.
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="T:Retlang.ICommandTimer">
             <summary>
@@ -378,11 +384,17 @@
             <param name="regularIntervalInMs"></param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.ProcessBus.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.ProcessBus.EnqueueAll(Retlang.Command[])">
             <summary>
-            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])"/>
+            <see cref="M:Retlang.ICommandQueue.EnqueueAll(Retlang.Command[])"/>
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.ProcessBus.Enqueue(Retlang.Command)">
+            <summary>
+            Queue single command.
+            </summary>
+            <param name="comm"></param>
         </member>
         <member name="M:Retlang.ProcessBus.Publish(System.Object,System.Object,System.Object)">
             <summary>
@@ -1137,9 +1149,15 @@
             Create a pool queue with the default thread pool and command executor.
             </summary>
         </member>
-        <member name="M:Retlang.PoolQueue.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.PoolQueue.EnqueueAll(Retlang.Command[])">
             <summary>
-            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])"/>
+            <see cref="M:Retlang.ICommandQueue.EnqueueAll(Retlang.Command[])"/>
+            </summary>
+            <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.PoolQueue.Enqueue(Retlang.Command)">
+            <summary>
+            Queue command.
             </summary>
             <param name="commands"></param>
         </member>
@@ -1363,11 +1381,17 @@
             Stop consuming events.
             </summary>
         </member>
-        <member name="M:Retlang.SynchronousCommandQueue.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.SynchronousCommandQueue.EnqueueAll(Retlang.Command[])">
             <summary>
-            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])"/>
+            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command)"/>
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.SynchronousCommandQueue.Enqueue(Retlang.Command)">
+            <summary>
+            Queue command
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="M:Retlang.SynchronousCommandQueue.Run">
             <summary>
@@ -1666,11 +1690,17 @@
             </summary>
             <param name="thread"></param>
         </member>
-        <member name="M:Retlang.MessageBus.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.MessageBus.EnqueueAll(Retlang.Command[])">
             <summary>
             Append command to queue.
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.MessageBus.Enqueue(Retlang.Command)">
+            <summary>
+            Queue command.
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="M:Retlang.MessageBus.Publish(Retlang.ITransferEnvelope)">
             <summary>
@@ -1748,11 +1778,17 @@
             <param name="threadName"></param>
             <param name="isBackground"></param>
         </member>
-        <member name="M:Retlang.ProcessThread.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.ProcessThread.EnqueueAll(Retlang.Command[])">
             <summary>
-            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])"/>
+            <see cref="M:Retlang.ICommandQueue.EnqueueAll(Retlang.Command[])"/>
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.ProcessThread.Enqueue(Retlang.Command)">
+            <summary>
+            Queue command.
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="M:Retlang.ProcessThread.Schedule(Retlang.Command,System.Int64)">
             <summary>
@@ -1929,11 +1965,17 @@
             Default implementation.
             </summary>
         </member>
-        <member name="M:Retlang.CommandQueue.Enqueue(Retlang.Command[])">
+        <member name="M:Retlang.CommandQueue.EnqueueAll(Retlang.Command[])">
             <summary>
-            <see cref="M:Retlang.ICommandQueue.Enqueue(Retlang.Command[])"/>
+            <see cref="M:Retlang.ICommandQueue.EnqueueAll(Retlang.Command[])"/>
             </summary>
             <param name="commands"></param>
+        </member>
+        <member name="M:Retlang.CommandQueue.Enqueue(Retlang.Command)">
+            <summary>
+            Queue command.
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="M:Retlang.CommandQueue.DequeueAll">
             <summary>

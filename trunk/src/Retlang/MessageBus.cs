@@ -90,9 +90,18 @@ namespace Retlang
         /// Append command to queue.
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
-            _thread.Enqueue(commands);
+            _thread.EnqueueAll(commands);
+        }
+
+        /// <summary>
+        /// Queue command.
+        /// </summary>
+        /// <param name="command"></param>
+        public void Enqueue(Command command)
+        {
+            _thread.Enqueue(command);
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Retlang
         /// <see cref="ICommandQueue.Enqueue"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(params Command[] commands)
+        public void EnqueueAll(params Command[] commands)
         {
             if (_running)
             {
@@ -19,6 +19,18 @@ namespace Retlang
                 {
                     toExecute();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Queue command
+        /// </summary>
+        /// <param name="command"></param>
+        public void Enqueue(Command command)
+        {
+            if (_running)
+            {
+                command();
             }
         }
 
