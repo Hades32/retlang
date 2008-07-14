@@ -6,7 +6,7 @@
   * Added Queue Channel implementation
 
 = 0.3.0.0 =
-  * Added Channels
+  * Added MessageChannels
 
 = 0.2.9.1 =
   * Assembly version set to 0.2.9.0
