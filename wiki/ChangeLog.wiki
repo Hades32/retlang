@@ -1,3 +1,13 @@
+= 0.3.0.3 =
+  * Performance enhancements
+  * Added EnqueueAll method on ICommandQueue
+
+= 0.3.0.2  = 
+  * Added Queue Channel implementation
+
+= 0.3.0.0 =
+  * Added Channels
+
 = 0.2.9.1 =
   * Assembly version set to 0.2.9.0
 
