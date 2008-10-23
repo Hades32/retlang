@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using NUnit.Framework;
-using Retlang;
+using Retlang.Channels;
+using Retlang.Fibers;
 
 namespace RetlangTests
 {
@@ -11,54 +12,49 @@ namespace RetlangTests
         [Test]
         public void SynchronousRequestReply()
         {
-            using (ProcessContextFactory fact = ProcessFactoryFixture.CreateAndStart())
-            {
-                IProcessBus responder = fact.CreatePooledAndStart();
-                RequestReplyChannel<string, DateTime> timeCheck = new RequestReplyChannel<string, DateTime>();
-                DateTime now = DateTime.Now;
-                Action<IChannelRequest<string, DateTime>> onRequest =
-                    delegate(IChannelRequest<string, DateTime> req) { req.SendReply(now); };
-                timeCheck.Subscribe(responder, onRequest);
-                IChannelReply<DateTime> response = timeCheck.SendRequest("hello");
-                DateTime result;
-                Assert.IsTrue(response.Receive(10000, out result));
-                Assert.AreEqual(result, now);
-            }
+            IFiber responder = new PoolFiber();
+            responder.Start();
+            RequestReplyChannel<string, DateTime> timeCheck = new RequestReplyChannel<string, DateTime>();
+            DateTime now = DateTime.Now;
+            Action<IRequest<string, DateTime>> onRequest =
+                delegate(IRequest<string, DateTime> req) { req.SendReply(now); };
+            timeCheck.Subscribe(responder, onRequest);
+            IReply<DateTime> response = timeCheck.SendRequest("hello");
+            DateTime result;
+            Assert.IsTrue(response.Receive(10000, out result));
+            Assert.AreEqual(result, now);
         }
-
 
         [Test]
         public void SynchronousRequestWithMultipleReplies()
         {
-            using (ProcessContextFactory fact = ProcessFactoryFixture.CreateAndStart())
-            {
-                IProcessBus responder = fact.CreatePooledAndStart();
-                RequestReplyChannel<string, int> countChannel = new RequestReplyChannel<string, int>();
+            IFiber responder = new PoolFiber();
+            responder.Start();
+            RequestReplyChannel<string, int> countChannel = new RequestReplyChannel<string, int>();
 
-                AutoResetEvent allSent = new AutoResetEvent(false);
-                Action<IChannelRequest<string, int>> onRequest =
-                    delegate(IChannelRequest<string, int> req)
-                        {
-                            for (int i = 0; i <= 5; i++)
-                                req.SendReply(i);
-                            allSent.Set();
-                        };
-                countChannel.Subscribe(responder, onRequest);
-                IChannelReply<int> response = countChannel.SendRequest("hello");
-                int result;
-                using (response)
+            AutoResetEvent allSent = new AutoResetEvent(false);
+            Action<IRequest<string, int>> onRequest =
+                delegate(IRequest<string, int> req)
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        Assert.IsTrue(response.Receive(10000, out result));
-                        Assert.AreEqual(result, i);
-                    }
-                    allSent.WaitOne(10000, false);
+                    for (int i = 0; i <= 5; i++)
+                        req.SendReply(i);
+                    allSent.Set();
+                };
+            countChannel.Subscribe(responder, onRequest);
+            IReply<int> response = countChannel.SendRequest("hello");
+            int result;
+            using (response)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Assert.IsTrue(response.Receive(10000, out result));
+                    Assert.AreEqual(result, i);
                 }
-                Assert.IsTrue(response.Receive(30000, out result));
-                Assert.AreEqual(5, result);
-                Assert.IsFalse(response.Receive(30000, out result));
+                allSent.WaitOne(10000, false);
             }
+            Assert.IsTrue(response.Receive(30000, out result));
+            Assert.AreEqual(5, result);
+            Assert.IsFalse(response.Receive(30000, out result));
         }
     }
 }

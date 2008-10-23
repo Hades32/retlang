@@ -5,11 +5,12 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RetlangTests</RootNamespace>
     <AssemblyName>RetlangTests</AssemblyName>
-    <StartupObject>RetlangTests.PerfTests</StartupObject>
+    <StartupObject>
+    </StartupObject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>RetlangTests.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -44,36 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlgebraDemonstration.cs" />
-    <Compile Include="BatchExampleTests.cs" />
-    <Compile Include="BatchSubscriberTests.cs" />
-    <Compile Include="BinaryTransferEnvelopeTests.cs" />
-    <Compile Include="ChannelTests.cs" />
+    <Compile Include="Channels\ChannelTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
-    <Compile Include="Demonstration.cs" />
-    <Compile Include="FibonacciDemonstration.cs" />
-    <Compile Include="LastSubscriberTests.cs" />
-    <Compile Include="MessageHeaderTests.cs" />
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTimer.cs" />
-    <Compile Include="PoolQueueTests.cs" />
+    <Compile Include="Tests\PoolFiberTests.cs" />
     <Compile Include="QueueChannelTests.cs" />
     <Compile Include="RequestReplyChannelTests.cs" />
-    <Compile Include="SubscriberRegistryTests.cs" />
-    <Compile Include="SubstitutabilityBaseTest.cs" />
     <Compile Include="TimerCommandTests.cs" />
     <Compile Include="TimerThreadTests.cs" />
-    <Compile Include="TopicEqualsTests.cs" />
-    <Compile Include="TopicRegexTests.cs" />
-    <Compile Include="TopicSelectorTests.cs" />
-    <Compile Include="XmlTransferEnvelopeTests.cs" />
-    <Compile Include="KeyedBatchSubscriberTests.cs" />
-    <Compile Include="GettingStartedTests.cs" />
-    <Compile Include="PerfTests.cs" />
-    <Compile Include="ProcessContextTests.cs" />
-    <Compile Include="ProcessFactoryFixture.cs" />
-    <Compile Include="ProcessThreadTests.cs" />
-    <Compile Include="MessageBusTests.cs" />
+    <Compile Include="Tests\ThreadFiberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
