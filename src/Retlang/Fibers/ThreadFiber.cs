@@ -1,0 +1,155 @@
+using System;
+using System.Threading;
+using Retlang.Core;
+
+namespace Retlang.Fibers
+{
+    /// <summary>
+    /// Default implementation for IProcessThread.
+    /// <see cref="IFiber"/>
+    /// </summary>
+    public class ThreadFiber : IThreadFiber
+    {
+        private static int THREAD_COUNT;
+        private readonly DisposableList _disposables = new DisposableList();
+
+        private readonly Thread _thread;
+        private readonly ICommandExecutor _queue;
+        private readonly CommandTimer _scheduler;
+
+        /// <summary>
+        /// Creates a new thread with the backing executor.
+        /// </summary>
+        /// <param name="executor"></param>
+        public ThreadFiber(ICommandExecutor executor) : this(executor, "ThreadFiber-" + GetNextThreadId(), true)
+        {}
+
+        /// <summary>
+        /// Create a process thread with a default queue.
+        /// </summary>
+        public ThreadFiber() : this(new CommandQueue())
+        {}
+
+        /// <summary>
+        /// Creates a new thread.
+        /// </summary>
+        /// <param name="executor">The queue</param>
+        /// <param name="threadName">custom thread name</param>
+        public ThreadFiber(ICommandExecutor executor, string threadName)
+            : this(executor, threadName, true)
+        {}
+
+        /// <summary>
+        /// Create process thread.
+        /// </summary>
+        /// <param name="executor"></param>
+        /// <param name="threadName"></param>
+        /// <param name="isBackground"></param>
+        public ThreadFiber(ICommandExecutor executor, string threadName, bool isBackground)
+        {
+            _queue = executor;
+            _thread = new Thread(RunThread);
+            _thread.Name = threadName;
+            _thread.IsBackground = isBackground;
+            _scheduler = new CommandTimer(this);
+        }
+
+        /// <summary>
+        /// <see cref="IFiber"/>
+        /// </summary>
+        public Thread Thread
+        {
+            get { return _thread; }
+        }
+
+        private static int GetNextThreadId()
+        {
+            return Interlocked.Increment(ref THREAD_COUNT);
+        }
+
+        private void RunThread()
+        {
+            _queue.Run();
+        }
+
+        /// <summary>
+        /// <see cref="IDisposingExecutor.EnqueueAll(Command[])"/>
+        /// </summary>
+        /// <param name="commands"></param>
+        public void EnqueueAll(params Command[] commands)
+        {
+            _queue.EnqueueAll(commands);
+        }
+
+        /// <summary>
+        /// Queue command.
+        /// </summary>
+        /// <param name="command"></param>
+        public void Enqueue(Command command)
+        {
+            _queue.Enqueue(command);
+        }
+
+        public void Add(IDisposable toAdd)
+        {
+            _disposables.Add(toAdd);
+        }
+
+        public bool Remove(IDisposable victim)
+        {
+            return _disposables.Remove(victim);
+        }
+
+        public int DisposableCount
+        {
+            get { return _disposables.Count; }
+        }
+
+        /// <summary>
+        /// <see cref="IScheduler.Schedule(Command,long)"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="timeTilEnqueueInMs"></param>
+        /// <returns></returns>
+        public ITimerControl Schedule(Command command, long timeTilEnqueueInMs)
+        {
+            return _scheduler.Schedule(command, timeTilEnqueueInMs);
+        }
+
+        /// <summary>
+        /// <see cref="IScheduler.ScheduleOnInterval(Command,long,long)"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="firstInMs"></param>
+        /// <param name="regularInMs"></param>
+        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long regularInMs)
+        {
+            return _scheduler.ScheduleOnInterval(command, firstInMs, regularInMs);
+        }
+
+        /// <summary>
+        /// <see cref="IFiber.Start"/>
+        /// </summary>
+        public void Start()
+        {
+            _thread.Start();
+        }
+
+        /// <summary>
+        /// <see cref="IThreadFiber.Join"/>
+        /// </summary>
+        public void Join()
+        {
+            _thread.Join();
+        }
+
+        /// <summary>
+        /// Stops the thread.
+        /// </summary>
+        public void Dispose()
+        {
+            _scheduler.Dispose();
+            _queue.Stop();
+        }
+    }
+}

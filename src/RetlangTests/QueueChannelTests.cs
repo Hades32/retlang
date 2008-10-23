@@ -1,8 +1,10 @@
 using NUnit.Framework;
-using Retlang;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using Retlang.Channels;
+using Retlang.Core;
+using Retlang.Fibers;
 
 namespace RetlangTests
 {
@@ -13,7 +15,7 @@ namespace RetlangTests
         [Test]
         public void SingleConsumer()
         {
-            PoolQueue one = new PoolQueue();
+            PoolFiber one = new PoolFiber();
             one.Start();
             int oneConsumed = 0;
             AutoResetEvent reset = new AutoResetEvent(false);
@@ -41,7 +43,7 @@ namespace RetlangTests
         public void SingleConsumerWithException()
         {
             StubExecutor exec = new StubExecutor();
-            PoolQueue one = new PoolQueue(new DefaultThreadPool(), exec);
+            PoolFiber one = new PoolFiber(new DefaultThreadPool(), exec);
             one.Start();
             AutoResetEvent reset = new AutoResetEvent(false);
             using (one)
@@ -67,7 +69,7 @@ namespace RetlangTests
         [Test]
         public void Multiple()
         {
-            List<IProcessQueue> queues = new List<IProcessQueue>();
+            List<IFiber> queues = new List<IFiber>();
             int receiveCount = 0;
             AutoResetEvent reset = new AutoResetEvent(false);
             QueueChannel<int> channel = new QueueChannel<int>();
@@ -76,33 +78,33 @@ namespace RetlangTests
             object updateLock = new object();
             for (int i = 0; i < 5; i++)
             {
-                Action<int> onReceive = delegate(int msgNum)
-                {
-                    Thread.Sleep(15);
-                    lock (updateLock)
-                    {
-                        receiveCount++;
-                        if (receiveCount == messageCount)
-                        {
-                            reset.Set();
-                        }
-                    }
-                };
-                PoolQueue queue = new PoolQueue();
-                queue.Start();
-                queues.Add(queue);
-                channel.Subscribe(queue, onReceive);
+                Action<int> onReceive = delegate
+                                            {
+                                                Thread.Sleep(15);
+                                                lock (updateLock)
+                                                {
+                                                    receiveCount++;
+                                                    if (receiveCount == messageCount)
+                                                    {
+                                                        reset.Set();
+                                                    }
+                                                }
+                                            };
+                PoolFiber fiber = new PoolFiber();
+                fiber.Start();
+                queues.Add(fiber);
+                channel.Subscribe(fiber, onReceive);
             }
             for (int i = 0; i < messageCount; i++)
             {
                 channel.Publish(i);
             }
             Assert.IsTrue(reset.WaitOne(10000, false));
-            queues.ForEach(delegate(IProcessQueue q) { q.Stop(); });
+            queues.ForEach(delegate(IFiber q) { q.Dispose(); });
         }
     }
 
-    public class StubExecutor : ICommandExecutor
+    public class StubExecutor : IBatchExecutor
     {
         public List<Exception> failed = new List<Exception>();
 

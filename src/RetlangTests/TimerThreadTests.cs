@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NUnit.Framework;
-using Retlang;
+using Retlang.Core;
 
 namespace RetlangTests
 {

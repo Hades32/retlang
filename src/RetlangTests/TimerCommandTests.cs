@@ -1,6 +1,6 @@
 using System.Threading;
 using NUnit.Framework;
-using Retlang;
+using Retlang.Core;
 using Rhino.Mocks;
 
 namespace RetlangTests
