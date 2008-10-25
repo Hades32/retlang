@@ -64,35 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlgebraDemonstration.cs" />
-    <Compile Include="BatchExampleTests.cs" />
-    <Compile Include="BatchSubscriberTests.cs" />
-    <Compile Include="BinaryTransferEnvelopeTests.cs" />
-    <Compile Include="ChannelTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
-    <Compile Include="Demonstration.cs" />
-    <Compile Include="FibonacciDemonstration.cs" />
-    <Compile Include="LastSubscriberTests.cs" />
-    <Compile Include="MessageHeaderTests.cs" />
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTimer.cs" />
-    <Compile Include="PoolQueueTests.cs" />
     <Compile Include="QueueChannelTests.cs" />
-    <Compile Include="SubscriberRegistryTests.cs" />
-    <Compile Include="SubstitutabilityBaseTest.cs" />
+    <Compile Include="RequestReplyChannelTests.cs" />
     <Compile Include="TimerCommandTests.cs" />
     <Compile Include="TimerThreadTests.cs" />
-    <Compile Include="TopicEqualsTests.cs" />
-    <Compile Include="TopicRegexTests.cs" />
-    <Compile Include="TopicSelectorTests.cs" />
-    <Compile Include="XmlTransferEnvelopeTests.cs" />
-    <Compile Include="KeyedBatchSubscriberTests.cs" />
-    <Compile Include="GettingStartedTests.cs" />
-    <Compile Include="PerfTests.cs" />
-    <Compile Include="ProcessContextTests.cs" />
-    <Compile Include="ProcessFactoryFixture.cs" />
-    <Compile Include="ProcessThreadTests.cs" />
-    <Compile Include="MessageBusTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
