@@ -90,16 +90,28 @@ namespace Retlang.Fibers
             _queue.Enqueue(command);
         }
 
+        /// <summary>
+        /// Add Disposable to be invoked when Fiber is disposed.
+        /// </summary>
+        /// <param name="toAdd"></param>
         public void Add(IDisposable toAdd)
         {
             _disposables.Add(toAdd);
         }
 
+        /// <summary>
+        /// Remove disposable.
+        /// </summary>
+        /// <param name="victim"></param>
+        /// <returns></returns>
         public bool Remove(IDisposable victim)
         {
             return _disposables.Remove(victim);
         }
 
+        /// <summary>
+        /// Number of disposables.
+        /// </summary>
         public int DisposableCount
         {
             get { return _disposables.Count; }

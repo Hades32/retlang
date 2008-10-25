@@ -92,16 +92,28 @@ namespace Retlang.Fibers
             }
         }
 
+        /// <summary>
+        /// Register Disposable.
+        /// </summary>
+        /// <param name="toAdd"></param>
         public void Add(IDisposable toAdd)
         {
             _disposables.Add(toAdd);
         }
 
+        /// <summary>
+        /// Remove Disposable.
+        /// </summary>
+        /// <param name="victim"></param>
+        /// <returns></returns>
         public bool Remove(IDisposable victim)
         {
             return _disposables.Remove(victim);
         }
 
+        /// <summary>
+        /// Number of currently registered disposables.
+        /// </summary>
         public int DisposableCount
         {
             get { return _disposables.Count; }
