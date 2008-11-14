@@ -1,6 +1,6 @@
-The following example demonstrates how to calculate a fibonnaci sequence using Retlang. 
+The following example demonstrates how to calculate a [http://en.wikipedia.org/wiki/Fibonacci_number Fibonnaci sequence] using Retlang. 
 
-Example provided by [OliverGugenheim], ported to Channel API by JordanSamuels.  Latest code should be at [http://retlang.googlecode.com/svn/trunk/src/RetlangTests/Examples/FibonacciDemonstration.cs here].
+Example provided by [OliverGugenheim], ported to Channel API by JordanSamuels.  Latest code should be at [http://retlang.googlecode.com/svn/trunk/src/RetlangTests/Examples/FibonacciDemonstration.cs here].  For another mathematical example, see AlgebraDemonstration.
 
 
 {{{
