@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Retlang.Core;
 using Rhino.Mocks;
@@ -8,6 +9,7 @@ namespace RetlangTests
     [TestFixture]
     public class CommandQueueTests
     {
+       
         [Test]
         public void NoExceptionHandling()
         {
@@ -34,6 +36,45 @@ namespace RetlangTests
             repo.VerifyAll();
         }
 
+        private class Check
+        {
+            public Check()
+            {
+            }
+        }
+
+        [Test]
+        public void ShouldOnlyExecuteCommandsQueuedWhileNotStopped()
+        {
+            MockRepository mockery = new MockRepository();
+            Command command1 = mockery.CreateMock<Command>();
+            Command command2 = mockery.CreateMock<Command>();
+            Command command3 = mockery.CreateMock<Command>();
+
+            using (mockery.Record())
+            {
+                command1();
+                command2();
+            }
+
+
+            using (mockery.Playback())
+            {
+                CommandQueue queue = new CommandQueue();
+                queue.Enqueue(command1);
+
+                Thread run = new Thread(new ThreadStart(
+                                            delegate { queue.Run(); }));
+
+                run.Start();
+                Thread.Sleep(100);
+                queue.Enqueue(command2);
+                queue.Stop();
+                queue.Enqueue(command3);
+                Thread.Sleep(100);
+                run.Join();
+            }
+        }
 
         [Test]
         public void MaxDepth()
