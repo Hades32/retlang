@@ -1,4 +1,4 @@
-Example Provided by OliverGugenheim, ported to Channel API by JordanSamuels
+Example Provided by OliverGugenheim, ported to Channel API by JordanSamuels.  Latest code should be [http://retlang.googlecode.com/svn/trunk/src/RetlangTests/Examples/AlgebraDemonstration.cs here].  For another mathematical example, see FibonacciDemonstration.
 
 {{{
 using System;
