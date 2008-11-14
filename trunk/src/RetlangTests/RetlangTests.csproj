@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Channels\ChannelTests.cs" />
     <Compile Include="CommandQueueTests.cs" />
+    <Compile Include="Examples\AlgebraDemonstration.cs" />
+    <Compile Include="Examples\FibonacciDemonstration.cs" />
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTimer.cs" />
     <Compile Include="Tests\PoolFiberTests.cs" />
