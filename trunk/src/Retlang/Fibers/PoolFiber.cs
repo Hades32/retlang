@@ -33,7 +33,14 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Create a pool queue with the default thread pool and command executor.
+        /// Create a pool queue with the default thread pool.
+        /// </summary>
+        public PoolFiber(IBatchExecutor executor) : this(new DefaultThreadPool(), executor)
+        {
+        }
+
+        /// <summary>
+        /// Create a pool queue with the default thread pool and batch executor.
         /// </summary>
         public PoolFiber() : this(new DefaultThreadPool(), new BatchExecutor())
         {
