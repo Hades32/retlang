@@ -99,5 +99,22 @@ namespace RetlangTests.Examples
                 Assert.IsTrue(reset.WaitOne(5000));
             }
         }
+
+        [Test]
+        public void requestReply()
+        {
+            using (IFiber fiber = new PoolFiber())
+            {
+                fiber.Start();
+                var channel = new RequestReplyChannel<string, string>();
+                channel.Subscribe(fiber, req => req.SendReply("bye"));
+                IReply<String> reply = channel.SendRequest("hello");
+
+                string result;
+                Assert.IsTrue(reply.Receive(10000, out result));
+                Assert.AreEqual("bye", result);
+            }
+        }
+
     }
 }
