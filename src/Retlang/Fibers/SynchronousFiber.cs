@@ -27,10 +27,14 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// No Op
+        /// Invokes Disposables.
         /// </summary>
         public void Dispose()
         {
+            foreach (IDisposable d in _disposables.ToArray())
+            {
+                d.Dispose();
+            }
         }
 
         /// <summary>
