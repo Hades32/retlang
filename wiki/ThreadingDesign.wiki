@@ -7,26 +7,13 @@ Retlang was designed based upon the following threading principles for robust mu
   * Allow for thread reuse and pooling
   * Consuming/Publishing code should be explicit and testable
 
-== The Process Context ==
-
-{{{
-ProcessContextFactory contextFactory = new ProcessContextFactory();
-contextFactory.Start();
-//Create a context with a dedicated thread
-IProcessContext context = contextFactory.CreateAndStart();
-//Create a context that uses the thread pool
-IProcessBus pooledContext = contextFactory.CreatePooledAndStart();
-}}}
-
-The process context can use an exclusive thread or rely on a thread pool. By default, retlang uses the .NET thread pool for pooled contexts.Due to the sequential nature of the delivery, subscribers should minimize the amount of work done when receiving events so that the process thread can continue to service incoming events.  More contexts can always be created to load balance components across various threads. As long as the contexts are created from the same {{{ProcessContextFactory}}} then all publishers and subscribers will be able to exchange messages across all the threads. Different factories can be used to create exclusive messaging backbones. 
-
 == Publishing ==
 
 Publishing to a process context is always thread safe. The publisher doesn't need to worry about locking. This allows Retlang to be easily integrated with 3rd party components that use their own threads. 
 
 == Subscribing == 
 
-The registration of a subscription is also thread safe. Once the subscription is in place, events will be deliver sequentially on the process thread. The receiving delegate will never be executed concurrently. 
+The registration of a subscription is also thread safe. Once the subscription is in place, events will be delivered sequentially. The receiving delegate will never be executed concurrently. 
 
 == Further Reading ==
 The [http://lamp.epfl.ch/~phaller/doc/haller07actorsunify.pdf Actors that Unify Threads and Events] provides a wealth of information on message based concurrency in [http://www.scala-lang.org/ Scala]. Although Retlang is not based on Scala Actors, the designs are similar.
