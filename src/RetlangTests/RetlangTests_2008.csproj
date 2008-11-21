@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="CommandQueueTests.cs" />
     <Compile Include="Examples\AlgebraDemonstration.cs" />
+    <Compile Include="Examples\BasicExamples.cs" />
     <Compile Include="Examples\FibonacciDemonstration.cs" />
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTimer.cs" />
