@@ -29,6 +29,8 @@ Continue learning about Retlang by taking a look at the ThreadingDesign. A basic
 
 === Some Examples ===
 
+[http://code.google.com/p/retlang/source/browse/trunk/src/RetlangTests/Examples/BasicExamples.cs Basic Examples]
+
 FibonacciExample - A basic example for calculating a fibonacci sequence.
 
 AlgebraDemonstration
