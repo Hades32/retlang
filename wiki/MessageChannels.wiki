@@ -9,60 +9,6 @@ Channels were introduced in 0.3.0.0 as a lighter weight, higher performance alte
   * Message Multicast
   * Request Reply
   * Batching
+== Examples ==
 
-== Basic Pub/Sub ==
-
-This test creates a pool based queue then subscribes it to a channel.
-{{{
-[Test]
-        public void BasicPubSubWithPoolQueue()
-        {
-            PoolQueue queue = new PoolQueue();
-            queue.Start();
-            Channel<string> hello = new Channel<string>();
-            AutoResetEvent reset = new AutoResetEvent(false);
-            Action<string> receiveHello = delegate(string str)
-                                              {
-                                                  Assert.AreEqual("hello", str);
-                                                  reset.Set();
-                                              };
-            hello.Subscribe(queue, receiveHello);
-            Assert.IsTrue(hello.Publish("hello"));
-            Assert.IsTrue(reset.WaitOne(10000, false));
-        }
-}}}
-
-== Aync Request Reply with Private Channel ==
-
-{{{
-[Test]
-        public void AsyncRequestReplyWithPrivateChannelUsingThreads()
-        {
-            IProcessQueue responder = new ProcessThread();
-            responder.Start();
-            IProcessQueue receiver = new ProcessThread();
-            receiver.Start();
-
-            Channel<Channel<string>> requestChannel = new Channel<Channel<string>>();
-            Channel<string> replyChannel = new Channel<string>();
-            AutoResetEvent reset = new AutoResetEvent(false);
-            Action<Channel<string>> onRequest = delegate(Channel<string> reply) { reply.Publish("hello"); };
-            requestChannel.Subscribe(responder, onRequest);
-            Action<string> onMsg = delegate(string msg)
-                                       {
-                                           Assert.AreEqual("hello", msg);
-                                           reset.Set();
-                                       };
-            replyChannel.Subscribe(receiver, onMsg);
-            Assert.IsTrue(requestChannel.Publish(replyChannel));
-            Assert.IsTrue(reset.WaitOne(10000, false));
-
-            responder.Stop();
-            receiver.Stop();
-        }
-
-}}}
-
-== More Examples ==
-
-[http://code.google.com/p/retlang/source/browse/trunk/src/RetlangTests/ChannelTests.cs Channel Unit Tests]
+[http://code.google.com/p/retlang/source/browse/trunk/src/RetlangTests/Examples/BasicExamples.cs Basic Examples]
