@@ -35,7 +35,7 @@ namespace RetlangTests.Examples
                     counter.Publish(i);
                 }
 
-                Assert.IsTrue(reset.WaitOne(10000));
+                Assert.IsTrue(reset.WaitOne(10000, false));
             }
         }
 
@@ -63,7 +63,7 @@ namespace RetlangTests.Examples
                     counter.Publish(i);
                 }
 
-                Assert.IsTrue(reset.WaitOne(10000));
+                Assert.IsTrue(reset.WaitOne(10000, false));
             }
         }
 
@@ -80,7 +80,7 @@ namespace RetlangTests.Examples
                 channel.Subscribe(fiber, delegate { reset.Set(); });
                 channel.Publish("hello");
 
-                Assert.IsTrue(reset.WaitOne(5000));
+                Assert.IsTrue(reset.WaitOne(5000, false));
             }
         }
 
@@ -96,7 +96,7 @@ namespace RetlangTests.Examples
                 channel.Subscribe(fiber, delegate { reset.Set(); });
                 channel.Publish("hello");
 
-                Assert.IsTrue(reset.WaitOne(5000));
+                Assert.IsTrue(reset.WaitOne(5000, false));
             }
         }
 
