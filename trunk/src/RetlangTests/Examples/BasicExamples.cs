@@ -42,6 +42,35 @@ namespace RetlangTests.Examples
                 Assert.IsTrue(reset.WaitOne(5000, false));
             }
         }
+        [Test]
+        public void PubSubWithDedicatedThreadWithFilter()
+        {
+            using (IFiber fiber = new ThreadFiber())
+            {
+                fiber.Start();
+                var channel = new Channel<int>();
+
+                var reset = new AutoResetEvent(false);
+                Action<int> onMsg = x =>
+                {
+                    Assert.IsTrue(x % 2 == 0);
+                    if (x == 4)
+                    {
+                        reset.Set();
+                    }
+                };
+                var sub = new ChannelSubscription<int>(fiber, onMsg);
+                sub.FilterOnProducerThread = x => x % 2 == 0;
+                channel.SubscribeOnProducerThreads(sub);
+                channel.Publish(1);
+                channel.Publish(2);
+                channel.Publish(3);
+                channel.Publish(4);
+
+                Assert.IsTrue(reset.WaitOne(5000, false));
+            }
+        }
+
 
         [Test]
         public void Batching()
