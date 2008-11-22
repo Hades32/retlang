@@ -11,7 +11,40 @@ namespace RetlangTests.Examples
     public class BasicExamples
     {
         [Test]
-        public void batching()
+        public void PubSubWithPool()
+        {
+            //PoolFiber uses the .NET thread pool by default
+            using (IFiber fiber = new PoolFiber())
+            {
+                fiber.Start();
+                var channel = new Channel<string>();
+
+                var reset = new AutoResetEvent(false);
+                channel.Subscribe(fiber, delegate { reset.Set(); });
+                channel.Publish("hello");
+
+                Assert.IsTrue(reset.WaitOne(5000, false));
+            }
+        }
+
+        [Test]
+        public void PubSubWithDedicatedThread()
+        {
+            using (IFiber fiber = new ThreadFiber())
+            {
+                fiber.Start();
+                var channel = new Channel<string>();
+
+                var reset = new AutoResetEvent(false);
+                channel.Subscribe(fiber, delegate { reset.Set(); });
+                channel.Publish("hello");
+
+                Assert.IsTrue(reset.WaitOne(5000, false));
+            }
+        }
+
+        [Test]
+        public void Batching()
         {
             using (IFiber fiber = new ThreadFiber())
             {
@@ -40,7 +73,7 @@ namespace RetlangTests.Examples
         }
 
         [Test]
-        public void batchingWithKey()
+        public void BatchingWithKey()
         {
             using (IFiber fiber = new ThreadFiber())
             {
@@ -67,41 +100,8 @@ namespace RetlangTests.Examples
             }
         }
 
-
         [Test]
-        public void pubSubWithPool()
-        {
-            using (IFiber fiber = new PoolFiber())
-            {
-                fiber.Start();
-                var channel = new Channel<string>();
-
-                var reset = new AutoResetEvent(false);
-                channel.Subscribe(fiber, delegate { reset.Set(); });
-                channel.Publish("hello");
-
-                Assert.IsTrue(reset.WaitOne(5000, false));
-            }
-        }
-
-        [Test]
-        public void pubSubWithThread()
-        {
-            using (IFiber fiber = new ThreadFiber())
-            {
-                fiber.Start();
-                var channel = new Channel<string>();
-
-                var reset = new AutoResetEvent(false);
-                channel.Subscribe(fiber, delegate { reset.Set(); });
-                channel.Publish("hello");
-
-                Assert.IsTrue(reset.WaitOne(5000, false));
-            }
-        }
-
-        [Test]
-        public void requestReply()
+        public void RequestReply()
         {
             using (IFiber fiber = new PoolFiber())
             {
