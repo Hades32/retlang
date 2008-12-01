@@ -7,7 +7,7 @@ namespace Retlang.Fibers
     /// </summary>
     public class ScheduledEvent
     {
-        private readonly Action _command;
+        private readonly Action _action;
         private readonly long _firstIntervalInMs;
         private readonly long _regularIntervalInMs;
         private readonly bool _isRecurring;
@@ -24,12 +24,12 @@ namespace Retlang.Fibers
         /// <summary>
         /// Schedule Recurring Event.
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="firstIntervalInMs"></param>
         /// <param name="regularIntervalInMs"></param>
-        public ScheduledEvent(Action command, long firstIntervalInMs, long regularIntervalInMs)
+        public ScheduledEvent(Action action, long firstIntervalInMs, long regularIntervalInMs)
         {
-            _command = command;
+            _action = action;
             _firstIntervalInMs = firstIntervalInMs;
             _regularIntervalInMs = regularIntervalInMs;
             _isRecurring = true;
@@ -38,9 +38,9 @@ namespace Retlang.Fibers
         /// <summary>
         /// The Action to be executed.
         /// </summary>
-        public Action Command
+        public Action Action
         {
-            get { return _command; }
+            get { return _action; }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Regular interval in ms for command.
+        /// Regular interval in ms for action.
         /// </summary>
         public long RegularIntervalInMs
         {
@@ -82,7 +82,7 @@ namespace Retlang.Fibers
             if (FirstIntervalInMs != scheduled.FirstIntervalInMs) return false;
             if (RegularIntervalInMs != scheduled.RegularIntervalInMs) return false;
             if (IsRecurring != scheduled.IsRecurring) return false;
-            if (Command != null ? !Command.Equals(scheduled.Command) : scheduled.Command != null) return false;
+            if (Action != null ? !Action.Equals(scheduled.Action) : scheduled.Action != null) return false;
 
             return true;
         }
@@ -93,7 +93,7 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public override int GetHashCode()
         {
-            var result = (Command != null ? Command.GetHashCode() : 0);
+            var result = (Action != null ? Action.GetHashCode() : 0);
             result = 31 * result + (int)(FirstIntervalInMs ^ (FirstIntervalInMs >> 32));
             result = 31 * result + (int)(RegularIntervalInMs ^ (RegularIntervalInMs >> 32));
             result = 31 * result + (IsRecurring ? 1 : 0);

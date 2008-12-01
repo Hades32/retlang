@@ -3,7 +3,7 @@ namespace Retlang.Core
     /// <summary>
     /// A runable queue implementation.
     /// </summary>
-    public interface ICommandExecutor : IDisposingExecutor
+    public interface IActionExecutor : IDisposingExecutor
     {
         /// <summary>
         /// Consume events.

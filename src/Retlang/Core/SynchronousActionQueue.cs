@@ -5,7 +5,7 @@ namespace Retlang.Core
     /// <summary>
     /// A synchronous queue typically used for testing.
     /// </summary>
-    public class SynchronousCommandQueue : ICommandExecutor
+    public class SynchronousActionQueue : IActionExecutor
     {
         private readonly DisposableList _disposables = new DisposableList();
         private bool _running = true;
@@ -13,12 +13,12 @@ namespace Retlang.Core
         /// <summary>
         /// <see cref="IDisposingExecutor.Enqueue"/>
         /// </summary>
-        /// <param name="commands"></param>
-        public void EnqueueAll(params Action[] commands)
+        /// <param name="actions"></param>
+        public void EnqueueAll(params Action[] actions)
         {
             if (_running)
             {
-                foreach (var toExecute in commands)
+                foreach (var toExecute in actions)
                 {
                     toExecute();
                 }
@@ -26,14 +26,14 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// Queue command
+        /// Queue action
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Action command)
+        /// <param name="action"></param>
+        public void Enqueue(Action action)
         {
             if (_running)
             {
-                command();
+                action();
             }
         }
 

@@ -7,14 +7,14 @@ using Rhino.Mocks;
 namespace RetlangTests
 {
     [TestFixture]
-    public class TimerCommandTests
+    public class TimerActionTests
     {
         [Test]
         public void Cancel()
         {
             var executionCount = 0;
-            Action com = delegate { executionCount++; };
-            var timer = new TimerCommand(com, 1, 2);
+            Action action = () => executionCount++;
+            var timer = new TimerAction(action, 1, 2);
             timer.ExecuteOnProcessThread();
             Assert.AreEqual(1, executionCount);
             timer.Cancel();
@@ -28,9 +28,9 @@ namespace RetlangTests
         {
             var mocks = new MockRepository();
 
-            var command = mocks.CreateMock<Action>();
-            var timer = new TimerCommand(command, 2, 3);
-            var registry = mocks.CreateMock<IPendingCommandRegistry>();
+            var action = mocks.CreateMock<Action>();
+            var timer = new TimerAction(action, 2, 3);
+            var registry = mocks.CreateMock<IPendingActionRegistry>();
             registry.EnqueueTask(timer.ExecuteOnProcessThread);
 
             mocks.ReplayAll();
@@ -42,9 +42,9 @@ namespace RetlangTests
         public void CallbackFromIntervalTimerWithCancel()
         {
             var mocks = new MockRepository();
-            var command = mocks.CreateMock<Action>();
-            var timer = new TimerCommand(command, 2, 3);
-            var registry = mocks.CreateMock<IPendingCommandRegistry>();
+            var action = mocks.CreateMock<Action>();
+            var timer = new TimerAction(action, 2, 3);
+            var registry = mocks.CreateMock<IPendingActionRegistry>();
 
             registry.Remove(timer);
 
@@ -58,9 +58,9 @@ namespace RetlangTests
         public void CallbackFromTimerWithCancel()
         {
             var mocks = new MockRepository();
-            var command = mocks.CreateMock<Action>();
-            var timer = new TimerCommand(command, 2, Timeout.Infinite);
-            var registry = mocks.CreateMock<IPendingCommandRegistry>();
+            var action = mocks.CreateMock<Action>();
+            var timer = new TimerAction(action, 2, Timeout.Infinite);
+            var registry = mocks.CreateMock<IPendingActionRegistry>();
 
             registry.Remove(timer);
             registry.EnqueueTask(timer.ExecuteOnProcessThread);

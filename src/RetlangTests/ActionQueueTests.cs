@@ -7,22 +7,21 @@ using Rhino.Mocks;
 namespace RetlangTests
 {
     [TestFixture]
-    public class CommandQueueTests
+    public class ActionQueueTests
     {
-       
         [Test]
         public void NoExceptionHandling()
         {
             var repo = new MockRepository();
-            var excCommand = repo.CreateMock<Action>();
+            var action = repo.CreateMock<Action>();
             var failure = new Exception();
-            excCommand();
+            action();
             LastCall.Throw(failure);
 
             repo.ReplayAll();
 
-            var queue = new CommandQueue();
-            queue.Enqueue(excCommand);
+            var queue = new ActionQueue();
+            queue.Enqueue(action);
 
             try
             {
@@ -37,32 +36,31 @@ namespace RetlangTests
         }
         
         [Test]
-        public void ShouldOnlyExecuteCommandsQueuedWhileNotStopped()
+        public void ShouldOnlyExecuteActionsQueuedWhileNotStopped()
         {
             var mockery = new MockRepository();
-            var command1 = mockery.CreateMock<Action>();
-            var command2 = mockery.CreateMock<Action>();
-            var command3 = mockery.CreateMock<Action>();
+            var action1 = mockery.CreateMock<Action>();
+            var action2 = mockery.CreateMock<Action>();
+            var action3 = mockery.CreateMock<Action>();
 
             using (mockery.Record())
             {
-                command1();
-                command2();
+                action1();
+                action2();
             }
-
 
             using (mockery.Playback())
             {
-                var queue = new CommandQueue();
-                queue.Enqueue(command1);
+                var queue = new ActionQueue();
+                queue.Enqueue(action1);
 
                 var run = new Thread(queue.Run);
 
                 run.Start();
                 Thread.Sleep(100);
-                queue.Enqueue(command2);
+                queue.Enqueue(action2);
                 queue.Stop();
-                queue.Enqueue(command3);
+                queue.Enqueue(action3);
                 Thread.Sleep(100);
                 run.Join();
             }
@@ -71,7 +69,7 @@ namespace RetlangTests
         [Test]
         public void MaxDepth()
         {
-            var queue = new CommandQueue();
+            var queue = new ActionQueue();
             queue.MaxDepth = 2;
             queue.Enqueue(delegate { });
             queue.Enqueue(delegate { });

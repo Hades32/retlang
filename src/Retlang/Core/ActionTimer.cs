@@ -4,54 +4,54 @@ using System.Threading;
 
 namespace Retlang.Core
 {
-    internal class CommandTimer : IPendingCommandRegistry, IScheduler, IDisposable
+    internal class ActionTimer : IPendingActionRegistry, IScheduler, IDisposable
     {
         private volatile bool _running = true;
         private readonly IDisposingExecutor _executor;
         private List<ITimerControl> _pending = new List<ITimerControl>();
 
-        public CommandTimer(IDisposingExecutor executor)
+        public ActionTimer(IDisposingExecutor executor)
         {
             _executor = executor;
         }
 
-        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
             if (timeTilEnqueueInMs <= 0)
             {
-                var pending = new PendingCommand(command);
-                _executor.Enqueue(pending.ExecuteCommand);
+                var pending = new PendingAction(action);
+                _executor.Enqueue(pending.ExecuteAction);
                 return pending;
             }
             else
             {
-                var pending = new TimerCommand(command, timeTilEnqueueInMs, Timeout.Infinite);
+                var pending = new TimerAction(action, timeTilEnqueueInMs, Timeout.Infinite);
                 AddPending(pending);
                 return pending;
             }
         }
 
-        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
-            var pending = new TimerCommand(command, firstInMs, regularInMs);
+            var pending = new TimerAction(action, firstInMs, regularInMs);
             AddPending(pending);
             return pending;
         }
 
         public void Remove(ITimerControl toRemove)
         {
-            Action removeCommand = () => _pending.Remove(toRemove);
-            _executor.Enqueue(removeCommand);
+            Action removeAction = () => _pending.Remove(toRemove);
+            _executor.Enqueue(removeAction);
         }
 
-        public void EnqueueTask(Action toExecute)
+        public void EnqueueTask(Action action)
         {
-            _executor.Enqueue(toExecute);
+            _executor.Enqueue(action);
         }
 
-        private void AddPending(TimerCommand pending)
+        private void AddPending(TimerAction pending)
         {
-            Action addCommand = delegate
+            Action addAction = delegate
                                      {
                                          if (_running)
                                          {
@@ -59,7 +59,7 @@ namespace Retlang.Core
                                              pending.Schedule(this);
                                          }
                                      };
-            _executor.Enqueue(addCommand);
+            _executor.Enqueue(addAction);
         }
 
         public void Dispose()

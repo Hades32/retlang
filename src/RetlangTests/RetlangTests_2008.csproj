@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandQueueTests.cs" />
+    <Compile Include="ActionQueueTests.cs" />
     <Compile Include="Examples\AlgebraDemonstration.cs" />
     <Compile Include="Examples\BasicExamples.cs" />
     <Compile Include="Examples\FibonacciDemonstration.cs" />
@@ -75,7 +75,7 @@
     <Compile Include="PerfTimer.cs" />
     <Compile Include="QueueChannelTests.cs" />
     <Compile Include="RequestReplyChannelTests.cs" />
-    <Compile Include="TimerCommandTests.cs" />
+    <Compile Include="TimerActionTests.cs" />
     <Compile Include="TimerThreadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

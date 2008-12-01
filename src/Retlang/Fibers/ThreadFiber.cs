@@ -14,20 +14,20 @@ namespace Retlang.Fibers
         private readonly DisposableList _disposables = new DisposableList();
 
         private readonly Thread _thread;
-        private readonly ICommandExecutor _queue;
-        private readonly CommandTimer _scheduler;
+        private readonly IActionExecutor _queue;
+        private readonly ActionTimer _scheduler;
 
         /// <summary>
         /// Creates a new thread with the backing executor.
         /// </summary>
         /// <param name="executor"></param>
-        public ThreadFiber(ICommandExecutor executor) : this(executor, "ThreadFiber-" + GetNextThreadId(), true)
+        public ThreadFiber(IActionExecutor executor) : this(executor, "ThreadFiber-" + GetNextThreadId(), true)
         {}
 
         /// <summary>
         /// Create a process thread with a default queue.
         /// </summary>
-        public ThreadFiber() : this(new CommandQueue())
+        public ThreadFiber() : this(new ActionQueue())
         {}
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="executor">The queue</param>
         /// <param name="threadName">custom thread name</param>
-        public ThreadFiber(ICommandExecutor executor, string threadName)
+        public ThreadFiber(IActionExecutor executor, string threadName)
             : this(executor, threadName, true)
         {}
 
@@ -45,13 +45,13 @@ namespace Retlang.Fibers
         /// <param name="executor"></param>
         /// <param name="threadName"></param>
         /// <param name="isBackground"></param>
-        public ThreadFiber(ICommandExecutor executor, string threadName, bool isBackground)
+        public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground)
         {
             _queue = executor;
             _thread = new Thread(RunThread);
             _thread.Name = threadName;
             _thread.IsBackground = isBackground;
-            _scheduler = new CommandTimer(this);
+            _scheduler = new ActionTimer(this);
         }
 
         /// <summary>
@@ -75,19 +75,19 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
-        /// <param name="commands"></param>
-        public void EnqueueAll(params Action[] commands)
+        /// <param name="actions"></param>
+        public void EnqueueAll(params Action[] actions)
         {
-            _queue.EnqueueAll(commands);
+            _queue.EnqueueAll(actions);
         }
 
         /// <summary>
-        /// Queue command.
+        /// Queue action.
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Action command)
+        /// <param name="action"></param>
+        public void Enqueue(Action action)
         {
-            _queue.Enqueue(command);
+            _queue.Enqueue(action);
         }
 
         /// <summary>
@@ -120,23 +120,23 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
-            return _scheduler.Schedule(command, timeTilEnqueueInMs);
+            return _scheduler.Schedule(action, timeTilEnqueueInMs);
         }
 
         /// <summary>
         /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
-        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
-            return _scheduler.ScheduleOnInterval(command, firstInMs, regularInMs);
+            return _scheduler.ScheduleOnInterval(action, firstInMs, regularInMs);
         }
 
         /// <summary>

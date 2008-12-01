@@ -3,29 +3,29 @@ using System.Threading;
 
 namespace Retlang.Core
 {
-    internal class TimerCommand : ITimerControl
+    internal class TimerAction : ITimerControl
     {
-        private readonly Action _command;
+        private readonly Action _action;
         private readonly long _firstIntervalInMs;
         private readonly long _intervalInMs;
 
         private Timer _timer;
         private bool _cancelled;
 
-        public TimerCommand(Action command, long firstIntervalInMs, long intervalInMs)
+        public TimerAction(Action action, long firstIntervalInMs, long intervalInMs)
         {
-            _command = command;
+            _action = action;
             _firstIntervalInMs = firstIntervalInMs;
             _intervalInMs = intervalInMs;
         }
 
-        public void Schedule(IPendingCommandRegistry registry)
+        public void Schedule(IPendingActionRegistry registry)
         {
             TimerCallback timerCallBack = delegate { ExecuteOnTimerThread(registry); };
             _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
         }
 
-        public void ExecuteOnTimerThread(IPendingCommandRegistry registry)
+        public void ExecuteOnTimerThread(IPendingActionRegistry registry)
         {
             if (_intervalInMs == Timeout.Infinite || _cancelled)
             {
@@ -47,7 +47,7 @@ namespace Retlang.Core
         {
             if (!_cancelled)
             {
-                _command();
+                _action();
             }
         }
 

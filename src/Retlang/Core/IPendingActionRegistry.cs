@@ -3,9 +3,9 @@ using System;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Stores and removes pending commands.
+    /// Stores and removes pending actions.
     /// </summary>
-    public interface IPendingCommandRegistry
+    public interface IPendingActionRegistry
     {
         /// <summary>
         /// Remove timer
@@ -16,7 +16,7 @@ namespace Retlang.Core
         /// <summary>
         /// Queue event to target queue.
         /// </summary>
-        /// <param name="command"></param>
-        void EnqueueTask(Action command);
+        /// <param name="action"></param>
+        void EnqueueTask(Action action);
     }
 }
