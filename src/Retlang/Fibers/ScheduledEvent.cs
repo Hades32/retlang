@@ -1,5 +1,4 @@
 using System;
-using Retlang.Core;
 
 namespace Retlang.Fibers
 {
@@ -8,7 +7,7 @@ namespace Retlang.Fibers
     /// </summary>
     public class ScheduledEvent
     {
-        private readonly Command _command;
+        private readonly Action _command;
         private readonly long _firstIntervalInMs;
         private readonly long _regularIntervalInMs;
         private readonly bool _isRecurring;
@@ -18,7 +17,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="runnable"></param>
         /// <param name="time"></param>
-        public ScheduledEvent(Command runnable, long time)
+        public ScheduledEvent(Action runnable, long time)
             : this(runnable, time, -1)
         { }
 
@@ -28,7 +27,7 @@ namespace Retlang.Fibers
         /// <param name="command"></param>
         /// <param name="firstIntervalInMs"></param>
         /// <param name="regularIntervalInMs"></param>
-        public ScheduledEvent(Command command, long firstIntervalInMs, long regularIntervalInMs)
+        public ScheduledEvent(Action command, long firstIntervalInMs, long regularIntervalInMs)
         {
             _command = command;
             _firstIntervalInMs = firstIntervalInMs;
@@ -37,9 +36,9 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// The command to be executed.
+        /// The Action to be executed.
         /// </summary>
-        public Command Command
+        public Action Command
         {
             get { return _command; }
         }
@@ -78,7 +77,7 @@ namespace Retlang.Fibers
             if (this == o) return true;
             if (o == null || GetType() != o.GetType()) return false;
 
-            ScheduledEvent scheduled = (ScheduledEvent)o;
+            var scheduled = (ScheduledEvent)o;
 
             if (FirstIntervalInMs != scheduled.FirstIntervalInMs) return false;
             if (RegularIntervalInMs != scheduled.RegularIntervalInMs) return false;
@@ -94,7 +93,7 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public override int GetHashCode()
         {
-            int result = (Command != null ? Command.GetHashCode() : 0);
+            var result = (Command != null ? Command.GetHashCode() : 0);
             result = 31 * result + (int)(FirstIntervalInMs ^ (FirstIntervalInMs >> 32));
             result = 31 * result + (int)(RegularIntervalInMs ^ (RegularIntervalInMs >> 32));
             result = 31 * result + (IsRecurring ? 1 : 0);

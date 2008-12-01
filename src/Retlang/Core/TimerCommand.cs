@@ -1,17 +1,18 @@
+using System;
 using System.Threading;
 
 namespace Retlang.Core
 {
     internal class TimerCommand : ITimerControl
     {
-        private readonly Command _command;
+        private readonly Action _command;
         private readonly long _firstIntervalInMs;
         private readonly long _intervalInMs;
 
         private Timer _timer;
         private bool _cancelled;
 
-        public TimerCommand(Command command, long firstIntervalInMs, long intervalInMs)
+        public TimerCommand(Action command, long firstIntervalInMs, long intervalInMs)
         {
             _command = command;
             _firstIntervalInMs = firstIntervalInMs;

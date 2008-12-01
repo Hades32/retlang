@@ -29,7 +29,7 @@ namespace Retlang.Channels
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-            Command asyncExec = delegate { _receiveMethod(msg); };
+            Action asyncExec = () => _receiveMethod(msg);
             _targetQueue.Enqueue(asyncExec);
         }
     }

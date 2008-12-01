@@ -14,7 +14,7 @@ namespace RetlangTests.Examples
         public void PubSubWithPool()
         {
             //PoolFiber uses the .NET thread pool by default
-            using (IFiber fiber = new PoolFiber())
+            using (var fiber = new PoolFiber())
             {
                 fiber.Start();
                 var channel = new Channel<string>();
@@ -30,7 +30,7 @@ namespace RetlangTests.Examples
         [Test]
         public void PubSubWithDedicatedThread()
         {
-            using (IFiber fiber = new ThreadFiber())
+            using (var fiber = new ThreadFiber())
             {
                 fiber.Start();
                 var channel = new Channel<string>();
@@ -75,12 +75,12 @@ namespace RetlangTests.Examples
         [Test]
         public void Batching()
         {
-            using (IFiber fiber = new ThreadFiber())
+            using (var fiber = new ThreadFiber())
             {
                 fiber.Start();
                 var counter = new Channel<int>();
                 var reset = new ManualResetEvent(false);
-                int total = 0;
+                var total = 0;
                 Action<IList<int>> cb = delegate(IList<int> batch)
                                             {
                                                 total += batch.Count;
@@ -92,7 +92,7 @@ namespace RetlangTests.Examples
 
                 counter.SubscribeToBatch(fiber, cb, 1);
 
-                for (int i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     counter.Publish(i);
                 }
@@ -120,7 +120,7 @@ namespace RetlangTests.Examples
                 Converter<int, String> keyResolver = x => x.ToString();
                 counter.SubscribeToKeyedBatch(fiber, keyResolver, cb, 0);
 
-                for (int i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     counter.Publish(i);
                 }
@@ -132,12 +132,12 @@ namespace RetlangTests.Examples
         [Test]
         public void RequestReply()
         {
-            using (IFiber fiber = new PoolFiber())
+            using (var fiber = new PoolFiber())
             {
                 fiber.Start();
                 var channel = new RequestReplyChannel<string, string>();
                 channel.Subscribe(fiber, req => req.SendReply("bye"));
-                IReply<String> reply = channel.SendRequest("hello");
+                var reply = channel.SendRequest("hello");
 
                 string result;
                 Assert.IsTrue(reply.Receive(10000, out result));

@@ -1,13 +1,15 @@
+using System;
+
 namespace Retlang.Core
 {
     internal class SingleEvent : IPendingEvent
     {
         private readonly IDisposingExecutor _queue;
-        private readonly Command _toExecute;
+        private readonly Action _toExecute;
         private readonly long _expiration;
         private bool _canceled;
 
-        public SingleEvent(IDisposingExecutor queue, Command toExecute, long scheduledTimeInMs, long now)
+        public SingleEvent(IDisposingExecutor queue, Action toExecute, long scheduledTimeInMs, long now)
         {
             _expiration = now + scheduledTimeInMs;
             _queue = queue;

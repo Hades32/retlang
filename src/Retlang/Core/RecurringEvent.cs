@@ -1,15 +1,17 @@
+using System;
+
 namespace Retlang.Core
 {
     internal class RecurringEvent : IPendingEvent
     {
         private readonly IDisposingExecutor _executor;
-        private readonly Command _toExecute;
+        private readonly Action _toExecute;
         private readonly long _regularInterval;
 
         private long _expiration;
         private bool _canceled;
 
-        public RecurringEvent(IDisposingExecutor executor, Command toExecute, 
+        public RecurringEvent(IDisposingExecutor executor, Action toExecute, 
             long scheduledTimeInMs, long regularInterval, long currentTime)
         {
             _expiration = currentTime + scheduledTimeInMs;

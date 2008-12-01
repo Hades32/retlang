@@ -13,15 +13,15 @@ namespace RetlangTests
         [Test]
         public void NoExceptionHandling()
         {
-            MockRepository repo = new MockRepository();
-            Command excCommand = repo.CreateMock<Command>();
-            Exception failure = new Exception();
+            var repo = new MockRepository();
+            var excCommand = repo.CreateMock<Action>();
+            var failure = new Exception();
             excCommand();
             LastCall.Throw(failure);
 
             repo.ReplayAll();
 
-            CommandQueue queue = new CommandQueue();
+            var queue = new CommandQueue();
             queue.Enqueue(excCommand);
 
             try
@@ -35,21 +35,14 @@ namespace RetlangTests
             }
             repo.VerifyAll();
         }
-
-        private class Check
-        {
-            public Check()
-            {
-            }
-        }
-
+        
         [Test]
         public void ShouldOnlyExecuteCommandsQueuedWhileNotStopped()
         {
-            MockRepository mockery = new MockRepository();
-            Command command1 = mockery.CreateMock<Command>();
-            Command command2 = mockery.CreateMock<Command>();
-            Command command3 = mockery.CreateMock<Command>();
+            var mockery = new MockRepository();
+            var command1 = mockery.CreateMock<Action>();
+            var command2 = mockery.CreateMock<Action>();
+            var command3 = mockery.CreateMock<Action>();
 
             using (mockery.Record())
             {
@@ -60,11 +53,10 @@ namespace RetlangTests
 
             using (mockery.Playback())
             {
-                CommandQueue queue = new CommandQueue();
+                var queue = new CommandQueue();
                 queue.Enqueue(command1);
 
-                Thread run = new Thread(new ThreadStart(
-                                            delegate { queue.Run(); }));
+                var run = new Thread(queue.Run);
 
                 run.Start();
                 Thread.Sleep(100);
@@ -79,7 +71,7 @@ namespace RetlangTests
         [Test]
         public void MaxDepth()
         {
-            CommandQueue queue = new CommandQueue();
+            var queue = new CommandQueue();
             queue.MaxDepth = 2;
             queue.Enqueue(delegate { });
             queue.Enqueue(delegate { });

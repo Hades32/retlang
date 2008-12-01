@@ -11,7 +11,7 @@ namespace Retlang.Channels
     public class QueueChannel<T>: IQueueChannel<T>
     {
         private readonly Queue<T> _queue = new Queue<T>();
-        internal event Command SignalEvent;
+        internal event Action SignalEvent;
   
         /// <summary>
         /// Subscribe to executor messages. 
@@ -21,7 +21,7 @@ namespace Retlang.Channels
         /// <returns></returns>
         public IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> onMessage)
         {
-            QueueConsumer<T> consumer = new QueueConsumer<T>(executor, onMessage, this);
+            var consumer = new QueueConsumer<T>(executor, onMessage, this);
             consumer.Subscribe();
             return consumer;
         }
@@ -61,7 +61,7 @@ namespace Retlang.Channels
             {
                 _queue.Enqueue(message);
             }
-            Command onSignal = SignalEvent;
+            var onSignal = SignalEvent;
             if (onSignal != null)
             {
                 onSignal();

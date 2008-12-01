@@ -35,7 +35,7 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public IThreadFiber CreateThreadFiber(IBatchExecutor executor)
         {
-            CommandQueue queue = CreateQueue(executor);
+            var queue = CreateQueue(executor);
             return new ThreadFiber(queue);
         }
 
@@ -47,13 +47,13 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public IThreadFiber CreateThreadFiber(IBatchExecutor executor, string threadName)
         {
-            CommandQueue queue = CreateQueue(executor);
+            var queue = CreateQueue(executor);
             return new ThreadFiber(queue, threadName);
         }
 
         private CommandQueue CreateQueue(IBatchExecutor executor)
         {
-            CommandQueue queue = new CommandQueue();
+            var queue = new CommandQueue();
             queue.MaxEnqueueWaitTime = _maxEnqueueWaitTime;
             queue.MaxDepth = _maxQueueDepth;
             if (executor != null)

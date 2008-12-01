@@ -13,13 +13,13 @@ namespace Retlang.Core
         /// Append commands to end of queue.
         /// </summary>
         /// <param name="commands"></param>
-        void EnqueueAll(params Command[] commands);
+        void EnqueueAll(params Action[] commands);
 
         /// <summary>
         /// Enqueue a single command.
         /// </summary>
         /// <param name="command"></param>
-        void Enqueue(Command command);
+        void Enqueue(Action command);
 
         /// <summary>
         /// Register disposable.

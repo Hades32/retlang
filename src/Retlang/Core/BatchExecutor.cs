@@ -1,23 +1,25 @@
+using System;
+
 namespace Retlang.Core
 {
     /// <summary>
-    /// Default command executor.
+    /// Default Action executor.
     /// </summary>
     public class BatchExecutor : IBatchExecutor
     {
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IBatchExecutor.ExecuteAll(Command[])"/>
+        /// <see cref="IBatchExecutor.ExecuteAll(Action[])"/>
         /// </summary>
         /// <param name="toExecute"></param>
-        public void ExecuteAll(Command[] toExecute)
+        public void ExecuteAll(Action[] toExecute)
         {
-            foreach (Command command in toExecute)
+            foreach (var action in toExecute)
             {
                 if (_running)
                 {
-                    command();
+                    action();
                 }
             }
         }

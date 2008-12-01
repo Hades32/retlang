@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using NUnit.Framework;
 using Retlang.Channels;
 using Retlang.Core;
 using Retlang.Fibers;
@@ -11,17 +11,16 @@ namespace RetlangTests
     [TestFixture]
     public class QueueChannelTests
     {
-
         [Test]
         public void SingleConsumer()
         {
-            PoolFiber one = new PoolFiber();
+            var one = new PoolFiber();
             one.Start();
-            int oneConsumed = 0;
-            AutoResetEvent reset = new AutoResetEvent(false);
+            var oneConsumed = 0;
+            var reset = new AutoResetEvent(false);
             using (one)
             {
-                QueueChannel<int> channel = new QueueChannel<int>();
+                var channel = new QueueChannel<int>();
                 Action<int> onMsg = delegate
                 {
                     oneConsumed++;
@@ -31,7 +30,7 @@ namespace RetlangTests
                     }
                 };
                 channel.Subscribe(one, onMsg);
-                for (int i = 0; i < 20; i++)
+                for (var i = 0; i < 20; i++)
                 {
                     channel.Publish(i);
                 }
@@ -42,13 +41,13 @@ namespace RetlangTests
         [Test]
         public void SingleConsumerWithException()
         {
-            StubExecutor exec = new StubExecutor();
-            PoolFiber one = new PoolFiber(new DefaultThreadPool(), exec);
+            var exec = new StubExecutor();
+            var one = new PoolFiber(new DefaultThreadPool(), exec);
             one.Start();
-            AutoResetEvent reset = new AutoResetEvent(false);
+            var reset = new AutoResetEvent(false);
             using (one)
             {
-                QueueChannel<int> channel = new QueueChannel<int>();
+                var channel = new QueueChannel<int>();
                 Action<int> onMsg = delegate(int num)
                 {
                     if (num == 0)
@@ -69,14 +68,14 @@ namespace RetlangTests
         [Test]
         public void Multiple()
         {
-            List<IFiber> queues = new List<IFiber>();
-            int receiveCount = 0;
-            AutoResetEvent reset = new AutoResetEvent(false);
-            QueueChannel<int> channel = new QueueChannel<int>();
+            var queues = new List<IFiber>();
+            var receiveCount = 0;
+            var reset = new AutoResetEvent(false);
+            var channel = new QueueChannel<int>();
 
-            int messageCount = 100;
-            object updateLock = new object();
-            for (int i = 0; i < 5; i++)
+            var messageCount = 100;
+            var updateLock = new object();
+            for (var i = 0; i < 5; i++)
             {
                 Action<int> onReceive = delegate
                                             {
@@ -90,12 +89,12 @@ namespace RetlangTests
                                                     }
                                                 }
                                             };
-                PoolFiber fiber = new PoolFiber();
+                var fiber = new PoolFiber();
                 fiber.Start();
                 queues.Add(fiber);
                 channel.Subscribe(fiber, onReceive);
             }
-            for (int i = 0; i < messageCount; i++)
+            for (var i = 0; i < messageCount; i++)
             {
                 channel.Publish(i);
             }
@@ -108,9 +107,9 @@ namespace RetlangTests
     {
         public List<Exception> failed = new List<Exception>();
 
-        public void ExecuteAll(Command[] toExecute)
+        public void ExecuteAll(Action[] toExecute)
         {
-            foreach (Command c in toExecute)
+            foreach (var c in toExecute)
             {
                 try
                 {

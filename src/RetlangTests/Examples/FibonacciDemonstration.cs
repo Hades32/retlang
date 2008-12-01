@@ -71,9 +71,9 @@ namespace RetlangTests.Examples
 
             private void CalculateNext(IntPair receivedPair)
             {
-                int next = receivedPair.First + receivedPair.Second;
+                var next = receivedPair.First + receivedPair.Second;
 
-                IntPair pairToPublish = new IntPair(receivedPair.Second, next);
+                var pairToPublish = new IntPair(receivedPair.Second, next);
                 _outboundChannel.Publish(pairToPublish);
                 
                 if (next > _limit)
@@ -90,33 +90,31 @@ namespace RetlangTests.Examples
         [Test]
         public void DoDemonstration()
         {
-            ThreadFiberFactory factory = new ThreadFiberFactory();
-            BatchExecutor executor = new BatchExecutor();
+            var factory = new ThreadFiberFactory();
+            var executor = new BatchExecutor();
 
-            using (DisposableList disposables = new DisposableList())
+            using (var disposables = new DisposableList())
             {
                 // Two instances of the calculator are created.  One is named "Odd" 
                 // (it calculates the 1st, 3rd, 5th... values in the sequence) the
                 // other is named "Even".  They message each other back and forth
                 // with the latest two values and successively build the sequence.
-                int limit = 1000;
+                var limit = 1000;
 
                 // Two channels for communication.  Naming convention is inbound.
                 IChannel<IntPair> oddChannel = new Channel<IntPair>();
                 IChannel<IntPair> evenChannel = new Channel<IntPair>();
                 
-                IThreadFiber oddFiber = factory.CreateThreadFiber(executor);
+                var oddFiber = factory.CreateThreadFiber(executor);
                 disposables.Add(oddFiber);
                 oddFiber.Start();
 
                 
-                FibonacciCalculator oddCalculator = new FibonacciCalculator(oddFiber, "Odd", oddChannel, evenChannel, limit);
+                var oddCalculator = new FibonacciCalculator(oddFiber, "Odd", oddChannel, evenChannel, limit);
 
-                IThreadFiber evenFiber = factory.CreateThreadFiber(executor);
+                var evenFiber = factory.CreateThreadFiber(executor);
                 disposables.Add(evenFiber); 
                 evenFiber.Start();
-
-                FibonacciCalculator evenCalculator = new FibonacciCalculator(evenFiber, "Even", evenChannel, oddChannel, limit);
 
                 oddCalculator.Begin(new IntPair(0, 1));
 

@@ -45,7 +45,7 @@ namespace Retlang.Channels
         {
             lock (_batchLock)
             {
-                K key = _keyResolver(msg);
+                var key = _keyResolver(msg);
                 if (_pending == null)
                 {
                     _pending = new Dictionary<K, T>();
@@ -60,7 +60,7 @@ namespace Retlang.Channels
         /// </summary>
         public void Flush()
         {
-            IDictionary<K, T> toReturn = ClearPending();
+            var toReturn = ClearPending();
             if (toReturn != null)
             {
                 _target(toReturn);

@@ -43,7 +43,7 @@ namespace Retlang.Core
         {
             lock (_lock)
             {
-                foreach (IDisposable victim in _items.ToArray())
+                foreach (var victim in _items.ToArray())
                 {
                     victim.Dispose();
                 }

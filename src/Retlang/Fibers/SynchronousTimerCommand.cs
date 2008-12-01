@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Retlang.Core;
 
@@ -8,7 +9,7 @@ namespace Retlang.Fibers
         private readonly List<ScheduledEvent> _scheduled;
         private readonly ScheduledEvent _victim;
 
-        public SynchronousTimerCommand(Command command, long firstIntervalInMs, 
+        public SynchronousTimerCommand(Action command, long firstIntervalInMs, 
             long intervalInMs, List<ScheduledEvent> scheduled, ScheduledEvent victim) 
             : base(command, firstIntervalInMs, intervalInMs)
         {
