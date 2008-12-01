@@ -141,9 +141,9 @@ namespace RetlangTests.Examples
 
             public void PublishQuadratics()
             {
-                for (int idx = 0; idx < _numberToGenerate; idx++)
+                for (var idx = 0; idx < _numberToGenerate; idx++)
                 {
-                    Quadratic quadratic = Next();
+                    var quadratic = Next();
                     // As agreed, we publish to a topic that is defined
                     // by the square term of the quadratic.
                     _channels[quadratic.A].Publish(quadratic);
@@ -156,9 +156,9 @@ namespace RetlangTests.Examples
             private Quadratic Next()
             {
                 // Insure we have a quadratic.  No zero for the square parameter.
-                int a = _random.Next(9) + 1;
-                int b = -_random.Next(100);
-                int c = _random.Next(10);
+                var a = _random.Next(9) + 1;
+                var b = -_random.Next(100);
+                var c = _random.Next(10);
 
                 return new Quadratic(a, b, c);
             }
@@ -180,17 +180,17 @@ namespace RetlangTests.Examples
 
             private void ProcessReceivedQuadratic(Quadratic quadratic)
             {
-                QuadraticSolutions solutions = Solve(quadratic);
-                SolvedQuadratic solvedQuadratic = new SolvedQuadratic(quadratic, solutions);
+                var solutions = Solve(quadratic);
+                var solvedQuadratic = new SolvedQuadratic(quadratic, solutions);
                 _solvedChannel.Publish(solvedQuadratic);
             }
 
             private static QuadraticSolutions Solve(Quadratic quadratic)
             {
-                int a = quadratic.A;
-                int b = quadratic.B;
-                int c = quadratic.C;
-                bool imaginary = false;
+                var a = quadratic.A;
+                var b = quadratic.B;
+                var c = quadratic.C;
+                var imaginary = false;
 
                 double discriminant = ((b*b) - (4*a*c));
 
@@ -200,10 +200,10 @@ namespace RetlangTests.Examples
                     imaginary = true;
                 }
 
-                double tmp = Math.Sqrt(discriminant);
+                var tmp = Math.Sqrt(discriminant);
 
-                double solutionOne = (-b + tmp)/(2*a);
-                double solutionTwo = (-b - tmp)/(2*a);
+                var solutionOne = (-b + tmp)/(2*a);
+                var solutionTwo = (-b - tmp)/(2*a);
 
                 return new QuadraticSolutions(solutionOne, solutionTwo, imaginary);
             }
@@ -247,29 +247,29 @@ namespace RetlangTests.Examples
         {
             const int numberOfQuadratics = 10;
 
-            BatchExecutor executor = new BatchExecutor();
+            var executor = new BatchExecutor();
 
             // Create a factory to instantiate all our cooperating thread fibers.
-            ThreadFiberFactory processContextFactory = new ThreadFiberFactory();
+            var processContextFactory = new ThreadFiberFactory();
 
             // We create a source to generate the quadratics.
-            IThreadFiber sourceFiber = processContextFactory.CreateThreadFiber(executor, "source");
+            var sourceFiber = processContextFactory.CreateThreadFiber(executor, "source");
 
-            IThreadFiber sinkFiber = processContextFactory.CreateThreadFiber(executor, "sink");
+            var sinkFiber = processContextFactory.CreateThreadFiber(executor, "sink");
 
           
                 // We create and store a reference to 10 solvers,
                 // one for each possible square term being published.
-                IChannel<Quadratic>[] quadraticChannels = new IChannel<Quadratic>[10];
+                var quadraticChannels = new IChannel<Quadratic>[10];
 
                 // reference-preservation list to prevent GC'ing of solvers
-                List<QuadraticSolver> solvers = new List<QuadraticSolver>();
+                var solvers = new List<QuadraticSolver>();
 
                 IChannel<SolvedQuadratic> solvedChannel = new Channel<SolvedQuadratic>();
 
-                for (int idx = 0; idx < numberOfQuadratics; idx++)
+                for (var idx = 0; idx < numberOfQuadratics; idx++)
                 {
-                    IThreadFiber fiber = processContextFactory.CreateThreadFiber(executor, "solver " + (idx + 1));
+                    var fiber = processContextFactory.CreateThreadFiber(executor, "solver " + (idx + 1));
                     fiber.Start();
                     
                     quadraticChannels[idx] = new Channel<Quadratic>();
@@ -279,7 +279,7 @@ namespace RetlangTests.Examples
 
                 sourceFiber.Start();
 
-                QuadraticSource source =
+                var source =
                     new QuadraticSource(sourceFiber, quadraticChannels, numberOfQuadratics, DateTime.Now.Millisecond);
 
 

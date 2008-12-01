@@ -15,7 +15,7 @@ namespace Retlang.Fibers
     public class SynchronousFiber : IFiber
     {
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
-        private readonly List<Command> _pending = new List<Command>();
+        private readonly List<Action> _pending = new List<Action>();
         private readonly List<ScheduledEvent> _scheduled = new List<ScheduledEvent>();
         private bool _executePendingImmediately;
 
@@ -31,7 +31,7 @@ namespace Retlang.Fibers
         /// </summary>
         public void Dispose()
         {
-            foreach (IDisposable d in _disposables.ToArray())
+            foreach (var d in _disposables.ToArray())
             {
                 d.Dispose();
             }
@@ -41,7 +41,7 @@ namespace Retlang.Fibers
         /// Adds all events to pending list.
         /// </summary>
         /// <param name="commands"></param>
-        public void EnqueueAll(params Command[] commands)
+        public void EnqueueAll(params Action[] commands)
         {
             _pending.AddRange(commands);
             if (_executePendingImmediately)
@@ -54,7 +54,7 @@ namespace Retlang.Fibers
         /// Add event to pending list.
         /// </summary>
         /// <param name="command"></param>
-        public void Enqueue(Command command)
+        public void Enqueue(Action command)
         {
             _pending.Add(command);
             if (_executePendingImmediately)
@@ -96,9 +96,9 @@ namespace Retlang.Fibers
         /// <param name="command"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Command command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
         {
-            ScheduledEvent toAdd = new ScheduledEvent(command, timeTilEnqueueInMs);
+            var toAdd = new ScheduledEvent(command, timeTilEnqueueInMs);
             _scheduled.Add(toAdd);
 
             return new SynchronousTimerCommand(command, timeTilEnqueueInMs, 
@@ -112,9 +112,9 @@ namespace Retlang.Fibers
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
         {
-            ScheduledEvent toAdd = new ScheduledEvent(command, firstInMs, regularInMs);
+            var toAdd = new ScheduledEvent(command, firstInMs, regularInMs);
             _scheduled.Add(toAdd);
 
             return new SynchronousTimerCommand(command, firstInMs,
@@ -132,7 +132,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// All Pending commands.
         /// </summary>
-        public List<Command> Pending
+        public List<Action> Pending
         {
             get { return _pending; }
         }
@@ -159,7 +159,7 @@ namespace Retlang.Fibers
         /// </summary>
         public void ExecuteAllPending()
         {
-            foreach (Command command in _pending)
+            foreach (var command in _pending)
             {
                 command();
             }
@@ -171,7 +171,7 @@ namespace Retlang.Fibers
         /// </summary>
         public void ExecuteAllScheduled()
         {
-            foreach (ScheduledEvent scheduledEvent in _scheduled)
+            foreach (var scheduledEvent in _scheduled)
             {
                 scheduledEvent.Command();
             }

@@ -5,11 +5,6 @@ using System.Threading;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Command delegate.
-    /// </summary>
-    public delegate void Command();
-
-    /// <summary>
     /// Default implementation.
     /// </summary>
     public class CommandQueue : ICommandExecutor
@@ -21,7 +16,7 @@ namespace Retlang.Core
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime;
 
-        private readonly List<Command> _commands = new List<Command>();
+        private readonly List<Action> _commands = new List<Action>();
 
         private IBatchExecutor _batchRunner = new BatchExecutor();
 
@@ -53,10 +48,10 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Command[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void EnqueueAll(params Command[] commands)
+        public void EnqueueAll(params Action[] commands)
         {
             lock (_lock)
             {
@@ -72,7 +67,7 @@ namespace Retlang.Core
         /// Queue command.
         /// </summary>
         /// <param name="command"></param>
-        public void Enqueue(Command command)
+        public void Enqueue(Action command)
         {
             lock (_lock)
             {
@@ -140,13 +135,13 @@ namespace Retlang.Core
         /// Remove all commands.
         /// </summary>
         /// <returns></returns>
-        public Command[] DequeueAll()
+        public Action[] DequeueAll()
         {
             lock (_lock)
             {
                 if (ReadyToDequeue())
                 {
-                    Command[] toReturn = _commands.ToArray();
+                    var toReturn = _commands.ToArray();
                     _commands.Clear();
                     Monitor.PulseAll(_lock);
                     return toReturn;
@@ -174,7 +169,7 @@ namespace Retlang.Core
         /// <returns></returns>
         public bool ExecuteNextBatch()
         {
-            Command[] toExecute = DequeueAll();
+            var toExecute = DequeueAll();
             if (toExecute == null)
             {
                 return false;

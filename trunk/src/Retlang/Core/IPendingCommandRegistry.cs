@@ -1,3 +1,5 @@
+using System;
+
 namespace Retlang.Core
 {
     /// <summary>
@@ -15,6 +17,6 @@ namespace Retlang.Core
         /// Queue event to target queue.
         /// </summary>
         /// <param name="command"></param>
-        void EnqueueTask(Command command);
+        void EnqueueTask(Action command);
     }
 }

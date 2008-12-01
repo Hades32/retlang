@@ -1,11 +1,13 @@
+using System;
+
 namespace Retlang.Core
 {
     internal class PendingCommand : ITimerControl
     {
-        private readonly Command _toExecute;
+        private readonly Action _toExecute;
         private bool _cancelled;
 
-        public PendingCommand(Command toExecute)
+        public PendingCommand(Action toExecute)
         {
             _toExecute = toExecute;
         }

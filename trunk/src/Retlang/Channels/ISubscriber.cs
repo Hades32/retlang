@@ -11,7 +11,7 @@ namespace Retlang.Channels
     public interface ISubscriber<T>
     {
         ///<summary>
-        /// Subscribe to messages on this channel. The provided action will be invoked via a command on the provided executor.
+        /// Subscribe to messages on this channel. The provided action will be invoked via a Action on the provided executor.
         ///</summary>
         ///<param name="executor">the target context to receive the message</param>
         ///<param name="receive"></param>

@@ -20,7 +20,7 @@ namespace Retlang.Channels
         /// <returns></returns>
         public IUnsubscriber Subscribe(IDisposingExecutor queue, Action<T> receive)
         {
-            ChannelSubscription<T> subscriber = new ChannelSubscription<T>(queue, receive);
+            var subscriber = new ChannelSubscription<T>(queue, receive);
             return SubscribeOnProducerThreads(subscriber);
         }
 
@@ -36,7 +36,7 @@ namespace Retlang.Channels
         /// <returns></returns>
         public bool Publish(T msg)
         {
-            Action<T> evnt = _subscribers;
+            var evnt = _subscribers;
             if (evnt != null)
             {
                 evnt(msg);
@@ -62,7 +62,7 @@ namespace Retlang.Channels
         /// <returns></returns>
         public IUnsubscriber SubscribeToBatch(IScheduler scheduler, Action<IList<T>> receive, int intervalInMs)
         {
-            BatchSubscriber<T> batch = new BatchSubscriber<T>(scheduler, receive, intervalInMs);
+            var batch = new BatchSubscriber<T>(scheduler, receive, intervalInMs);
             return SubscribeOnProducerThreads(batch);
         }
 
@@ -79,8 +79,7 @@ namespace Retlang.Channels
                                                       Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive,
                                                       int intervalInMs)
         {
-            KeyedBatchSubscriber<K, T> batch =
-                new KeyedBatchSubscriber<K, T>(keyResolver, receive, scheduler, intervalInMs);
+            var batch = new KeyedBatchSubscriber<K, T>(keyResolver, receive, scheduler, intervalInMs);
             return SubscribeOnProducerThreads(batch);
         }
 
@@ -116,7 +115,7 @@ namespace Retlang.Channels
         /// <returns></returns>
         public IUnsubscriber SubscribeToLast(IScheduler scheduler, Action<T> receive, int intervalInMs)
         {
-            LastSubscriber<T> sub = new LastSubscriber<T>(receive, scheduler, intervalInMs);
+            var sub = new LastSubscriber<T>(receive, scheduler, intervalInMs);
             return SubscribeOnProducerThreads(sub);
         }
     }

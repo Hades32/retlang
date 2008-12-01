@@ -53,7 +53,7 @@ namespace Retlang.Channels
         /// </summary>
         private void Flush()
         {
-            T toReturn = ClearPending();
+            var toReturn = ClearPending();
             _target(toReturn);
         }
 

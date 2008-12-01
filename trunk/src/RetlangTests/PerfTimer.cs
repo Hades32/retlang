@@ -6,7 +6,7 @@ namespace RetlangTests
     public class PerfTimer : IDisposable
     {
         private readonly int _count;
-        private Stopwatch _stopWatch;
+        private readonly Stopwatch _stopWatch;
 
         public PerfTimer(int count)
         {
@@ -17,7 +17,7 @@ namespace RetlangTests
         public void Dispose()
         {
             _stopWatch.Stop();
-            long elapsed = _stopWatch.ElapsedMilliseconds;
+            var elapsed = _stopWatch.ElapsedMilliseconds;
             Console.WriteLine("Elapsed: " + elapsed + " Events: " + _count);
             Console.WriteLine("Avg/S: " + (_count/(elapsed/1000.00)));
         }

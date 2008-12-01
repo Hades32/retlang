@@ -15,43 +15,43 @@ namespace Retlang.Core
             _executor = executor;
         }
 
-        public ITimerControl Schedule(Command command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
         {
             if (timeTilEnqueueInMs <= 0)
             {
-                PendingCommand pending = new PendingCommand(command);
+                var pending = new PendingCommand(command);
                 _executor.Enqueue(pending.ExecuteCommand);
                 return pending;
             }
             else
             {
-                TimerCommand pending = new TimerCommand(command, timeTilEnqueueInMs, Timeout.Infinite);
+                var pending = new TimerCommand(command, timeTilEnqueueInMs, Timeout.Infinite);
                 AddPending(pending);
                 return pending;
             }
         }
 
-        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
         {
-            TimerCommand pending = new TimerCommand(command, firstInMs, regularInMs);
+            var pending = new TimerCommand(command, firstInMs, regularInMs);
             AddPending(pending);
             return pending;
         }
 
         public void Remove(ITimerControl toRemove)
         {
-            Command removeCommand = delegate { _pending.Remove(toRemove); };
+            Action removeCommand = () => _pending.Remove(toRemove);
             _executor.Enqueue(removeCommand);
         }
 
-        public void EnqueueTask(Command toExecute)
+        public void EnqueueTask(Action toExecute)
         {
             _executor.Enqueue(toExecute);
         }
 
         private void AddPending(TimerCommand pending)
         {
-            Command addCommand = delegate
+            Action addCommand = delegate
                                      {
                                          if (_running)
                                          {
@@ -65,8 +65,8 @@ namespace Retlang.Core
         public void Dispose()
         {
             _running = false;
-            List<ITimerControl> old = Interlocked.Exchange(ref _pending, new List<ITimerControl>());
-            foreach (ITimerControl control in old)
+            var old = Interlocked.Exchange(ref _pending, new List<ITimerControl>());
+            foreach (var control in old)
             {
                 control.Cancel();
             }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Retlang.Core
 {
     /// <summary>
@@ -9,6 +11,6 @@ namespace Retlang.Core
         /// Execute all pending events for the process bus.
         /// </summary>
         /// <param name="toExecute"></param>
-        void ExecuteAll(Command[] toExecute);
+        void ExecuteAll(Action[] toExecute);
     }
 }

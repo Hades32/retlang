@@ -12,7 +12,7 @@ namespace Retlang.Fibers
     {
         private readonly DisposableList _disposables = new DisposableList();
         private readonly object _lock = new object();
-        private readonly List<Command> _queue = new List<Command>();
+        private readonly List<Action> _queue = new List<Action>();
         private readonly IThreadPool _pool;
         private readonly CommandTimer _timer;
         private readonly IBatchExecutor _executor;
@@ -47,10 +47,10 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Command[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void EnqueueAll(params Command[] commands)
+        public void EnqueueAll(params Action[] commands)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -77,7 +77,7 @@ namespace Retlang.Fibers
         /// Queue command.
         /// </summary>
         /// <param name="commands"></param>
-        public void Enqueue(Command commands)
+        public void Enqueue(Action commands)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -128,7 +128,7 @@ namespace Retlang.Fibers
 
         private void Flush(object state)
         {
-            Command[] toExecute = ClearCommands();
+            var toExecute = ClearCommands();
             if (toExecute != null)
             {
                 _executor.ExecuteAll(toExecute);
@@ -147,7 +147,7 @@ namespace Retlang.Fibers
             }
         }
 
-        private Command[] ClearCommands()
+        private Action[] ClearCommands()
         {
             lock (_lock)
             {
@@ -156,31 +156,31 @@ namespace Retlang.Fibers
                     _flushPending = false;
                     return null;
                 }
-                Command[] toReturn = _queue.ToArray();
+                var toReturn = _queue.ToArray();
                 _queue.Clear();
                 return toReturn;
             }
         }
 
         /// <summary>
-        /// <see cref="IScheduler.Schedule(Command,long)"/>
+        /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
         /// <param name="command"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Command command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
         {
             return _timer.Schedule(command, timeTilEnqueueInMs);
         }
 
         /// <summary>
-        /// <see cref="IScheduler.ScheduleOnInterval(Command,long,long)"/>
+        /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
         /// <param name="command"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
         {
             return _timer.ScheduleOnInterval(command, firstInMs, regularInMs);
         }

@@ -14,11 +14,11 @@ namespace Retlang.Core
         /// <see cref="IDisposingExecutor.Enqueue"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void EnqueueAll(params Command[] commands)
+        public void EnqueueAll(params Action[] commands)
         {
             if (_running)
             {
-                foreach (Command toExecute in commands)
+                foreach (var toExecute in commands)
                 {
                     toExecute();
                 }
@@ -29,7 +29,7 @@ namespace Retlang.Core
         /// Queue command
         /// </summary>
         /// <param name="command"></param>
-        public void Enqueue(Command command)
+        public void Enqueue(Action command)
         {
             if (_running)
             {

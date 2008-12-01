@@ -24,17 +24,17 @@ namespace Retlang.Core
         public void Start()
         {}
 
-        public ITimerControl Schedule(IDisposingExecutor executor, Command toExecute, long scheduledTimeInMs)
+        public ITimerControl Schedule(IDisposingExecutor executor, Action toExecute, long scheduledTimeInMs)
         {
-            SingleEvent pending = new SingleEvent(executor, toExecute, scheduledTimeInMs, ElapsedMs());
+            var pending = new SingleEvent(executor, toExecute, scheduledTimeInMs, ElapsedMs());
             QueueEvent(pending);
             return pending;
         }
 
-        public ITimerControl ScheduleOnInterval(IDisposingExecutor executor, Command toExecute, long scheduledTimeInMs,
+        public ITimerControl ScheduleOnInterval(IDisposingExecutor executor, Action toExecute, long scheduledTimeInMs,
                                                 long intervalInMs)
         {
-            RecurringEvent pending = new RecurringEvent(executor, toExecute, scheduledTimeInMs, intervalInMs, ElapsedMs());
+            var pending = new RecurringEvent(executor, toExecute, scheduledTimeInMs, intervalInMs, ElapsedMs());
             QueueEvent(pending);
             return pending;
         }
@@ -61,7 +61,7 @@ namespace Retlang.Core
             time = 0;
             if (_pending.Count > 0)
             {
-                foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
+                foreach (var pair in _pending)
                 {
                     if (now >= pair.Key)
                     {
@@ -126,7 +126,7 @@ namespace Retlang.Core
             {
                 do
                 {
-                    List<IPendingEvent> rescheduled = ExecuteExpired();
+                    var rescheduled = ExecuteExpired();
                     Queue(rescheduled);
                 } while (!SetTimer());
             }
@@ -136,7 +136,7 @@ namespace Retlang.Core
         {
             if (rescheduled != null)
             {
-                foreach (IPendingEvent pendingEvent in rescheduled)
+                foreach (var pendingEvent in rescheduled)
                 {
                     QueueEvent(pendingEvent);
                 }
@@ -145,15 +145,15 @@ namespace Retlang.Core
 
         private List<IPendingEvent> ExecuteExpired()
         {
-            SortedList<long, List<IPendingEvent>> expired = RemoveExpired();
+            var expired = RemoveExpired();
             List<IPendingEvent> rescheduled = null;
             if (expired.Count > 0)
             {
-                foreach (KeyValuePair<long, List<IPendingEvent>> pair in expired)
+                foreach (var pair in expired)
                 {
-                    foreach (IPendingEvent pendingEvent in pair.Value)
+                    foreach (var pendingEvent in pair.Value)
                     {
-                        IPendingEvent next = pendingEvent.Execute(ElapsedMs());
+                        var next = pendingEvent.Execute(ElapsedMs());
                         if (next != null)
                         {
                             if (rescheduled == null)
@@ -172,8 +172,8 @@ namespace Retlang.Core
         {
             lock (_lock)
             {
-                SortedList<long, List<IPendingEvent>> expired = new SortedList<long, List<IPendingEvent>>();
-                foreach (KeyValuePair<long, List<IPendingEvent>> pair in _pending)
+                var expired = new SortedList<long, List<IPendingEvent>>();
+                foreach (var pair in _pending)
                 {
                     if (ElapsedMs() >= pair.Key)
                     {
@@ -184,7 +184,7 @@ namespace Retlang.Core
                         break;
                     }
                 }
-                foreach (KeyValuePair<long, List<IPendingEvent>> pair in expired)
+                foreach (var pair in expired)
                 {
                     _pending.Remove(pair.Key);
                 }

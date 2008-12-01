@@ -73,10 +73,10 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Command[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
         /// <param name="commands"></param>
-        public void EnqueueAll(params Command[] commands)
+        public void EnqueueAll(params Action[] commands)
         {
             _queue.EnqueueAll(commands);
         }
@@ -85,7 +85,7 @@ namespace Retlang.Fibers
         /// Queue command.
         /// </summary>
         /// <param name="command"></param>
-        public void Enqueue(Command command)
+        public void Enqueue(Action command)
         {
             _queue.Enqueue(command);
         }
@@ -118,23 +118,23 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IScheduler.Schedule(Command,long)"/>
+        /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
         /// <param name="command"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Command command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
         {
             return _scheduler.Schedule(command, timeTilEnqueueInMs);
         }
 
         /// <summary>
-        /// <see cref="IScheduler.ScheduleOnInterval(Command,long,long)"/>
+        /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
         /// <param name="command"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
-        public ITimerControl ScheduleOnInterval(Command command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
         {
             return _scheduler.ScheduleOnInterval(command, firstInMs, regularInMs);
         }
