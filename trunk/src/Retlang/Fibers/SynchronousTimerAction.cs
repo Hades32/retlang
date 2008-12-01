@@ -4,14 +4,14 @@ using Retlang.Core;
 
 namespace Retlang.Fibers
 {
-    internal class SynchronousTimerCommand : TimerCommand
+    internal class SynchronousTimerAction : TimerAction
     {
         private readonly List<ScheduledEvent> _scheduled;
         private readonly ScheduledEvent _victim;
 
-        public SynchronousTimerCommand(Action command, long firstIntervalInMs, 
+        public SynchronousTimerAction(Action action, long firstIntervalInMs, 
             long intervalInMs, List<ScheduledEvent> scheduled, ScheduledEvent victim) 
-            : base(command, firstIntervalInMs, intervalInMs)
+            : base(action, firstIntervalInMs, intervalInMs)
         {
             _scheduled = scheduled;
             _victim = victim;

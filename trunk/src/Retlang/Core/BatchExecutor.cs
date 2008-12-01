@@ -25,8 +25,8 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// When disabled, commands will be ignored by executor. The executor is typically disabled at shutdown
-        /// to prevent any pending commands from being executed. 
+        /// When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
+        /// to prevent any pending actions from being executed. 
         /// </summary>
         public bool IsEnabled
         {

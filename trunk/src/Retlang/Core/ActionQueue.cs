@@ -7,7 +7,7 @@ namespace Retlang.Core
     /// <summary>
     /// Default implementation.
     /// </summary>
-    public class CommandQueue : ICommandExecutor
+    public class ActionQueue : IActionExecutor
     {
         private readonly DisposableList _disposables = new DisposableList();
 
@@ -16,7 +16,7 @@ namespace Retlang.Core
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime;
 
-        private readonly List<Action> _commands = new List<Action>();
+        private readonly List<Action> _actions = new List<Action>();
 
         private IBatchExecutor _batchRunner = new BatchExecutor();
 
@@ -50,30 +50,30 @@ namespace Retlang.Core
         /// <summary>
         /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
-        /// <param name="commands"></param>
-        public void EnqueueAll(params Action[] commands)
+        /// <param name="actions"></param>
+        public void EnqueueAll(params Action[] actions)
         {
             lock (_lock)
             {
-                if (SpaceAvailable(commands.Length))
+                if (SpaceAvailable(actions.Length))
                 {
-                    _commands.AddRange(commands);
+                    _actions.AddRange(actions);
                     Monitor.PulseAll(_lock);
                 }
             }
         }
 
         /// <summary>
-        /// Queue command.
+        /// Queue action.
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Action command)
+        /// <param name="action"></param>
+        public void Enqueue(Action action)
         {
             lock (_lock)
             {
                 if (SpaceAvailable(1))
                 {
-                    _commands.Add(command);
+                    _actions.Add(action);
                     Monitor.PulseAll(_lock);
                 }
             }
@@ -112,27 +112,27 @@ namespace Retlang.Core
             {
                 return false;
             }
-            while (_maxQueueDepth > 0 && _commands.Count + toAdd > _maxQueueDepth)
+            while (_maxQueueDepth > 0 && _actions.Count + toAdd > _maxQueueDepth)
             {
                 if (_maxEnqueueWaitTime <= 0)
                 {
-                    throw new QueueFullException(_commands.Count);
+                    throw new QueueFullException(_actions.Count);
                 }
                 Monitor.Wait(_lock, _maxEnqueueWaitTime);
                 if (!_running)
                 {
                     return false;
                 }
-                if (_maxQueueDepth > 0 && _commands.Count + toAdd > _maxQueueDepth)
+                if (_maxQueueDepth > 0 && _actions.Count + toAdd > _maxQueueDepth)
                 {
-                    throw new QueueFullException(_commands.Count);
+                    throw new QueueFullException(_actions.Count);
                 }
             }
             return true;
         }
 
         /// <summary>
-        /// Remove all commands.
+        /// Remove all actions.
         /// </summary>
         /// <returns></returns>
         public Action[] DequeueAll()
@@ -141,8 +141,8 @@ namespace Retlang.Core
             {
                 if (ReadyToDequeue())
                 {
-                    var toReturn = _commands.ToArray();
-                    _commands.Clear();
+                    var toReturn = _actions.ToArray();
+                    _actions.Clear();
                     Monitor.PulseAll(_lock);
                     return toReturn;
                 }
@@ -152,7 +152,7 @@ namespace Retlang.Core
 
         private bool ReadyToDequeue()
         {
-            while (_commands.Count == 0 && _running)
+            while (_actions.Count == 0 && _running)
             {
                 Monitor.Wait(_lock);
             }
@@ -164,7 +164,7 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// Remove all commands and execute.
+        /// Remove all actions and execute.
         /// </summary>
         /// <returns></returns>
         public bool ExecuteNextBatch()
@@ -179,7 +179,7 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// Execute commands until stopped.
+        /// Execute actions until stopped.
         /// </summary>
         public void Run()
         {

@@ -10,18 +10,18 @@ namespace Retlang.Core
         /// <summary>
         /// Schedules an event to be executes once.
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns>a controller to cancel the event.</returns>
-        ITimerControl Schedule(Action command, long timeTilEnqueueInMs);
+        ITimerControl Schedule(Action action, long timeTilEnqueueInMs);
 
         /// <summary>
         /// Schedule an event on a recurring interval.
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns>controller to cancel timer.</returns>
-        ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs);
+        ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs);
     }
 }

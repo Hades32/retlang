@@ -40,10 +40,10 @@ namespace Retlang.Fibers
         /// <summary>
         /// Adds all events to pending list.
         /// </summary>
-        /// <param name="commands"></param>
-        public void EnqueueAll(params Action[] commands)
+        /// <param name="actions"></param>
+        public void EnqueueAll(params Action[] actions)
         {
-            _pending.AddRange(commands);
+            _pending.AddRange(actions);
             if (_executePendingImmediately)
             {
                 ExecuteAllPending();       
@@ -53,10 +53,10 @@ namespace Retlang.Fibers
         /// <summary>
         /// Add event to pending list.
         /// </summary>
-        /// <param name="command"></param>
-        public void Enqueue(Action command)
+        /// <param name="action"></param>
+        public void Enqueue(Action action)
         {
-            _pending.Add(command);
+            _pending.Add(action);
             if (_executePendingImmediately)
             {
                 ExecuteAllPending();
@@ -93,31 +93,31 @@ namespace Retlang.Fibers
         /// <summary>
         /// Adds a scheduled event to the list. 
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
-            var toAdd = new ScheduledEvent(command, timeTilEnqueueInMs);
+            var toAdd = new ScheduledEvent(action, timeTilEnqueueInMs);
             _scheduled.Add(toAdd);
 
-            return new SynchronousTimerCommand(command, timeTilEnqueueInMs, 
+            return new SynchronousTimerAction(action, timeTilEnqueueInMs, 
                 timeTilEnqueueInMs, _scheduled, toAdd);
         }
 
         /// <summary>
         /// Adds scheduled event to list.
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
-            var toAdd = new ScheduledEvent(command, firstInMs, regularInMs);
+            var toAdd = new ScheduledEvent(action, firstInMs, regularInMs);
             _scheduled.Add(toAdd);
 
-            return new SynchronousTimerCommand(command, firstInMs,
+            return new SynchronousTimerAction(action, firstInMs,
                 regularInMs, _scheduled, toAdd);
         }
 
@@ -130,7 +130,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// All Pending commands.
+        /// All Pending actions.
         /// </summary>
         public List<Action> Pending
         {
@@ -155,13 +155,13 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Execute all commands in the pending list.
+        /// Execute all actions in the pending list.
         /// </summary>
         public void ExecuteAllPending()
         {
-            foreach (var command in _pending)
+            foreach (var action in _pending)
             {
-                command();
+                action();
             }
             _pending.Clear();
         }
@@ -173,7 +173,7 @@ namespace Retlang.Fibers
         {
             foreach (var scheduledEvent in _scheduled)
             {
-                scheduledEvent.Command();
+                scheduledEvent.Action();
             }
             _scheduled.Clear();
         }

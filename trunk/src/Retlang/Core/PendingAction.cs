@@ -2,12 +2,12 @@ using System;
 
 namespace Retlang.Core
 {
-    internal class PendingCommand : ITimerControl
+    internal class PendingAction : ITimerControl
     {
         private readonly Action _toExecute;
         private bool _cancelled;
 
-        public PendingCommand(Action toExecute)
+        public PendingAction(Action toExecute)
         {
             _toExecute = toExecute;
         }
@@ -17,7 +17,7 @@ namespace Retlang.Core
             _cancelled = true;
         }
 
-        public void ExecuteCommand()
+        public void ExecuteAction()
         {
             if (!_cancelled)
             {

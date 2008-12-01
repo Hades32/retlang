@@ -51,9 +51,9 @@ namespace Retlang.Fibers
             return new ThreadFiber(queue, threadName);
         }
 
-        private CommandQueue CreateQueue(IBatchExecutor executor)
+        private ActionQueue CreateQueue(IBatchExecutor executor)
         {
-            var queue = new CommandQueue();
+            var queue = new ActionQueue();
             queue.MaxEnqueueWaitTime = _maxEnqueueWaitTime;
             queue.MaxDepth = _maxQueueDepth;
             if (executor != null)

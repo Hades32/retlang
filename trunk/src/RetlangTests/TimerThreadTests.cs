@@ -14,7 +14,7 @@ namespace RetlangTests
         [Test]
         public void Schedule()
         {
-            var queue = new SynchronousCommandQueue();
+            var queue = new SynchronousActionQueue();
             queue.Run();
 
             var count = 0;
@@ -52,7 +52,7 @@ namespace RetlangTests
         [Test]
         public void TimeTilNext()
         {
-            var queue = new SynchronousCommandQueue();
+            var queue = new SynchronousActionQueue();
             queue.Run();
             Action action = () => Assert.Fail("Should not execute");
             using (var timer = new TimerThread())
@@ -72,7 +72,7 @@ namespace RetlangTests
         [Test]
         public void Schedule1000In1ms()
         {
-            var queue = new SynchronousCommandQueue();
+            var queue = new SynchronousActionQueue();
             queue.Run();
 
             var count = 0;
@@ -172,7 +172,7 @@ namespace RetlangTests
             var caps = new TIMECAPS();
             PerfSettings.timeGetDevCaps(ref caps, Marshal.SizeOf(caps));
             Console.WriteLine(caps.PeriodMin + "-" + caps.PeriodMax);
-            var queue = new SynchronousCommandQueue();
+            var queue = new SynchronousActionQueue();
             queue.Run();
 
             var count = 0;

@@ -14,7 +14,7 @@ namespace Retlang.Fibers
         private readonly object _lock = new object();
         private readonly List<Action> _queue = new List<Action>();
         private readonly IThreadPool _pool;
-        private readonly CommandTimer _timer;
+        private readonly ActionTimer _timer;
         private readonly IBatchExecutor _executor;
 
         private ExecutionState _started = ExecutionState.Created;
@@ -27,7 +27,7 @@ namespace Retlang.Fibers
         /// <param name="executor"></param>
         public PoolFiber(IThreadPool pool, IBatchExecutor executor)
         {
-            _timer = new CommandTimer(this);
+            _timer = new ActionTimer(this);
             _pool = pool;
             _executor = executor;
         }
@@ -49,8 +49,8 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
-        /// <param name="commands"></param>
-        public void EnqueueAll(params Action[] commands)
+        /// <param name="actions"></param>
+        public void EnqueueAll(params Action[] actions)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -59,7 +59,7 @@ namespace Retlang.Fibers
 
             lock (_lock)
             {
-                _queue.AddRange(commands);
+                _queue.AddRange(actions);
                 if (_started == ExecutionState.Created)
                 {
                     return;
@@ -74,10 +74,10 @@ namespace Retlang.Fibers
 
 
         /// <summary>
-        /// Queue command.
+        /// Queue action.
         /// </summary>
-        /// <param name="commands"></param>
-        public void Enqueue(Action commands)
+        /// <param name="action"></param>
+        public void Enqueue(Action action)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -86,7 +86,7 @@ namespace Retlang.Fibers
 
             lock (_lock)
             {
-                _queue.Add(commands);
+                _queue.Add(action);
                 if (_started == ExecutionState.Created)
                 {
                     return;
@@ -128,7 +128,7 @@ namespace Retlang.Fibers
 
         private void Flush(object state)
         {
-            var toExecute = ClearCommands();
+            var toExecute = ClearActions();
             if (toExecute != null)
             {
                 _executor.ExecuteAll(toExecute);
@@ -147,7 +147,7 @@ namespace Retlang.Fibers
             }
         }
 
-        private Action[] ClearCommands()
+        private Action[] ClearActions()
         {
             lock (_lock)
             {
@@ -165,24 +165,24 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="timeTilEnqueueInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action command, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
-            return _timer.Schedule(command, timeTilEnqueueInMs);
+            return _timer.Schedule(action, timeTilEnqueueInMs);
         }
 
         /// <summary>
         /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Action command, long firstInMs, long regularInMs)
+        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
-            return _timer.ScheduleOnInterval(command, firstInMs, regularInMs);
+            return _timer.ScheduleOnInterval(action, firstInMs, regularInMs);
         }
 
         /// <summary>
