@@ -851,78 +851,6 @@
             Time of expiration for this event
             </summary>
         </member>
-        <member name="T:Retlang.Core.ActionQueue">
-            <summary>
-            Default implementation.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.EnqueueAll(System.Action[])">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
-            </summary>
-            <param name="actions"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.Enqueue(System.Action)">
-            <summary>
-            Queue action.
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.Add(System.IDisposable)">
-            <summary>
-            Add disposable.
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.Remove(System.IDisposable)">
-            <summary>
-            Remove
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.DequeueAll">
-            <summary>
-            Remove all actions.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.ExecuteNextBatch">
-            <summary>
-            Remove all actions and execute.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.Run">
-            <summary>
-            Execute actions until stopped.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionQueue.Stop">
-            <summary>
-            Stop consuming events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.ActionQueue.Executor">
-            <summary>
-            Executor for events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.ActionQueue.MaxDepth">
-            <summary>
-            Max number of events to be queued.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.ActionQueue.MaxEnqueueWaitTime">
-            <summary>
-            Max time to wait for space in the queue.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.ActionQueue.DisposableCount">
-            <summary>
-            Disposable Count.
-            </summary>
-        </member>
         <member name="T:Retlang.Channels.Filter`1">
             <summary>
             Message filter delegate
@@ -1212,6 +1140,78 @@
         <member name="P:Retlang.Fibers.ThreadFiberFactory.MaxEnqueueWaitTime">
             <summary>
             Max time to wait for queue to clear.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.ActionExecutor">
+            <summary>
+            Default implementation.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.EnqueueAll(System.Action[])">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            </summary>
+            <param name="actions"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.Enqueue(System.Action)">
+            <summary>
+            Queue action.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.Add(System.IDisposable)">
+            <summary>
+            Add disposable.
+            </summary>
+            <param name="toAdd"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.Remove(System.IDisposable)">
+            <summary>
+            Remove
+            </summary>
+            <param name="victim"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.DequeueAll">
+            <summary>
+            Remove all actions.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.ExecuteNextBatch">
+            <summary>
+            Remove all actions and execute.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.Run">
+            <summary>
+            Execute actions until stopped.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionExecutor.Stop">
+            <summary>
+            Stop consuming events.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.ActionExecutor.BatchExecutor">
+            <summary>
+            Executor for events.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.ActionExecutor.MaxDepth">
+            <summary>
+            Max number of events to be queued.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.ActionExecutor.MaxEnqueueWaitTime">
+            <summary>
+            Max time to wait for space in the queue.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.ActionExecutor.DisposableCount">
+            <summary>
+            Disposable Count.
             </summary>
         </member>
     </members>
