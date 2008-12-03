@@ -1,0 +1,10 @@
+= How to Release Retlang=
+
+  # Make sure assembly version is set correctly
+  # Build the project in Release Mode
+  # Create Docs using Sandcastle
+  # Copy docs into output directory
+  # Zip output dir and rename file to be consistent with other released zips
+  # Upload Zip to google code
+  # Rename chm doc file to proper version name
+  # Upload docs separately
