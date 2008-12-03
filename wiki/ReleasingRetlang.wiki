@@ -1,4 +1,4 @@
-= How to Release Retlang=
+= How to Release Retlang =
 
   # Make sure assembly version is set correctly
   # Build the project in Release Mode
