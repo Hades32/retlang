@@ -10,7 +10,7 @@ namespace Retlang.Channels
     public class ChannelSubscription<T> : BaseSubscription<T>
     {
         private readonly Action<T> _receiveMethod;
-        private readonly IDisposingExecutor _targetQueue;
+        private readonly IDisposingExecutor _targetExecutor;
 
         /// <summary>
         /// Construct the subscription
@@ -20,7 +20,7 @@ namespace Retlang.Channels
         public ChannelSubscription(IDisposingExecutor queue, Action<T> receiveMethod)
         {
             _receiveMethod = receiveMethod;
-            _targetQueue = queue;
+            _targetExecutor = queue;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Retlang.Channels
         protected override void OnMessageOnProducerThread(T msg)
         {
             Action asyncExec = () => _receiveMethod(msg);
-            _targetQueue.Enqueue(asyncExec);
+            _targetExecutor.Enqueue(asyncExec);
         }
     }
 }

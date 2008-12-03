@@ -15,12 +15,12 @@ namespace Retlang.Channels
         /// <summary>
         /// <see cref="ISubscriber{T}.Subscribe(IDisposingExecutor,Action{T})"/>
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="executor"></param>
         /// <param name="receive"></param>
         /// <returns></returns>
-        public IUnsubscriber Subscribe(IDisposingExecutor queue, Action<T> receive)
+        public IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> receive)
         {
-            var subscriber = new ChannelSubscription<T>(queue, receive);
+            var subscriber = new ChannelSubscription<T>(executor, receive);
             return SubscribeOnProducerThreads(subscriber);
         }
 
