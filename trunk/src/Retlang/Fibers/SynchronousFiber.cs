@@ -43,10 +43,16 @@ namespace Retlang.Fibers
         /// <param name="actions"></param>
         public void EnqueueAll(params Action[] actions)
         {
-            _pending.AddRange(actions);
             if (_executePendingImmediately)
             {
-                ExecuteAllPending();       
+                foreach (var action in actions)
+                {
+                    action();
+                }
+            }
+            else
+            {
+                _pending.AddRange(actions);
             }
         }
 
@@ -56,10 +62,13 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-            _pending.Add(action);
             if (_executePendingImmediately)
             {
-                ExecuteAllPending();
+                action();
+            }
+            else
+            {
+                _pending.Add(action);
             }
         }
 
