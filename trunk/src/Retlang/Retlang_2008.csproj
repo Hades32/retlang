@@ -85,7 +85,7 @@
     <Compile Include="Channels\RequestReplyChannel.cs" />
     <Compile Include="Channels\Unsubscriber.cs" />
     <Compile Include="Core\BatchExecutor.cs" />
-    <Compile Include="Core\ActionQueue.cs" />
+    <Compile Include="Core\ActionExecutor.cs" />
     <Compile Include="Core\ActionTimer.cs" />
     <Compile Include="Core\DisposableList.cs" />
     <Compile Include="Core\IBatchExecutor.cs" />

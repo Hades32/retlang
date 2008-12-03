@@ -27,7 +27,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// Create a process thread with a default queue.
         /// </summary>
-        public ThreadFiber() : this(new ActionQueue())
+        public ThreadFiber() : this(new ActionExecutor())
         {}
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace Retlang.Core
     /// <summary>
     /// Default implementation.
     /// </summary>
-    public class ActionQueue : IActionExecutor
+    public class ActionExecutor : IActionExecutor
     {
         private readonly DisposableList _disposables = new DisposableList();
 
