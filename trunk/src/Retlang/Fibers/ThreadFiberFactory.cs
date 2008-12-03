@@ -58,7 +58,7 @@ namespace Retlang.Fibers
             queue.MaxDepth = _maxQueueDepth;
             if (executor != null)
             {
-                queue.Executor = executor;
+                queue.BatchExecutor = executor;
             }
             return queue;
         }
