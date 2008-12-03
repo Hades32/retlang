@@ -14,7 +14,7 @@ namespace Retlang.Fibers
         private readonly DisposableList _disposables = new DisposableList();
 
         private readonly Thread _thread;
-        private readonly IActionExecutor _queue;
+        private readonly IActionExecutor _executor;
         private readonly ActionTimer _scheduler;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Retlang.Fibers
         /// <param name="isBackground"></param>
         public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground)
         {
-            _queue = executor;
+            _executor = executor;
             _thread = new Thread(RunThread);
             _thread.Name = threadName;
             _thread.IsBackground = isBackground;
@@ -69,7 +69,7 @@ namespace Retlang.Fibers
 
         private void RunThread()
         {
-            _queue.Run();
+            _executor.Run();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Retlang.Fibers
         /// <param name="actions"></param>
         public void EnqueueAll(params Action[] actions)
         {
-            _queue.EnqueueAll(actions);
+            _executor.EnqueueAll(actions);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-            _queue.Enqueue(action);
+            _executor.Enqueue(action);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Retlang.Fibers
         public void Dispose()
         {
             _scheduler.Dispose();
-            _queue.Stop();
+            _executor.Stop();
         }
     }
 }

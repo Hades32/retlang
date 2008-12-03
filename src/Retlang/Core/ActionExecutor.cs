@@ -18,15 +18,15 @@ namespace Retlang.Core
 
         private readonly List<Action> _actions = new List<Action>();
 
-        private IBatchExecutor _batchRunner = new BatchExecutor();
+        private IBatchExecutor _batchExecutor = new BatchExecutor();
 
         /// <summary>
         /// Executor for events.
         /// </summary>
-        public IBatchExecutor Executor
+        public IBatchExecutor BatchExecutor
         {
-            get { return _batchRunner; }
-            set { _batchRunner = value; }
+            get { return _batchExecutor; }
+            set { _batchExecutor = value; }
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Retlang.Core
             {
                 return false;
             }
-            _batchRunner.ExecuteAll(toExecute);
+            _batchExecutor.ExecuteAll(toExecute);
             return true;
         }
 
