@@ -2,7 +2,7 @@
 
   # Make sure assembly version is set correctly
   # Build the project in Release Mode
-  # Create Docs using Sandcastle
+  # Create Docs using [http://www.codeplex.com/Sandcastle Sandcastle]
   # Copy docs into output directory
   # Zip output dir and rename file to be consistent with other released zips
   # Upload Zip to google code
