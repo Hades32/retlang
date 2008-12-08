@@ -9,6 +9,11 @@
             A Thread dedicated to event scheduling.
             </summary>
         </member>
+        <member name="T:Retlang.Core.ActionTimer">
+            <summary>
+             Enqueues actions on to executor after schedule elapses.  
+            </summary>
+        </member>
         <member name="T:Retlang.Core.IPendingActionRegistry">
             <summary>
             Stores and removes pending actions.
@@ -47,6 +52,38 @@
             <param name="firstInMs"></param>
             <param name="regularInMs"></param>
             <returns>controller to cancel timer.</returns>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.#ctor(Retlang.Core.IDisposingExecutor)">
+            <summary>
+             Constructs new instance.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Schedule(System.Action,System.Int64)">
+            <summary>
+             Enqueues action on to executor after timer elapses.  
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+             Enqueues actions on to executor after schedule elapses.  
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Remove(Retlang.Core.ITimerControl)">
+            <summary>
+             Removes a pending scheduled action.
+            </summary>
+            <param name="toRemove"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.EnqueueTask(System.Action)">
+            <summary>
+             Enqueues actions on to executor immediately.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Dispose">
+            <summary>
+             Cancels all pending actions
+            </summary>
         </member>
         <member name="T:Retlang.Channels.IQueueChannel`1">
             <summary>
@@ -265,7 +302,7 @@
         </member>
         <member name="T:Retlang.Fibers.PoolFiber">
             <summary>
-            Process Queue that uses a thread pool for execution.
+            Fiber that uses a thread pool for execution.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.#ctor(Retlang.Core.IThreadPool,Retlang.Core.IBatchExecutor)">
@@ -277,12 +314,12 @@
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.#ctor(Retlang.Core.IBatchExecutor)">
             <summary>
-            Create a pool queue with the default thread pool.
+            Create a pool fiber with the default thread pool.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.#ctor">
             <summary>
-            Create a pool queue with the default thread pool and batch executor.
+            Create a pool fiber with the default thread pool and batch executor.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.EnqueueAll(System.Action[])">
@@ -339,7 +376,7 @@
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.Dispose">
             <summary>
-            Stops the queue.
+            Stops the fiber.
             </summary>
         </member>
         <member name="P:Retlang.Fibers.PoolFiber.DisposableCount">
@@ -633,6 +670,26 @@
         <member name="P:Retlang.Fibers.ThreadFiber.DisposableCount">
             <summary>
             Number of disposables.
+            </summary>
+        </member>
+        <member name="T:Retlang.Fibers.ExecutionState">
+            <summary>
+             Fiber execution state management
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Created">
+            <summary>
+             Created but not running
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Running">
+            <summary>
+             After start
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Stopped">
+            <summary>
+             After stopped
             </summary>
         </member>
         <member name="T:Retlang.Channels.RequestReplyChannel`2">

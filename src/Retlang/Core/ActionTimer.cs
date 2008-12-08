@@ -4,17 +4,26 @@ using System.Threading;
 
 namespace Retlang.Core
 {
-    internal class ActionTimer : IPendingActionRegistry, IScheduler, IDisposable
+    ///<summary>
+    /// Enqueues actions on to executor after schedule elapses.  
+    ///</summary>
+    public class ActionTimer : IPendingActionRegistry, IScheduler, IDisposable
     {
         private volatile bool _running = true;
         private readonly IDisposingExecutor _executor;
         private List<ITimerControl> _pending = new List<ITimerControl>();
 
+        ///<summary>
+        /// Constructs new instance.
+        ///</summary>
         public ActionTimer(IDisposingExecutor executor)
         {
             _executor = executor;
         }
 
+        ///<summary>
+        /// Enqueues action on to executor after timer elapses.  
+        ///</summary>
         public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
             if (timeTilEnqueueInMs <= 0)
@@ -31,6 +40,9 @@ namespace Retlang.Core
             }
         }
 
+        ///<summary>
+        /// Enqueues actions on to executor after schedule elapses.  
+        ///</summary>
         public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
             var pending = new TimerAction(action, firstInMs, regularInMs);
@@ -38,12 +50,20 @@ namespace Retlang.Core
             return pending;
         }
 
+        ///<summary>
+        /// Removes a pending scheduled action.
+        ///</summary>
+        ///<param name="toRemove"></param>
         public void Remove(ITimerControl toRemove)
         {
             Action removeAction = () => _pending.Remove(toRemove);
             _executor.Enqueue(removeAction);
         }
 
+        ///<summary>
+        /// Enqueues actions on to executor immediately.
+        ///</summary>
+        ///<param name="action"></param>
         public void EnqueueTask(Action action)
         {
             _executor.Enqueue(action);
@@ -62,6 +82,9 @@ namespace Retlang.Core
             _executor.Enqueue(addAction);
         }
 
+        ///<summary>
+        /// Cancels all pending actions
+        ///</summary>
         public void Dispose()
         {
             _running = false;
