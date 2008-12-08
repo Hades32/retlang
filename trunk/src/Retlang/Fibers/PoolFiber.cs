@@ -6,7 +6,7 @@ using Retlang.Core;
 namespace Retlang.Fibers
 {
     /// <summary>
-    /// Process Queue that uses a thread pool for execution.
+    /// Fiber that uses a thread pool for execution.
     /// </summary>
     public class PoolFiber : IFiber
     {
@@ -33,14 +33,14 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Create a pool queue with the default thread pool.
+        /// Create a pool fiber with the default thread pool.
         /// </summary>
         public PoolFiber(IBatchExecutor executor) : this(new DefaultThreadPool(), executor)
         {
         }
 
         /// <summary>
-        /// Create a pool queue with the default thread pool and batch executor.
+        /// Create a pool fiber with the default thread pool and batch executor.
         /// </summary>
         public PoolFiber() : this(new DefaultThreadPool(), new BatchExecutor())
         {
@@ -209,7 +209,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Stops the queue.
+        /// Stops the fiber.
         /// </summary>
         public void Dispose()
         {
