@@ -17,7 +17,7 @@ namespace Retlang.Fibers
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly List<Action> _pending = new List<Action>();
         private readonly List<ScheduledEvent> _scheduled = new List<ScheduledEvent>();
-        private bool _executePendingImmediately;
+        private bool _executePendingImmediately = true;
 
         /// <summary>
         /// No Op
