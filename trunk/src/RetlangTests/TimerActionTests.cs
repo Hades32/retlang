@@ -15,10 +15,10 @@ namespace RetlangTests
             var executionCount = 0;
             Action action = () => executionCount++;
             var timer = new TimerAction(action, 1, 2);
-            timer.ExecuteOnProcessThread();
+            timer.ExecuteOnFiberThread();
             Assert.AreEqual(1, executionCount);
             timer.Cancel();
-            timer.ExecuteOnProcessThread();
+            timer.ExecuteOnFiberThread();
 
             Assert.AreEqual(1, executionCount);
         }
@@ -31,7 +31,7 @@ namespace RetlangTests
             var action = mocks.CreateMock<Action>();
             var timer = new TimerAction(action, 2, 3);
             var registry = mocks.CreateMock<IPendingActionRegistry>();
-            registry.EnqueueTask(timer.ExecuteOnProcessThread);
+            registry.EnqueueTask(timer.ExecuteOnFiberThread);
 
             mocks.ReplayAll();
 
@@ -63,7 +63,7 @@ namespace RetlangTests
             var registry = mocks.CreateMock<IPendingActionRegistry>();
 
             registry.Remove(timer);
-            registry.EnqueueTask(timer.ExecuteOnProcessThread);
+            registry.EnqueueTask(timer.ExecuteOnFiberThread);
 
             mocks.ReplayAll();
             timer.ExecuteOnTimerThread(registry);

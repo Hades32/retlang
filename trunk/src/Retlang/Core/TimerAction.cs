@@ -39,11 +39,11 @@ namespace Retlang.Core
 
             if (!_cancelled)
             {
-                registry.EnqueueTask(ExecuteOnProcessThread);
+                registry.EnqueueTask(ExecuteOnFiberThread);
             }
         }
 
-        public void ExecuteOnProcessThread()
+        public void ExecuteOnFiberThread()
         {
             if (!_cancelled)
             {

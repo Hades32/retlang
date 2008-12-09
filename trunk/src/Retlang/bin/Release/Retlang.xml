@@ -259,12 +259,18 @@
         </member>
         <member name="T:Retlang.Core.IBatchExecutor">
             <summary>
-            Executes the pending events on for the process bus.
+            Executes pending action(s).
             </summary>
         </member>
         <member name="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])">
             <summary>
-            Execute all pending events for the process bus.
+            Execute all pending actions.
+            </summary>
+            <param name="toExecute"></param>
+        </member>
+        <member name="M:Retlang.Core.IBatchExecutor.Execute(System.Action)">
+            <summary>
+            Execute pending action.
             </summary>
             <param name="toExecute"></param>
         </member>
@@ -292,7 +298,11 @@
             <summary>
             <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
             </summary>
-            <param name="toExecute"></param>
+        </member>
+        <member name="M:Retlang.Core.BatchExecutor.Execute(System.Action)">
+            <summary>
+            <see cref="M:Retlang.Core.IBatchExecutor.Execute(System.Action)"/>
+            </summary>
         </member>
         <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
             <summary>

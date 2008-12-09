@@ -12,15 +12,22 @@ namespace Retlang.Core
         /// <summary>
         /// <see cref="IBatchExecutor.ExecuteAll(Action[])"/>
         /// </summary>
-        /// <param name="toExecute"></param>
         public void ExecuteAll(Action[] toExecute)
         {
             foreach (var action in toExecute)
             {
-                if (_running)
-                {
-                    action();
-                }
+                Execute(action);
+            }
+        }
+
+        /// <summary>
+        /// <see cref="IBatchExecutor.Execute(Action)"/>
+        /// </summary>
+        public void Execute(Action toExecute)
+        {
+            if (_running)
+            {
+                toExecute();
             }
         }
 

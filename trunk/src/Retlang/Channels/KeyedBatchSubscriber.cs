@@ -56,7 +56,7 @@ namespace Retlang.Channels
         }
 
         /// <summary>
-        /// Flushed from process thread
+        /// Flushed from fiber
         /// </summary>
         public void Flush()
         {

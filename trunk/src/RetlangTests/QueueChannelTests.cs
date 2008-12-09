@@ -64,7 +64,6 @@ namespace RetlangTests
             }
         }
 
-
         [Test]
         public void Multiple()
         {
@@ -109,18 +108,22 @@ namespace RetlangTests
 
         public void ExecuteAll(Action[] toExecute)
         {
-            foreach (var c in toExecute)
+            foreach (var action in toExecute)
             {
-                try
-                {
-                    c();
-                }
-                catch (Exception e)
-                {
-                    failed.Add(e);
-                }
+                Execute(action);
             }
         }
 
+        public void Execute(Action toExecute)
+        {
+            try
+            {
+                toExecute();
+            }
+            catch (Exception e)
+            {
+                failed.Add(e);
+            }
+        }
     }
 }

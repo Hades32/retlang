@@ -15,7 +15,7 @@ namespace Retlang.Fibers
         IThreadFiber CreateThreadFiber(IBatchExecutor executor);
 
         /// <summary>
-        /// Create named process thread.
+        /// Create named fiber thread.
         /// </summary>
         /// <param name="executor"></param>
         /// <param name="threadName"></param>
