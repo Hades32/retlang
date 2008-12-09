@@ -113,7 +113,7 @@
         </member>
         <member name="T:Retlang.Fibers.IFiber">
             <summary>
-            Queues pending events for the process.
+            Queues pending events for the fiber.
             </summary>
         </member>
         <member name="T:Retlang.Core.IDisposingExecutor">
@@ -270,7 +270,7 @@
         </member>
         <member name="M:Retlang.Core.IBatchExecutor.Execute(System.Action)">
             <summary>
-            Execute pending action.
+            Execute a pending action.
             </summary>
             <param name="toExecute"></param>
         </member>
@@ -418,7 +418,7 @@
         </member>
         <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.Flush">
             <summary>
-            Flushed from process thread
+            Flushed from fiber
             </summary>
         </member>
         <member name="T:Retlang.Channels.IRequest`2">
@@ -477,7 +477,7 @@
         </member>
         <member name="M:Retlang.Channels.LastSubscriber`1.Flush">
             <summary>
-            Flushes on IProcessTimer thread.
+            Flushes on IFiber thread.
             </summary>
         </member>
         <member name="T:Retlang.Channels.IPublisher`1">
@@ -586,7 +586,7 @@
         </member>
         <member name="T:Retlang.Fibers.ThreadFiber">
             <summary>
-            Default implementation for IProcessThread.
+            Default implementation for IThreadFiber.
             <see cref="T:Retlang.Fibers.IFiber"/>
             </summary>
         </member>
@@ -598,7 +598,7 @@
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor">
             <summary>
-            Create a process thread with a default queue.
+            Create a fiber thread with a default action executor.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String)">
@@ -610,7 +610,7 @@
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String,System.Boolean)">
             <summary>
-            Create process thread.
+            Create fiber thread.
             </summary>
             <param name="executor"></param>
             <param name="threadName"></param>
@@ -1031,7 +1031,7 @@
         </member>
         <member name="M:Retlang.Fibers.IThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor,System.String)">
             <summary>
-            Create named process thread.
+            Create named fiber thread.
             </summary>
             <param name="executor"></param>
             <param name="threadName"></param>
