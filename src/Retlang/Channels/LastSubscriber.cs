@@ -49,7 +49,7 @@ namespace Retlang.Channels
         }
 
         /// <summary>
-        /// Flushes on IProcessTimer thread.
+        /// Flushes on IFiber thread.
         /// </summary>
         private void Flush()
         {

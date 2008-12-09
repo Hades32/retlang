@@ -3,14 +3,20 @@ using System;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Executes the pending events on for the process bus.
+    /// Executes pending action(s).
     /// </summary>
     public interface IBatchExecutor
     {
         /// <summary>
-        /// Execute all pending events for the process bus.
+        /// Execute all pending actions.
         /// </summary>
         /// <param name="toExecute"></param>
         void ExecuteAll(Action[] toExecute);
+
+        /// <summary>
+        /// Execute a pending action.
+        /// </summary>
+        /// <param name="toExecute"></param>
+        void Execute(Action toExecute);
     }
 }

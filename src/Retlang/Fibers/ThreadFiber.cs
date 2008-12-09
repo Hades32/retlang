@@ -5,7 +5,7 @@ using Retlang.Core;
 namespace Retlang.Fibers
 {
     /// <summary>
-    /// Default implementation for IProcessThread.
+    /// Default implementation for IThreadFiber.
     /// <see cref="IFiber"/>
     /// </summary>
     public class ThreadFiber : IThreadFiber
@@ -25,7 +25,7 @@ namespace Retlang.Fibers
         {}
 
         /// <summary>
-        /// Create a process thread with a default queue.
+        /// Create a fiber thread with a default action executor.
         /// </summary>
         public ThreadFiber() : this(new ActionExecutor())
         {}
@@ -40,7 +40,7 @@ namespace Retlang.Fibers
         {}
 
         /// <summary>
-        /// Create process thread.
+        /// Create fiber thread.
         /// </summary>
         /// <param name="executor"></param>
         /// <param name="threadName"></param>
