@@ -12,11 +12,5 @@ namespace Retlang.Core
         /// </summary>
         /// <param name="toExecute"></param>
         void ExecuteAll(Action[] toExecute);
-
-        /// <summary>
-        /// Execute a pending action.
-        /// </summary>
-        /// <param name="toExecute"></param>
-        void Execute(Action toExecute);
     }
 }

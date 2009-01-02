@@ -21,7 +21,7 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// <see cref="IBatchExecutor.Execute(Action)"/>
+        /// Execute single action
         /// </summary>
         public void Execute(Action toExecute)
         {
