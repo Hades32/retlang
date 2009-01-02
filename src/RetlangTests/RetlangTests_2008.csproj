@@ -72,6 +72,7 @@
     <Compile Include="Examples\BasicExamples.cs" />
     <Compile Include="Examples\FibonacciDemonstration.cs" />
     <Compile Include="PerfSettings.cs" />
+    <Compile Include="PerfTests.cs" />
     <Compile Include="PerfTimer.cs" />
     <Compile Include="QueueChannelTests.cs" />
     <Compile Include="RequestReplyChannelTests.cs" />
