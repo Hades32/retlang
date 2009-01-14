@@ -608,13 +608,14 @@
             <param name="executor">The queue</param>
             <param name="threadName">custom thread name</param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String,System.Boolean)">
+        <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String,System.Boolean,System.Threading.ThreadPriority)">
             <summary>
             Create fiber thread.
             </summary>
             <param name="executor"></param>
             <param name="threadName"></param>
             <param name="isBackground"></param>
+            <param name="priority"></param>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.EnqueueAll(System.Action[])">
             <summary>

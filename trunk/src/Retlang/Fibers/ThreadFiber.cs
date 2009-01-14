@@ -21,7 +21,8 @@ namespace Retlang.Fibers
         /// Creates a new thread with the backing executor.
         /// </summary>
         /// <param name="executor"></param>
-        public ThreadFiber(IActionExecutor executor) : this(executor, "ThreadFiber-" + GetNextThreadId(), true)
+        public ThreadFiber(IActionExecutor executor) : 
+            this(executor, "ThreadFiber-" + GetNextThreadId(), true, ThreadPriority.Normal)
         {}
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Retlang.Fibers
         /// <param name="executor">The queue</param>
         /// <param name="threadName">custom thread name</param>
         public ThreadFiber(IActionExecutor executor, string threadName)
-            : this(executor, threadName, true)
+            : this(executor, threadName, true, ThreadPriority.Normal)
         {}
 
         /// <summary>
@@ -45,12 +46,14 @@ namespace Retlang.Fibers
         /// <param name="executor"></param>
         /// <param name="threadName"></param>
         /// <param name="isBackground"></param>
-        public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground)
+        /// <param name="priority"></param>
+        public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground, ThreadPriority priority)
         {
             _executor = executor;
             _thread = new Thread(RunThread);
             _thread.Name = threadName;
             _thread.IsBackground = isBackground;
+            _thread.Priority = priority;
             _scheduler = new ActionTimer(this);
         }
 
