@@ -268,12 +268,6 @@
             </summary>
             <param name="toExecute"></param>
         </member>
-        <member name="M:Retlang.Core.IBatchExecutor.Execute(System.Action)">
-            <summary>
-            Execute a pending action.
-            </summary>
-            <param name="toExecute"></param>
-        </member>
         <member name="T:Retlang.Fibers.IThreadFiber">
             <summary>
             Fiber implementation backed by a dedicated thread.
@@ -301,7 +295,7 @@
         </member>
         <member name="M:Retlang.Core.BatchExecutor.Execute(System.Action)">
             <summary>
-            <see cref="M:Retlang.Core.IBatchExecutor.Execute(System.Action)"/>
+            Execute single action
             </summary>
         </member>
         <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
