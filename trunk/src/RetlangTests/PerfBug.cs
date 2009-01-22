@@ -29,12 +29,6 @@ namespace RetlangTests
         {
             return ()=> target(msg);
         }
-
-        public static Action CreateString(string msg, Action<string> target)
-        {
-            return () => target(msg);
-        }
-
     }
 
     [TestFixture]
@@ -47,7 +41,7 @@ namespace RetlangTests
             Stopwatch watch = Stopwatch.StartNew();
             for (int i = 0; i < 5000000; i++)
             {
-                Action act = () => onMsg("s");
+                Action act = () => onMsg(i.ToString());
                 act();
             }
             Action end = () => onMsg("end");
@@ -95,11 +89,36 @@ namespace RetlangTests
             Stopwatch watch = Stopwatch.StartNew();
             for (int i = 0; i < 5000000; i++)
             {
-                Action act = ActionFactory<string>.CreateString("", onMsg);
+                Action act = CreateString("", onMsg);
                 act();
             }
             watch.Stop();
             Console.WriteLine("Elapsed: " + watch.ElapsedMilliseconds);
+        }
+
+        [Test]
+        public void PerfTestWithStringGenericStaticInline()
+        {
+            Action<string> onMsg = x => { };
+            Stopwatch watch = Stopwatch.StartNew();
+            for (int i = 0; i < 5000000; i++)
+            {
+                Action act = CreateGeneric("", onMsg);
+                act();
+            }
+            watch.Stop();
+            Console.WriteLine("Elapsed: " + watch.ElapsedMilliseconds);
+        }
+
+
+        public static Action CreateString(string msg, Action<string> target)
+        {
+            return () => target(msg);
+        }
+
+        public static Action CreateGeneric<T>(T msg, Action<T> target)
+        {
+            return () => target(msg);
         }
 
 
