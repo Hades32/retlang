@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 
 namespace Retlang.Core
 {
     /// <summary>
     /// Default Action executor.
     /// </summary>
-    public class BatchExecutor : IBatchExecutor
+    public class BatchAndSingleExecutor : IBatchAndSingleExecutor
     {
         private bool _running = true;
 
@@ -16,13 +16,21 @@ namespace Retlang.Core
         {
             foreach (var action in toExecute)
             {
-                if (_running)
-                {
-                    action();
-                }
+                Execute(action);
             }
         }
-        
+
+        /// <summary>
+        /// Execute single action
+        /// </summary>
+        public void Execute(Action toExecute)
+        {
+            if (_running)
+            {
+                toExecute();
+            }
+        }
+
         /// <summary>
         /// When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
         /// to prevent any pending actions from being executed. 
