@@ -225,6 +225,66 @@
             </summary>
             <param name="msg"></param>
         </member>
+        <member name="T:Retlang.Fibers.FormFiber">
+            <summary>
+             Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.#ctor(System.ComponentModel.ISynchronizeInvoke,Retlang.Core.IBatchAndSingleExecutor)">
+            <summary>
+            Creates an instance.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.EnqueueAll(System.Action[])">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Enqueue(System.Action)">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Add(System.IDisposable)">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.Add(System.IDisposable)"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Remove(System.IDisposable)">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.Remove(System.IDisposable)"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Schedule(System.Action,System.Int64)">
+            <summary>
+            <see cref="M:Retlang.Core.IScheduler.Schedule(System.Action,System.Int64)"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+            <see cref="M:Retlang.Core.IScheduler.ScheduleOnInterval(System.Action,System.Int64,System.Int64)"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Start">
+            <summary>
+            <see cref="M:Retlang.Fibers.IFiber.Start"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Stop">
+            <summary>
+            Stops the fiber.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.FormFiber.Dispose">
+            <summary>
+            <see cref="M:System.IDisposable.Dispose"/>
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.FormFiber.DisposableCount">
+            <summary>
+            <see cref="P:Retlang.Core.IDisposingExecutor.DisposableCount"/>
+            </summary>
+        </member>
         <member name="T:Retlang.Core.ITimerControl">
             <summary>
             Controller to cancel event timer.
@@ -291,11 +351,6 @@
         <member name="M:Retlang.Core.BatchExecutor.ExecuteAll(System.Action[])">
             <summary>
             <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.BatchExecutor.Execute(System.Action)">
-            <summary>
-            Execute single action
             </summary>
         </member>
         <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
@@ -798,6 +853,38 @@
         <member name="P:Retlang.Core.SynchronousActionQueue.DisposableCount">
             <summary>
             Count of Disposables.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.BatchAndSingleExecutor">
+            <summary>
+            Default Action executor.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.IBatchAndSingleExecutor">
+            <summary>
+             Executes pending action(s).
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IBatchAndSingleExecutor.Execute(System.Action)">
+            <summary>
+             Execute a single pending action.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.BatchAndSingleExecutor.ExecuteAll(System.Action[])">
+            <summary>
+            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.BatchAndSingleExecutor.Execute(System.Action)">
+            <summary>
+            Execute single action
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.BatchAndSingleExecutor.IsEnabled">
+            <summary>
+            When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
+            to prevent any pending actions from being executed. 
             </summary>
         </member>
         <member name="T:Retlang.Fibers.SynchronousFiber">
