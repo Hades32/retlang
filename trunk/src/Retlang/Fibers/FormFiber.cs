@@ -6,6 +6,9 @@ using Retlang.Core;
 
 namespace Retlang.Fibers
 {
+    ///<summary>
+    /// Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+    ///</summary>
     public class FormFiber : IFiber
     {
         private readonly DisposableList _disposables = new DisposableList();
@@ -18,7 +21,7 @@ namespace Retlang.Fibers
         private volatile ExecutionState _started = ExecutionState.Created;
 
         /// <summary>
-        /// Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+        /// Creates an instance.
         /// </summary>
         public FormFiber(ISynchronizeInvoke invoker, IBatchAndSingleExecutor executor)
         {
