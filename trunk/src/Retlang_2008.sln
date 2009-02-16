@@ -5,6 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retlang_2008", "Retlang\Ret
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetlangTests_2008", "RetlangTests\RetlangTests_2008.csproj", "{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfExample", "WpfExample\WpfExample.csproj", "{CE9C1F57-B826-4C98-98EE-AF1B55B4D5BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{65ABCF4F-88F0-46EF-A6CF-71850019262E} = {65ABCF4F-88F0-46EF-A6CF-71850019262E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +24,10 @@ Global
 		{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8E66C01-A2BE-46D5-A985-53A5D3A6FC4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE9C1F57-B826-4C98-98EE-AF1B55B4D5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE9C1F57-B826-4C98-98EE-AF1B55B4D5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE9C1F57-B826-4C98-98EE-AF1B55B4D5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE9C1F57-B826-4C98-98EE-AF1B55B4D5BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
