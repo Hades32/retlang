@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65ABCF4F-88F0-46EF-A6CF-71850019262E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,6 +60,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channels\BaseSubscription.cs" />
@@ -107,9 +110,12 @@
     <Compile Include="Core\TimerAction.cs" />
     <Compile Include="Core\TimerThread.cs" />
     <Compile Include="Core\Unsubscriber.cs" />
+    <Compile Include="Fibers\BaseFiber.cs" />
+    <Compile Include="Fibers\DispatcherFiber.cs" />
     <Compile Include="Fibers\ExecutionState.cs" />
     <Compile Include="Fibers\FormFiber.cs" />
     <Compile Include="Fibers\IFiber.cs" />
+    <Compile Include="Fibers\IThreadAdapter.cs" />
     <Compile Include="Fibers\IThreadFiber.cs" />
     <Compile Include="Fibers\IThreadFiberFactory.cs" />
     <Compile Include="Fibers\PoolFiber.cs" />
