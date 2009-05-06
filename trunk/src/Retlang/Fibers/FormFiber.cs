@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Retlang.Core;
 
 namespace Retlang.Fibers
@@ -18,21 +16,20 @@ namespace Retlang.Fibers
             : base(new FormAdapter(invoker), executor)
         {
         }
-
     }
 
-    class FormAdapter: IThreadAdapter
+    internal class FormAdapter : IThreadAdapter
     {
-        private readonly ISynchronizeInvoke target;
+        private readonly ISynchronizeInvoke _invoker;
 
         public FormAdapter(ISynchronizeInvoke invoker)
         {
-            this.target = invoker;
+            _invoker = invoker;
         }
 
         public void Invoke(Action act)
         {
-            target.BeginInvoke(act, null);
+            _invoker.BeginInvoke(act, null);
         }
     }
 }

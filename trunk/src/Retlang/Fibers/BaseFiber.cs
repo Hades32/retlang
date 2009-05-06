@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using Retlang.Core;
 
@@ -50,9 +49,8 @@ namespace Retlang.Fibers
                         return;
                     }
                 }
-
             }
-            _invoker.Invoke(new Action(() => _executor.ExecuteAll(actions)));
+            _invoker.Invoke(() => _executor.ExecuteAll(actions));
         }
 
         /// <summary>
@@ -77,7 +75,7 @@ namespace Retlang.Fibers
                 }
             }
 
-            _invoker.Invoke(new Action(() => _executor.Execute(action)));
+            _invoker.Invoke(() => _executor.Execute(action));
         }
 
         /// <summary>
@@ -136,7 +134,7 @@ namespace Retlang.Fibers
                 _queue.Clear();
                 if (actions.Length > 0)
                 {
-                    _invoker.Invoke(new Action(() => _executor.ExecuteAll(actions)));
+                    _invoker.Invoke(() => _executor.ExecuteAll(actions));
                 }
                 _started = ExecutionState.Running;
             }
