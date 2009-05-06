@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Threading;
-using System.ComponentModel;
 using Retlang.Core;
 
 namespace Retlang.Fibers
@@ -11,7 +7,7 @@ namespace Retlang.Fibers
     /// <summary>
     /// Adapts Dispatcher to a Fiber
     /// </summary>
-    public class DispatcherFiber : BaseFiber 
+    public class DispatcherFiber : BaseFiber
     {
         /// <summary>
         /// Constructs a Fiber that executes on dispatcher thread
@@ -33,18 +29,18 @@ namespace Retlang.Fibers
         }
     }
 
-    class DispatcherAdapter : IThreadAdapter
+    internal class DispatcherAdapter : IThreadAdapter
     {
-        private readonly Dispatcher dispatcher;
+        private readonly Dispatcher _dispatcher;
 
-        public DispatcherAdapter(Dispatcher d)
+        public DispatcherAdapter(Dispatcher dispatcher)
         {
-            this.dispatcher = d;
+            _dispatcher = dispatcher;
         }
 
         public void Invoke(Action method)
         {
-            dispatcher.BeginInvoke(method);
+            _dispatcher.BeginInvoke(method);
         }
     }
 }
