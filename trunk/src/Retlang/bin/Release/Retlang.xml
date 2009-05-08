@@ -4,14 +4,111 @@
         <name>Retlang</name>
     </assembly>
     <members>
-        <member name="T:Retlang.Fibers.FormFiber">
+        <member name="T:Retlang.Core.TimerThread">
             <summary>
-             Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+            A Thread dedicated to event scheduling.
             </summary>
         </member>
-        <member name="T:Retlang.Fibers.BaseFiber">
+        <member name="T:Retlang.Core.ActionTimer">
             <summary>
-             Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+             Enqueues actions on to executor after schedule elapses.  
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.IPendingActionRegistry">
+            <summary>
+            Stores and removes pending actions.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IPendingActionRegistry.Remove(Retlang.Core.ITimerControl)">
+            <summary>
+            Remove timer
+            </summary>
+            <param name="timer"></param>
+        </member>
+        <member name="M:Retlang.Core.IPendingActionRegistry.EnqueueTask(System.Action)">
+            <summary>
+            Queue event to target queue.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="T:Retlang.Core.IScheduler">
+            <summary>
+            Methods for schedule events that will be executed in the future.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IScheduler.Schedule(System.Action,System.Int64)">
+            <summary>
+            Schedules an event to be executes once.
+            </summary>
+            <param name="action"></param>
+            <param name="timeTilEnqueueInMs"></param>
+            <returns>a controller to cancel the event.</returns>
+        </member>
+        <member name="M:Retlang.Core.IScheduler.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+            Schedule an event on a recurring interval.
+            </summary>
+            <param name="action"></param>
+            <param name="firstInMs"></param>
+            <param name="regularInMs"></param>
+            <returns>controller to cancel timer.</returns>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.#ctor(Retlang.Core.IDisposingExecutor)">
+            <summary>
+             Constructs new instance.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Schedule(System.Action,System.Int64)">
+            <summary>
+             Enqueues action on to executor after timer elapses.  
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+             Enqueues actions on to executor after schedule elapses.  
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Remove(Retlang.Core.ITimerControl)">
+            <summary>
+             Removes a pending scheduled action.
+            </summary>
+            <param name="toRemove"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.EnqueueTask(System.Action)">
+            <summary>
+             Enqueues actions on to executor immediately.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.ActionTimer.Dispose">
+            <summary>
+             Cancels all pending actions
+            </summary>
+        </member>
+        <member name="T:Retlang.Channels.IQueueChannel`1">
+            <summary>
+            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
+            multiple subscribers to the queue.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.IQueueChannel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+            <summary>
+            Subscribe to the executor.
+            </summary>
+            <param name="executor"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.IQueueChannel`1.Publish(`0)">
+            <summary>
+            Pushes a message into the queue. Message will be processed by first available consumer.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Retlang.Core.IUnsubscriber">
+            <summary>
+            Unsubscribe controller.
             </summary>
         </member>
         <member name="T:Retlang.Fibers.IFiber">
@@ -56,31 +153,86 @@
             Number of registered disposables.
             </summary>
         </member>
-        <member name="T:Retlang.Core.IScheduler">
-            <summary>
-            Methods for schedule events that will be executed in the future.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IScheduler.Schedule(System.Action,System.Int64)">
-            <summary>
-            Schedules an event to be executes once.
-            </summary>
-            <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
-            <returns>a controller to cancel the event.</returns>
-        </member>
-        <member name="M:Retlang.Core.IScheduler.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
-            <summary>
-            Schedule an event on a recurring interval.
-            </summary>
-            <param name="action"></param>
-            <param name="firstInMs"></param>
-            <param name="regularInMs"></param>
-            <returns>controller to cancel timer.</returns>
-        </member>
         <member name="M:Retlang.Fibers.IFiber.Start">
             <summary>
             Start consuming events.
+            </summary>
+        </member>
+        <member name="T:Retlang.Channels.BatchSubscriber`1">
+            <summary>
+            Batches events for the consuming thread.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.BaseSubscription`1">
+            <summary>
+            Base implementation for subscription
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.ISubscribable`1">
+            <summary>
+            Callback method and parameters for a channel subscription
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.IProducerThreadSubscriber`1">
+            <summary>
+            Event Subscriber that receives events on producer thread.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)">
+            <summary>
+            Method called from producer threads
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread">
+            <summary>
+            Filter called from producer threads. Should be thread safe as it may be called from
+            multiple threads.
+            </summary>
+        </member>
+        <member name="M:Retlang.Channels.BaseSubscription`1.ReceiveOnProducerThread(`0)">
+            <summary>
+            <see cref="M:Retlang.Channels.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)"/>
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.Channels.BaseSubscription`1.OnMessageOnProducerThread(`0)">
+            <summary>
+            Called after message has been filtered.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="P:Retlang.Channels.BaseSubscription`1.FilterOnProducerThread">
+            <summary>
+            <see cref="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Channels.BatchSubscriber`1.#ctor(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+            <summary>
+            Construct new instance.
+            </summary>
+            <param name="queue"></param>
+            <param name="receive"></param>
+            <param name="interval"></param>
+        </member>
+        <member name="M:Retlang.Channels.BatchSubscriber`1.OnMessageOnProducerThread(`0)">
+            <summary>
+            Receives message and batches as needed.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="T:Retlang.Fibers.FormFiber">
+            <summary>
+             Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
+            </summary>
+        </member>
+        <member name="T:Retlang.Fibers.BaseFiber">
+            <summary>
+             Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.BaseFiber.#ctor(Retlang.Fibers.IThreadAdapter,Retlang.Core.IBatchAndSingleExecutor)">
@@ -164,149 +316,26 @@
             Cancels scheduled timer.
             </summary>
         </member>
-        <member name="T:Retlang.Channels.BaseSubscription`1">
+        <member name="T:Retlang.Core.QueueFullException">
             <summary>
-            Base implementation for subscription
+            Thrown when a queue is full.
             </summary>
-            <typeparam name="T"></typeparam>
         </member>
-        <member name="T:Retlang.Channels.ISubscribable`1">
+        <member name="M:Retlang.Core.QueueFullException.#ctor(System.Int32)">
             <summary>
-            Callback method and parameters for a channel subscription
+            Construct the execution with the depth of the queue.
             </summary>
-            <typeparam name="T"></typeparam>
+            <param name="depth"></param>
         </member>
-        <member name="T:Retlang.Channels.IProducerThreadSubscriber`1">
+        <member name="M:Retlang.Core.QueueFullException.#ctor(System.String)">
             <summary>
-            Event Subscriber that receives events on producer thread.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)">
-            <summary>
-            Method called from producer threads
+            Construct with a custom message.
             </summary>
             <param name="msg"></param>
         </member>
-        <member name="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread">
+        <member name="P:Retlang.Core.QueueFullException.Depth">
             <summary>
-            Filter called from producer threads. Should be thread safe as it may be called from
-            multiple threads.
-            </summary>
-        </member>
-        <member name="M:Retlang.Channels.BaseSubscription`1.ReceiveOnProducerThread(`0)">
-            <summary>
-            <see cref="M:Retlang.Channels.IProducerThreadSubscriber`1.ReceiveOnProducerThread(`0)"/>
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.Channels.BaseSubscription`1.OnMessageOnProducerThread(`0)">
-            <summary>
-            Called after message has been filtered.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="P:Retlang.Channels.BaseSubscription`1.FilterOnProducerThread">
-            <summary>
-            <see cref="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread"/>
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.DisposableList">
-            <summary>
-            Registry for disposables. Provides thread safe methods for list of disposables.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Add(System.IDisposable)">
-            <summary>
-            Add Disposable
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Dispose">
-            <summary>
-            Disposes all disposables registered in list.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.DisposableList.Count">
-            <summary>
-            Number of registered disposables.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.SynchronousActionQueue">
-            <summary>
-            A synchronous queue typically used for testing.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.IActionExecutor">
-            <summary>
-            A runable queue implementation.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IActionExecutor.Run">
-            <summary>
-            Consume events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IActionExecutor.Stop">
-            <summary>
-            Stop consuming events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.EnqueueAll(System.Action[])">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)"/>
-            </summary>
-            <param name="actions"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Enqueue(System.Action)">
-            <summary>
-            Queue action
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Add(System.IDisposable)">
-            <summary>
-            Add Disposable.
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Run">
-            <summary>
-            Start Consuming events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Stop">
-            <summary>
-            Stop consuming events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.SynchronousActionQueue.DisposableCount">
-            <summary>
-            Count of Disposables.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.BatchAndSingleExecutor">
-            <summary>
-            Default Action executor.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.IBatchAndSingleExecutor">
-            <summary>
-             Executes pending action(s).
+            Depth of queue.
             </summary>
         </member>
         <member name="T:Retlang.Core.IBatchExecutor">
@@ -320,116 +349,35 @@
             </summary>
             <param name="toExecute"></param>
         </member>
-        <member name="M:Retlang.Core.IBatchAndSingleExecutor.Execute(System.Action)">
+        <member name="T:Retlang.Fibers.IThreadFiber">
             <summary>
-             Execute a single pending action.
+            Fiber implementation backed by a dedicated thread.
             </summary>
-            <param name="action"></param>
         </member>
-        <member name="M:Retlang.Core.BatchAndSingleExecutor.ExecuteAll(System.Action[])">
+        <member name="M:Retlang.Fibers.IThreadFiber.Join">
+            <summary>
+            Willl Wait for Thread to cease execution before continuing.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.IThreadFiber.Thread">
+            <summary>
+            The backing thread for the Fiber.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.BatchExecutor">
+            <summary>
+            Default Action executor.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.BatchExecutor.ExecuteAll(System.Action[])">
             <summary>
             <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
             </summary>
         </member>
-        <member name="M:Retlang.Core.BatchAndSingleExecutor.Execute(System.Action)">
-            <summary>
-            Execute single action
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.BatchAndSingleExecutor.IsEnabled">
+        <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
             <summary>
             When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
             to prevent any pending actions from being executed. 
-            </summary>
-        </member>
-        <member name="T:Retlang.Channels.LastSubscriber`1">
-            <summary>
-            Subscribes to last event received on the channel. 
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.LastSubscriber`1.#ctor(System.Action{`0},Retlang.Core.IScheduler,System.Int32)">
-            <summary>
-            New instance.
-            </summary>
-            <param name="target"></param>
-            <param name="context"></param>
-            <param name="flushIntervalInMs"></param>
-        </member>
-        <member name="M:Retlang.Channels.LastSubscriber`1.OnMessageOnProducerThread(`0)">
-            <summary>
-            Receives message from producer thread.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.Channels.LastSubscriber`1.Flush">
-            <summary>
-            Flushes on IFiber thread.
-            </summary>
-        </member>
-        <member name="T:Retlang.Channels.KeyedBatchSubscriber`2">
-            <summary>
-            Channel subscription that drops duplicates based upon a key.
-            </summary>
-            <typeparam name="K"></typeparam>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.#ctor(System.Converter{`1,`0},System.Action{System.Collections.Generic.IDictionary{`0,`1}},Retlang.Core.IScheduler,System.Int32)">
-            <summary>
-            Construct new instance.
-            </summary>
-            <param name="keyResolver"></param>
-            <param name="target"></param>
-            <param name="context"></param>
-            <param name="flushIntervalInMs"></param>
-        </member>
-        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.OnMessageOnProducerThread(`1)">
-            <summary>
-            received on delivery thread
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.Flush">
-            <summary>
-            Flushed from fiber
-            </summary>
-        </member>
-        <member name="T:Retlang.Channels.IRequest`2">
-            <summary>
-            A request object that can be used to send 1 or many responses to the initial request.
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IRequest`2.SendReply(`1)">
-            <summary>
-            Send one or more responses.
-            </summary>
-            <param name="replyMsg"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Channels.IRequest`2.Request">
-            <summary>
-            Request Message
-            </summary>
-        </member>
-        <member name="T:Retlang.Channels.IReply`1">
-            <summary>
-            Used to receive one or more replies.
-            </summary>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IReply`1.Receive(System.Int32,`0@)">
-            <summary>
-            Receive a single response. Can be called repeatedly for multiple replies.
-            </summary>
-            <param name="timeout"></param>
-            <param name="result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.ChannelRequest`2.Dispose">
-            <summary>
-            Stop receiving replies.
             </summary>
         </member>
         <member name="T:Retlang.Fibers.PoolFiber">
@@ -516,106 +464,50 @@
             Number of currently registered disposables.
             </summary>
         </member>
-        <member name="T:Retlang.Core.IUnsubscriber">
+        <member name="T:Retlang.Channels.KeyedBatchSubscriber`2">
             <summary>
-            Unsubscribe controller.
+            Channel subscription that drops duplicates based upon a key.
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.#ctor(System.Converter{`1,`0},System.Action{System.Collections.Generic.IDictionary{`0,`1}},Retlang.Core.IScheduler,System.Int32)">
+            <summary>
+            Construct new instance.
+            </summary>
+            <param name="keyResolver"></param>
+            <param name="target"></param>
+            <param name="context"></param>
+            <param name="flushIntervalInMs"></param>
+        </member>
+        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.OnMessageOnProducerThread(`1)">
+            <summary>
+            received on delivery thread
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.Flush">
+            <summary>
+            Flushed from fiber
             </summary>
         </member>
-        <member name="T:Retlang.Fibers.SynchronousFiber">
+        <member name="T:Retlang.Channels.IRequest`2">
             <summary>
-            Synchronous Fiber does not use a backing thread or a thread pool for execution. Events are added to pending
-            lists for execution. These events can be executed synchronously by a calling thread. This class
-            is not thread safe and probably should not be used in production code. 
-            
-            The class is typically used for unit testing asynchronous code to make it completely synchronous and
-            deterministic.
+            A request object that can be used to send 1 or many responses to the initial request.
             </summary>
+            <typeparam name="R"></typeparam>
+            <typeparam name="M"></typeparam>
         </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Start">
+        <member name="M:Retlang.Channels.IRequest`2.SendReply(`1)">
             <summary>
-            No Op
+            Send one or more responses.
             </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Dispose">
-            <summary>
-            Invokes Disposables.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.EnqueueAll(System.Action[])">
-            <summary>
-            Adds all events to pending list.
-            </summary>
-            <param name="actions"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Enqueue(System.Action)">
-            <summary>
-            Add event to pending list.
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Add(System.IDisposable)">
-            <summary>
-            add to disposable list.
-            </summary>
-            <param name="disposable"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="disposable"></param>
+            <param name="replyMsg"></param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Schedule(System.Action,System.Int64)">
+        <member name="P:Retlang.Channels.IRequest`2.Request">
             <summary>
-            Adds a scheduled event to the list. 
-            </summary>
-            <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
-            <summary>
-            Adds scheduled event to list.
-            </summary>
-            <param name="action"></param>
-            <param name="firstInMs"></param>
-            <param name="regularInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllPending">
-            <summary>
-            Execute all actions in the pending list.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllScheduled">
-            <summary>
-            execute all scheduled.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.DisposableCount">
-            <summary>
-            Count of Disposables.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Disposables">
-            <summary>
-            All Disposables.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Pending">
-            <summary>
-            All Pending actions.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Scheduled">
-            <summary>
-            All Scheduled events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.ExecutePendingImmediately">
-            <summary>
-            If true events will be executed immediately rather than added to a pending list.
+            Request Message
             </summary>
         </member>
         <member name="T:Retlang.Fibers.DispatcherFiber">
@@ -636,248 +528,58 @@
             </summary>
             <param name="dispatcher"></param>
         </member>
-        <member name="T:Retlang.Core.IPendingEvent">
+        <member name="T:Retlang.Core.IActionExecutor">
             <summary>
-            A scheduled event.
+            A runable queue implementation.
             </summary>
         </member>
-        <member name="M:Retlang.Core.IPendingEvent.Execute(System.Int64)">
+        <member name="M:Retlang.Core.IActionExecutor.Run">
             <summary>
-            Execute this event and optionally schedule another execution.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Core.IPendingEvent.Expiration">
-            <summary>
-            Time of expiration for this event
+            Consume events.
             </summary>
         </member>
-        <member name="T:Retlang.Channels.RequestReplyChannel`2">
+        <member name="M:Retlang.Core.IActionExecutor.Stop">
             <summary>
-            Channel for synchronous and asynchronous requests.
+            Stop consuming events.
             </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
         </member>
-        <member name="T:Retlang.Channels.IRequestReplyChannel`2">
+        <member name="T:Retlang.Channels.LastSubscriber`1">
             <summary>
-            Typed channel for request/reply
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="T:Retlang.Channels.IRequestPublisher`2">
-            <summary>
-            
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IRequestPublisher`2.SendRequest(`0)">
-            <summary>
-            Send request on the channel.
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.Channels.IReplySubscriber`2">
-            <summary>
-            Methods for working with a replyChannel
-            </summary>
-            <typeparam name="R"></typeparam>
-            <typeparam name="M"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IReplySubscriber`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
-            <summary>
-            Subscribe to a request on the channel.
-            </summary>
-            <param name="responder"></param>
-            <param name="onRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.RequestReplyChannel`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
-            <summary>
-            Subscribe to requests.
-            </summary>
-            <param name="responder"></param>
-            <param name="onRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.RequestReplyChannel`2.SendRequest(`0)">
-            <summary>
-            Send request to any and all subscribers.
-            </summary>
-            <param name="p"></param>
-            <returns>null if no subscribers registered for request.</returns>
-        </member>
-        <member name="T:Retlang.Channels.QueueChannel`1">
-            <summary>
-            Default QueueChannel implementation. Once and only once delivery to first available consumer.
+            Subscribes to last event received on the channel. 
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:Retlang.Channels.IQueueChannel`1">
+        <member name="M:Retlang.Channels.LastSubscriber`1.#ctor(System.Action{`0},Retlang.Core.IScheduler,System.Int32)">
             <summary>
-            Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
-            multiple subscribers to the queue.
+            New instance.
             </summary>
-            <typeparam name="T"></typeparam>
+            <param name="target"></param>
+            <param name="context"></param>
+            <param name="flushIntervalInMs"></param>
         </member>
-        <member name="M:Retlang.Channels.IQueueChannel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.LastSubscriber`1.OnMessageOnProducerThread(`0)">
             <summary>
-            Subscribe to the executor.
-            </summary>
-            <param name="executor"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.IQueueChannel`1.Publish(`0)">
-            <summary>
-            Pushes a message into the queue. Message will be processed by first available consumer.
-            </summary>
-            <param name="message"></param>
-        </member>
-        <member name="M:Retlang.Channels.QueueChannel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
-            <summary>
-            Subscribe to executor messages. 
-            </summary>
-            <param name="executor"></param>
-            <param name="onMessage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.QueueChannel`1.Publish(`0)">
-            <summary>
-            Publish message onto queue. Notify consumers of message.
-            </summary>
-            <param name="message"></param>
-        </member>
-        <member name="T:Retlang.Fibers.ScheduledEvent">
-            <summary>
-            Event scheduled to be executed.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64)">
-            <summary>
-            Schedule an event for a single execution
-            </summary>
-            <param name="runnable"></param>
-            <param name="time"></param>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64,System.Int64)">
-            <summary>
-            Schedule Recurring Event.
-            </summary>
-            <param name="action"></param>
-            <param name="firstIntervalInMs"></param>
-            <param name="regularIntervalInMs"></param>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.Equals(System.Object)">
-            <summary>
-            Equality operation typically used for testing.
-            </summary>
-            <param name="o"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.GetHashCode">
-            <summary>
-            Hash
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.Action">
-            <summary>
-            The Action to be executed.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.FirstIntervalInMs">
-            <summary>
-            The first time the event will be executed.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.RegularIntervalInMs">
-            <summary>
-            Regular interval in ms for action.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.IsRecurring">
-            <summary>
-            Determine if event will be fired on regular interval.
-            </summary>
-        </member>
-        <member name="T:Retlang.Fibers.IThreadFiber">
-            <summary>
-            Fiber implementation backed by a dedicated thread.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.IThreadFiber.Join">
-            <summary>
-            Willl Wait for Thread to cease execution before continuing.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.IThreadFiber.Thread">
-            <summary>
-            The backing thread for the Fiber.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.IPendingActionRegistry">
-            <summary>
-            Stores and removes pending actions.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IPendingActionRegistry.Remove(Retlang.Core.ITimerControl)">
-            <summary>
-            Remove timer
-            </summary>
-            <param name="timer"></param>
-        </member>
-        <member name="M:Retlang.Core.IPendingActionRegistry.EnqueueTask(System.Action)">
-            <summary>
-            Queue event to target queue.
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="T:Retlang.Channels.Filter`1">
-            <summary>
-            Message filter delegate
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="msg"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.Channels.ChannelSubscription`1">
-            <summary>
-            Subscription for events on a channel.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.ChannelSubscription`1.#ctor(Retlang.Core.IDisposingExecutor,System.Action{`0})">
-            <summary>
-            Construct the subscription
-            </summary>
-            <param name="queue"></param>
-            <param name="receiveMethod"></param>
-        </member>
-        <member name="M:Retlang.Channels.ChannelSubscription`1.OnMessageOnProducerThread(`0)">
-            <summary>
-            Receives the event and queues the execution on the target queue.
+            Receives message from producer thread.
             </summary>
             <param name="msg"></param>
         </member>
-        <member name="T:Retlang.Core.BatchExecutor">
+        <member name="M:Retlang.Channels.LastSubscriber`1.Flush">
             <summary>
-            Default Action executor.
+            Flushes on IFiber thread.
             </summary>
         </member>
-        <member name="M:Retlang.Core.BatchExecutor.ExecuteAll(System.Action[])">
+        <member name="T:Retlang.Channels.IPublisher`1">
             <summary>
-            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
+            Channel publishing interface.
             </summary>
+            <typeparam name="T"></typeparam>
         </member>
-        <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
+        <member name="M:Retlang.Channels.IPublisher`1.Publish(`0)">
             <summary>
-            When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
-            to prevent any pending actions from being executed. 
+            Publish a message to all subscribers. Returns true if any subscribers are registered.
             </summary>
+            <param name="msg"></param>
+            <returns></returns>
         </member>
         <member name="T:Retlang.Channels.IChannel`1">
             <summary>
@@ -951,131 +653,24 @@
             <param name="subscriber"></param>
             <returns></returns>
         </member>
-        <member name="T:Retlang.Channels.IPublisher`1">
+        <member name="T:Retlang.Channels.IReply`1">
             <summary>
-            Channel publishing interface.
+            Used to receive one or more replies.
             </summary>
-            <typeparam name="T"></typeparam>
+            <typeparam name="M"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.IPublisher`1.Publish(`0)">
+        <member name="M:Retlang.Channels.IReply`1.Receive(System.Int32,`0@)">
             <summary>
-            Publish a message to all subscribers. Returns true if any subscribers are registered.
+            Receive a single response. Can be called repeatedly for multiple replies.
             </summary>
-            <param name="msg"></param>
+            <param name="timeout"></param>
+            <param name="result"></param>
             <returns></returns>
         </member>
-        <member name="T:Retlang.Core.IThreadController">
+        <member name="M:Retlang.Channels.ChannelRequest`2.Dispose">
             <summary>
-            Controls thread lifecycle.
+            Stop receiving replies.
             </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Start">
-            <summary>
-            Starts thread execution.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Stop">
-            <summary>
-            Stops thread
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Join">
-            <summary>
-            Waits for thread to finish.
-            </summary>
-        </member>
-        <member name="T:Retlang.Channels.Channel`1">
-            <summary>
-             Default Channel Implementation. Methods are thread safe.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
-            <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})"/>
-            </summary>
-            <param name="executor"></param>
-            <param name="receive"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.Publish(`0)">
-            <summary>
-            <see cref="M:Retlang.Channels.IPublisher`1.Publish(`0)"/>
-            </summary>
-            <param name="msg"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.ClearSubscribers">
-            <summary>
-            Remove all subscribers.
-            </summary>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
-            <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)"/>
-            </summary>
-            <param name="scheduler"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
-            <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)"/>
-            </summary>
-            <typeparam name="K"></typeparam>
-            <param name="scheduler"></param>
-            <param name="keyResolver"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
-            <summary>
-            Subscribes to events on producer threads. Subscriber could be called from multiple threads.
-            </summary>
-            <param name="subscriber"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(System.Action{`0})">
-            <summary>
-            Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
-            Action may be invoked on multiple threads.
-            </summary>
-            <param name="subscriber"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToLast(Retlang.Core.IScheduler,System.Action{`0},System.Int32)">
-            <summary>
-            Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
-            has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
-            </summary>
-            <param name="scheduler"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.Core.IThreadPool">
-            <summary>
-            A thread pool for executing asynchronous events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadPool.Queue(System.Threading.WaitCallback)">
-            <summary>
-            Queue event for execution.
-            </summary>
-            <param name="callback"></param>
-        </member>
-        <member name="T:Retlang.Core.DefaultThreadPool">
-            <summary>
-            Default implementation that uses the .NET thread pool.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.DefaultThreadPool.Queue(System.Threading.WaitCallback)">
-            <summary>
-            Queue event.
-            </summary>
-            <param name="callback"></param>
         </member>
         <member name="T:Retlang.Fibers.ThreadFiber">
             <summary>
@@ -1176,6 +771,258 @@
             Number of disposables.
             </summary>
         </member>
+        <member name="T:Retlang.Fibers.ExecutionState">
+            <summary>
+             Fiber execution state management
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Created">
+            <summary>
+             Created but not running
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Running">
+            <summary>
+             After start
+            </summary>
+        </member>
+        <member name="F:Retlang.Fibers.ExecutionState.Stopped">
+            <summary>
+             After stopped
+            </summary>
+        </member>
+        <member name="T:Retlang.Channels.RequestReplyChannel`2">
+            <summary>
+            Channel for synchronous and asynchronous requests.
+            </summary>
+            <typeparam name="R"></typeparam>
+            <typeparam name="M"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.IRequestReplyChannel`2">
+            <summary>
+            Typed channel for request/reply
+            </summary>
+            <typeparam name="R"></typeparam>
+            <typeparam name="M"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.IRequestPublisher`2">
+            <summary>
+            
+            </summary>
+            <typeparam name="R"></typeparam>
+            <typeparam name="M"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.IRequestPublisher`2.SendRequest(`0)">
+            <summary>
+            Send request on the channel.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Retlang.Channels.IReplySubscriber`2">
+            <summary>
+            Methods for working with a replyChannel
+            </summary>
+            <typeparam name="R"></typeparam>
+            <typeparam name="M"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.IReplySubscriber`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
+            <summary>
+            Subscribe to a request on the channel.
+            </summary>
+            <param name="responder"></param>
+            <param name="onRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.RequestReplyChannel`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
+            <summary>
+            Subscribe to requests.
+            </summary>
+            <param name="responder"></param>
+            <param name="onRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.RequestReplyChannel`2.SendRequest(`0)">
+            <summary>
+            Send request to any and all subscribers.
+            </summary>
+            <param name="p"></param>
+            <returns>null if no subscribers registered for request.</returns>
+        </member>
+        <member name="T:Retlang.Core.SynchronousActionQueue">
+            <summary>
+            A synchronous queue typically used for testing.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.EnqueueAll(System.Action[])">
+            <summary>
+            <see cref="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)"/>
+            </summary>
+            <param name="actions"></param>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.Enqueue(System.Action)">
+            <summary>
+            Queue action
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.Add(System.IDisposable)">
+            <summary>
+            Add Disposable.
+            </summary>
+            <param name="toAdd"></param>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.Remove(System.IDisposable)">
+            <summary>
+            Remove Disposable.
+            </summary>
+            <param name="victim"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.Run">
+            <summary>
+            Start Consuming events.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.SynchronousActionQueue.Stop">
+            <summary>
+            Stop consuming events.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.SynchronousActionQueue.DisposableCount">
+            <summary>
+            Count of Disposables.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.BatchAndSingleExecutor">
+            <summary>
+            Default Action executor.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.IBatchAndSingleExecutor">
+            <summary>
+             Executes pending action(s).
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IBatchAndSingleExecutor.Execute(System.Action)">
+            <summary>
+             Execute a single pending action.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Core.BatchAndSingleExecutor.ExecuteAll(System.Action[])">
+            <summary>
+            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.BatchAndSingleExecutor.Execute(System.Action)">
+            <summary>
+            Execute single action
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.BatchAndSingleExecutor.IsEnabled">
+            <summary>
+            When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
+            to prevent any pending actions from being executed. 
+            </summary>
+        </member>
+        <member name="T:Retlang.Fibers.SynchronousFiber">
+            <summary>
+            Synchronous Fiber does not use a backing thread or a thread pool for execution. Events are added to pending
+            lists for execution. These events can be executed synchronously by a calling thread. This class
+            is not thread safe and probably should not be used in production code. 
+            
+            The class is typically used for unit testing asynchronous code to make it completely synchronous and
+            deterministic.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Start">
+            <summary>
+            No Op
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Dispose">
+            <summary>
+            Invokes Disposables.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.EnqueueAll(System.Action[])">
+            <summary>
+            Adds all events to pending list.
+            </summary>
+            <param name="actions"></param>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Enqueue(System.Action)">
+            <summary>
+            Add event to pending list.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Add(System.IDisposable)">
+            <summary>
+            add to disposable list.
+            </summary>
+            <param name="disposable"></param>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Remove(System.IDisposable)">
+            <summary>
+            Remove Disposable.
+            </summary>
+            <param name="disposable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.Schedule(System.Action,System.Int64)">
+            <summary>
+            Adds a scheduled event to the list. 
+            </summary>
+            <param name="action"></param>
+            <param name="timeTilEnqueueInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+            Adds scheduled event to list.
+            </summary>
+            <param name="action"></param>
+            <param name="firstInMs"></param>
+            <param name="regularInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllPending">
+            <summary>
+            Execute all actions in the pending list.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllScheduled">
+            <summary>
+            execute all scheduled.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.SynchronousFiber.DisposableCount">
+            <summary>
+            Count of Disposables.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.SynchronousFiber.Disposables">
+            <summary>
+            All Disposables.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.SynchronousFiber.Pending">
+            <summary>
+            All Pending actions.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.SynchronousFiber.Scheduled">
+            <summary>
+            All Scheduled events.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.SynchronousFiber.ExecutePendingImmediately">
+            <summary>
+            If true events will be executed immediately rather than added to a pending list.
+            </summary>
+        </member>
         <member name="T:Retlang.Core.ActionExecutor">
             <summary>
             Default implementation.
@@ -1248,94 +1095,48 @@
             Disposable Count.
             </summary>
         </member>
-        <member name="T:Retlang.Channels.BatchSubscriber`1">
+        <member name="T:Retlang.Core.IPendingEvent">
             <summary>
-            Batches events for the consuming thread.
+            A scheduled event.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IPendingEvent.Execute(System.Int64)">
+            <summary>
+            Execute this event and optionally schedule another execution.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Retlang.Core.IPendingEvent.Expiration">
+            <summary>
+            Time of expiration for this event
+            </summary>
+        </member>
+        <member name="T:Retlang.Channels.Filter`1">
+            <summary>
+            Message filter delegate
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Retlang.Channels.ChannelSubscription`1">
+            <summary>
+            Subscription for events on a channel.
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.BatchSubscriber`1.#ctor(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+        <member name="M:Retlang.Channels.ChannelSubscription`1.#ctor(Retlang.Core.IDisposingExecutor,System.Action{`0})">
             <summary>
-            Construct new instance.
+            Construct the subscription
             </summary>
             <param name="queue"></param>
-            <param name="receive"></param>
-            <param name="interval"></param>
+            <param name="receiveMethod"></param>
         </member>
-        <member name="M:Retlang.Channels.BatchSubscriber`1.OnMessageOnProducerThread(`0)">
+        <member name="M:Retlang.Channels.ChannelSubscription`1.OnMessageOnProducerThread(`0)">
             <summary>
-            Receives message and batches as needed.
+            Receives the event and queues the execution on the target queue.
             </summary>
             <param name="msg"></param>
-        </member>
-        <member name="T:Retlang.Core.TimerThread">
-            <summary>
-            A Thread dedicated to event scheduling.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.QueueFullException">
-            <summary>
-            Thrown when a queue is full.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.QueueFullException.#ctor(System.Int32)">
-            <summary>
-            Construct the execution with the depth of the queue.
-            </summary>
-            <param name="depth"></param>
-        </member>
-        <member name="M:Retlang.Core.QueueFullException.#ctor(System.String)">
-            <summary>
-            Construct with a custom message.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="P:Retlang.Core.QueueFullException.Depth">
-            <summary>
-            Depth of queue.
-            </summary>
-        </member>
-        <member name="T:Retlang.Core.ActionTimer">
-            <summary>
-             Enqueues actions on to executor after schedule elapses.  
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.#ctor(Retlang.Core.IDisposingExecutor)">
-            <summary>
-             Constructs new instance.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.Schedule(System.Action,System.Int64)">
-            <summary>
-             Enqueues action on to executor after timer elapses.  
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
-            <summary>
-             Enqueues actions on to executor after schedule elapses.  
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.Remove(Retlang.Core.ITimerControl)">
-            <summary>
-             Removes a pending scheduled action.
-            </summary>
-            <param name="toRemove"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.EnqueueTask(System.Action)">
-            <summary>
-             Enqueues actions on to executor immediately.
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionTimer.Dispose">
-            <summary>
-             Cancels all pending actions
-            </summary>
-        </member>
-        <member name="T:Retlang.Fibers.ThreadFiberFactory">
-            <summary>
-            Default implementation for IThreadFiberFactory
-            </summary>
         </member>
         <member name="T:Retlang.Fibers.IThreadFiberFactory">
             <summary>
@@ -1356,6 +1157,225 @@
             <param name="executor"></param>
             <param name="threadName"></param>
             <returns></returns>
+        </member>
+        <member name="T:Retlang.Core.IThreadController">
+            <summary>
+            Controls thread lifecycle.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IThreadController.Start">
+            <summary>
+            Starts thread execution.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IThreadController.Stop">
+            <summary>
+            Stops thread
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IThreadController.Join">
+            <summary>
+            Waits for thread to finish.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.DisposableList">
+            <summary>
+            Registry for disposables. Provides thread safe methods for list of disposables.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.DisposableList.Add(System.IDisposable)">
+            <summary>
+            Add Disposable
+            </summary>
+            <param name="toAdd"></param>
+        </member>
+        <member name="M:Retlang.Core.DisposableList.Remove(System.IDisposable)">
+            <summary>
+            Remove Disposable.
+            </summary>
+            <param name="victim"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Core.DisposableList.Dispose">
+            <summary>
+            Disposes all disposables registered in list.
+            </summary>
+        </member>
+        <member name="P:Retlang.Core.DisposableList.Count">
+            <summary>
+            Number of registered disposables.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.IThreadPool">
+            <summary>
+            A thread pool for executing asynchronous events.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IThreadPool.Queue(System.Threading.WaitCallback)">
+            <summary>
+            Queue event for execution.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="T:Retlang.Core.DefaultThreadPool">
+            <summary>
+            Default implementation that uses the .NET thread pool.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.DefaultThreadPool.Queue(System.Threading.WaitCallback)">
+            <summary>
+            Queue event.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="T:Retlang.Channels.QueueChannel`1">
+            <summary>
+            Default QueueChannel implementation. Once and only once delivery to first available consumer.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.QueueChannel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+            <summary>
+            Subscribe to executor messages. 
+            </summary>
+            <param name="executor"></param>
+            <param name="onMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.QueueChannel`1.Publish(`0)">
+            <summary>
+            Publish message onto queue. Notify consumers of message.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Retlang.Channels.Channel`1">
+            <summary>
+             Default Channel Implementation. Methods are thread safe.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+            <summary>
+            <see cref="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})"/>
+            </summary>
+            <param name="executor"></param>
+            <param name="receive"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.Publish(`0)">
+            <summary>
+            <see cref="M:Retlang.Channels.IPublisher`1.Publish(`0)"/>
+            </summary>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.ClearSubscribers">
+            <summary>
+            Remove all subscribers.
+            </summary>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+            <summary>
+            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)"/>
+            </summary>
+            <param name="scheduler"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
+            <summary>
+            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)"/>
+            </summary>
+            <typeparam name="K"></typeparam>
+            <param name="scheduler"></param>
+            <param name="keyResolver"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
+            <summary>
+            Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+            </summary>
+            <param name="subscriber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(System.Action{`0})">
+            <summary>
+            Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
+            Action may be invoked on multiple threads.
+            </summary>
+            <param name="subscriber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToLast(Retlang.Core.IScheduler,System.Action{`0},System.Int32)">
+            <summary>
+            Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+            has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+            </summary>
+            <param name="scheduler"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Retlang.Fibers.ScheduledEvent">
+            <summary>
+            Event scheduled to be executed.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64)">
+            <summary>
+            Schedule an event for a single execution
+            </summary>
+            <param name="runnable"></param>
+            <param name="time"></param>
+        </member>
+        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64,System.Int64)">
+            <summary>
+            Schedule Recurring Event.
+            </summary>
+            <param name="action"></param>
+            <param name="firstIntervalInMs"></param>
+            <param name="regularIntervalInMs"></param>
+        </member>
+        <member name="M:Retlang.Fibers.ScheduledEvent.Equals(System.Object)">
+            <summary>
+            Equality operation typically used for testing.
+            </summary>
+            <param name="o"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.ScheduledEvent.GetHashCode">
+            <summary>
+            Hash
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Retlang.Fibers.ScheduledEvent.Action">
+            <summary>
+            The Action to be executed.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.ScheduledEvent.FirstIntervalInMs">
+            <summary>
+            The first time the event will be executed.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.ScheduledEvent.RegularIntervalInMs">
+            <summary>
+            Regular interval in ms for action.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.ScheduledEvent.IsRecurring">
+            <summary>
+            Determine if event will be fired on regular interval.
+            </summary>
+        </member>
+        <member name="T:Retlang.Fibers.ThreadFiberFactory">
+            <summary>
+            Default implementation for IThreadFiberFactory
+            </summary>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor)">
             <summary>
@@ -1380,26 +1400,6 @@
         <member name="P:Retlang.Fibers.ThreadFiberFactory.MaxEnqueueWaitTime">
             <summary>
             Max time to wait for queue to clear.
-            </summary>
-        </member>
-        <member name="T:Retlang.Fibers.ExecutionState">
-            <summary>
-             Fiber execution state management
-            </summary>
-        </member>
-        <member name="F:Retlang.Fibers.ExecutionState.Created">
-            <summary>
-             Created but not running
-            </summary>
-        </member>
-        <member name="F:Retlang.Fibers.ExecutionState.Running">
-            <summary>
-             After start
-            </summary>
-        </member>
-        <member name="F:Retlang.Fibers.ExecutionState.Stopped">
-            <summary>
-             After stopped
             </summary>
         </member>
     </members>
