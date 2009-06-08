@@ -111,10 +111,12 @@ namespace RetlangTests.Examples
 
                 
                 var oddCalculator = new FibonacciCalculator(oddFiber, "Odd", oddChannel, evenChannel, limit);
-
                 var evenFiber = factory.CreateThreadFiber(executor);
+                
                 disposables.Add(evenFiber); 
                 evenFiber.Start();
+
+                new FibonacciCalculator(evenFiber, "Even", evenChannel, oddChannel, limit);
 
                 oddCalculator.Begin(new IntPair(0, 1));
 
