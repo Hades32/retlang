@@ -76,6 +76,7 @@
     <Compile Include="PerfTimer.cs" />
     <Compile Include="QueueChannelTests.cs" />
     <Compile Include="RequestReplyChannelTests.cs" />
+    <Compile Include="StubFiberTests.cs" />
     <Compile Include="TimerActionTests.cs" />
     <Compile Include="TimerThreadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
