@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65ABCF4F-88F0-46EF-A6CF-71850019262E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -120,8 +120,8 @@
     <Compile Include="Fibers\IThreadFiberFactory.cs" />
     <Compile Include="Fibers\PoolFiber.cs" />
     <Compile Include="Fibers\ScheduledEvent.cs" />
-    <Compile Include="Fibers\SynchronousFiber.cs" />
-    <Compile Include="Fibers\SynchronousTimerAction.cs" />
+    <Compile Include="Fibers\StubFiber.cs" />
+    <Compile Include="Fibers\StubTimerAction.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
     <Compile Include="Fibers\ThreadFiberFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

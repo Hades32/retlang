@@ -5,26 +5,29 @@ using Retlang.Core;
 namespace Retlang.Fibers
 {
     /// <summary>
-    /// Synchronous Fiber does not use a backing thread or a thread pool for execution. Events are added to pending
+    /// StubFiber does not use a backing thread or a thread pool for execution. Events are added to pending
     /// lists for execution. These events can be executed synchronously by a calling thread. This class
     /// is not thread safe and probably should not be used in production code. 
     /// 
     /// The class is typically used for unit testing asynchronous code to make it completely synchronous and
     /// deterministic.
     /// </summary>
-    public class SynchronousFiber : IFiber
+    public class StubFiber : IFiber
     {
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly List<Action> _pending = new List<Action>();
         private readonly List<ScheduledEvent> _scheduled = new List<ScheduledEvent>();
-        private bool _executePendingImmediately = true;
+
+        public StubFiber()
+        {
+            ExecutePendingImmediately = true;
+        }
 
         /// <summary>
         /// No Op
         /// </summary>
         public void Start()
-        {
-        }
+        {}
 
         /// <summary>
         /// Invokes Disposables.
@@ -43,7 +46,7 @@ namespace Retlang.Fibers
         /// <param name="actions"></param>
         public void EnqueueAll(params Action[] actions)
         {
-            if (_executePendingImmediately)
+            if (ExecutePendingImmediately)
             {
                 foreach (var action in actions)
                 {
@@ -62,7 +65,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-            if (_executePendingImmediately)
+            if (ExecutePendingImmediately)
             {
                 action();
             }
@@ -110,8 +113,7 @@ namespace Retlang.Fibers
             var toAdd = new ScheduledEvent(action, timeTilEnqueueInMs);
             _scheduled.Add(toAdd);
 
-            return new SynchronousTimerAction(action, timeTilEnqueueInMs, 
-                timeTilEnqueueInMs, _scheduled, toAdd);
+            return new StubTimerAction(action, timeTilEnqueueInMs, timeTilEnqueueInMs, _scheduled, toAdd);
         }
 
         /// <summary>
@@ -126,8 +128,7 @@ namespace Retlang.Fibers
             var toAdd = new ScheduledEvent(action, firstInMs, regularInMs);
             _scheduled.Add(toAdd);
 
-            return new SynchronousTimerAction(action, firstInMs,
-                regularInMs, _scheduled, toAdd);
+            return new StubTimerAction(action, firstInMs, regularInMs, _scheduled, toAdd);
         }
 
         /// <summary>
@@ -157,34 +158,30 @@ namespace Retlang.Fibers
         /// <summary>
         /// If true events will be executed immediately rather than added to a pending list.
         /// </summary>
-        public bool ExecutePendingImmediately
-        {
-            get { return _executePendingImmediately; }
-            set { _executePendingImmediately = value; }
-        }
+        public bool ExecutePendingImmediately { get; set; }
 
         /// <summary>
         /// Execute all actions in the pending list.
         /// </summary>
         public void ExecuteAllPending()
         {
-            foreach (var action in _pending)
+            while (_pending.Count > 0)
             {
-                action();
+                _pending[0]();
+                _pending.RemoveAt(0);
             }
-            _pending.Clear();
         }
 
         /// <summary>
-        /// execute all scheduled.
+        /// Execute all scheduled.
         /// </summary>
         public void ExecuteAllScheduled()
         {
-            foreach (var scheduledEvent in _scheduled)
+            while (_scheduled.Count > 0)
             {
-                scheduledEvent.Action();
+                _scheduled[0].Action();
+                _scheduled.RemoveAt(0);
             }
-            _scheduled.Clear();
         }
     }
 }
