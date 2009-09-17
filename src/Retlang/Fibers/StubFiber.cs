@@ -161,9 +161,9 @@ namespace Retlang.Fibers
         public bool ExecutePendingImmediately { get; set; }
 
         /// <summary>
-        /// Execute all actions in the pending list.
+        /// Execute all actions in the pending list.  If any of the executed actions enqueue more actions, execute those as well.
         /// </summary>
-        public void ExecuteAllPending()
+        public void ExecuteAllPendingUntilEmpty()
         {
             while (_pending.Count > 0)
             {
@@ -173,15 +173,39 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Execute all scheduled.
+        /// Execute all actions in the scheduled list.  If any of the executed actions enqueue more actions, execute those as well.
         /// </summary>
-        public void ExecuteAllScheduled()
+        public void ExecuteAllScheduledUntilEmpty()
         {
             while (_scheduled.Count > 0)
             {
                 _scheduled[0].Action();
                 _scheduled.RemoveAt(0);
             }
+        }
+
+        /// <summary>
+        /// Execute all actions in the pending list.
+        /// </summary>
+        public void ExecuteAllPending()
+        {
+            foreach (var pending in _pending.ToArray())
+            {
+                pending();
+            }
+            _pending.Clear();
+        }
+
+        /// <summary>
+        /// Execute all actions in the scheduled list.
+        /// </summary>
+        public void ExecuteAllScheduled()
+        {
+            foreach (var scheduled in _scheduled.ToArray())
+            {
+                scheduled.Action();
+            }
+            _scheduled.Clear();
         }
     }
 }
