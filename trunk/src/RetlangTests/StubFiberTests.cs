@@ -30,7 +30,7 @@ namespace RetlangTests
             fiber.Enqueue(command1);
             fiber.Enqueue(command2);
 
-            fiber.ExecuteAllPending();
+            fiber.ExecuteAllPendingUntilEmpty();
             Assert.AreEqual(new[] { fired1, fired2, fired3 }, actionMarkers.ToArray());
         }
     }
