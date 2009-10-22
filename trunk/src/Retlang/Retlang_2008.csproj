@@ -79,6 +79,7 @@
     <Compile Include="Channels\IRequest.cs" />
     <Compile Include="Channels\IRequestPublisher.cs" />
     <Compile Include="Channels\IRequestReplyChannel.cs" />
+    <Compile Include="Channels\ISnapshotChannel.cs" />
     <Compile Include="Channels\ISubscribable.cs" />
     <Compile Include="Channels\ISubscriber.cs" />
     <Compile Include="Channels\KeyedBatchSubscriber.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Channels\QueueChannel.cs" />
     <Compile Include="Channels\QueueConsumer.cs" />
     <Compile Include="Channels\RequestReplyChannel.cs" />
+    <Compile Include="Channels\SnapshotChannel.cs" />
     <Compile Include="Channels\Unsubscriber.cs" />
     <Compile Include="Core\BatchAndSingleExecutor.cs" />
     <Compile Include="Core\BatchExecutor.cs" />
