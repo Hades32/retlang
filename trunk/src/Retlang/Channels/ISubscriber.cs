@@ -13,7 +13,7 @@ namespace Retlang.Channels
         ///<summary>
         /// Subscribe to messages on this channel. The provided action will be invoked via a Action on the provided executor.
         ///</summary>
-        ///<param name="executor">the target context to receive the message</param>
+        ///<param name="executor">the target executor to receive the message</param>
         ///<param name="receive"></param>
         ///<returns>Unsubscriber object</returns>
         IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> receive);

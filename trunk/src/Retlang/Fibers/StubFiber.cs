@@ -18,6 +18,9 @@ namespace Retlang.Fibers
         private readonly List<Action> _pending = new List<Action>();
         private readonly List<ScheduledEvent> _scheduled = new List<ScheduledEvent>();
 
+        ///<summary>
+        /// Default constructor.  ExecutePendingImmediately is defaulted to true.
+        ///</summary>
         public StubFiber()
         {
             ExecutePendingImmediately = true;

@@ -225,6 +225,16 @@
             </summary>
             <param name="msg"></param>
         </member>
+        <member name="T:Retlang.Core.ITimerControl">
+            <summary>
+            Controller to cancel event timer.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ITimerControl.Cancel">
+            <summary>
+            Cancels scheduled timer.
+            </summary>
+        </member>
         <member name="T:Retlang.Fibers.FormFiber">
             <summary>
              Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
@@ -306,16 +316,6 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="T:Retlang.Core.ITimerControl">
-            <summary>
-            Controller to cancel event timer.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ITimerControl.Cancel">
-            <summary>
-            Cancels scheduled timer.
-            </summary>
-        </member>
         <member name="T:Retlang.Core.QueueFullException">
             <summary>
             Thrown when a queue is full.
@@ -378,6 +378,177 @@
             <summary>
             When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
             to prevent any pending actions from being executed. 
+            </summary>
+        </member>
+        <member name="T:Retlang.Channels.SnapshotChannel`1">
+            <summary>
+             A SnapshotChannel is a channel that allows for the transmission of an initial snapshot followed by incremental updates.
+             The class is thread safe.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Retlang.Channels.ISnapshotChannel`1">
+            <summary>
+             An ISnapshotChannel is a channel that allows for the transmission of an initial snapshot followed by incremental updates.
+             The class is thread safe.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.ISnapshotChannel`1.PrimedSubscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+            <summary>
+             Subscribes for an initial snapshot and then incremental update.
+            </summary>
+            <param name="fiber">the target executor to receive the message</param>
+            <param name="receive"></param>
+        </member>
+        <member name="M:Retlang.Channels.ISnapshotChannel`1.Publish(`0)">
+            <summary>
+             Publishes the incremental update.
+            </summary>
+            <param name="update"></param>
+        </member>
+        <member name="M:Retlang.Channels.ISnapshotChannel`1.ReplyToPrimingRequest(Retlang.Core.IDisposingExecutor,System.Func{`0})">
+            <summary>
+             Ressponds to the request for an initial snapshot.
+            </summary>
+            <param name="fiber">the target executor to receive the message</param>
+            <param name="reply">returns the snapshot update</param>
+        </member>
+        <member name="M:Retlang.Channels.SnapshotChannel`1.#ctor(System.Int32)">
+            <summary>
+            </summary>
+            <param name="timeoutInMs">For initial snapshot</param>
+        </member>
+        <member name="M:Retlang.Channels.SnapshotChannel`1.PrimedSubscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+            <summary>
+             Subscribes for an initial snapshot and then incremental update.
+            </summary>
+            <param name="fiber">the target executor to receive the message</param>
+            <param name="receive"></param>
+        </member>
+        <member name="M:Retlang.Channels.SnapshotChannel`1.Publish(`0)">
+            <summary>
+             Publishes the incremental update.
+            </summary>
+            <param name="update"></param>
+        </member>
+        <member name="M:Retlang.Channels.SnapshotChannel`1.ReplyToPrimingRequest(Retlang.Core.IDisposingExecutor,System.Func{`0})">
+            <summary>
+             Ressponds to the request for an initial snapshot.
+            </summary>
+            <param name="fiber">the target executor to receive the message</param>
+            <param name="reply">returns the snapshot update</param>
+        </member>
+        <member name="T:Retlang.Fibers.StubFiber">
+            <summary>
+            StubFiber does not use a backing thread or a thread pool for execution. Events are added to pending
+            lists for execution. These events can be executed synchronously by a calling thread. This class
+            is not thread safe and probably should not be used in production code. 
+            
+            The class is typically used for unit testing asynchronous code to make it completely synchronous and
+            deterministic.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.#ctor">
+            <summary>
+             Default constructor.  ExecutePendingImmediately is defaulted to true.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Start">
+            <summary>
+            No Op
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Dispose">
+            <summary>
+            Invokes Disposables.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.EnqueueAll(System.Action[])">
+            <summary>
+            Adds all events to pending list.
+            </summary>
+            <param name="actions"></param>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Enqueue(System.Action)">
+            <summary>
+            Add event to pending list.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Add(System.IDisposable)">
+            <summary>
+            add to disposable list.
+            </summary>
+            <param name="disposable"></param>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Remove(System.IDisposable)">
+            <summary>
+            Remove Disposable.
+            </summary>
+            <param name="disposable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.Schedule(System.Action,System.Int64)">
+            <summary>
+            Adds a scheduled event to the list. 
+            </summary>
+            <param name="action"></param>
+            <param name="timeTilEnqueueInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
+            <summary>
+            Adds scheduled event to list.
+            </summary>
+            <param name="action"></param>
+            <param name="firstInMs"></param>
+            <param name="regularInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.ExecuteAllPendingUntilEmpty">
+            <summary>
+            Execute all actions in the pending list.  If any of the executed actions enqueue more actions, execute those as well.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.ExecuteAllScheduledUntilEmpty">
+            <summary>
+            Execute all actions in the scheduled list.  If any of the executed actions enqueue more actions, execute those as well.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.ExecuteAllPending">
+            <summary>
+            Execute all actions in the pending list.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubFiber.ExecuteAllScheduled">
+            <summary>
+            Execute all actions in the scheduled list.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubFiber.DisposableCount">
+            <summary>
+            Count of Disposables.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubFiber.Disposables">
+            <summary>
+            All Disposables.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubFiber.Pending">
+            <summary>
+            All Pending actions.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubFiber.Scheduled">
+            <summary>
+            All Scheduled events.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubFiber.ExecutePendingImmediately">
+            <summary>
+            If true events will be executed immediately rather than added to a pending list.
             </summary>
         </member>
         <member name="T:Retlang.Fibers.PoolFiber">
@@ -598,7 +769,7 @@
             <summary>
              Subscribe to messages on this channel. The provided action will be invoked via a Action on the provided executor.
             </summary>
-            <param name="executor">the target context to receive the message</param>
+            <param name="executor">the target executor to receive the message</param>
             <param name="receive"></param>
             <returns>Unsubscriber object</returns>
         </member>
@@ -924,103 +1095,6 @@
             <summary>
             When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
             to prevent any pending actions from being executed. 
-            </summary>
-        </member>
-        <member name="T:Retlang.Fibers.SynchronousFiber">
-            <summary>
-            Synchronous Fiber does not use a backing thread or a thread pool for execution. Events are added to pending
-            lists for execution. These events can be executed synchronously by a calling thread. This class
-            is not thread safe and probably should not be used in production code. 
-            
-            The class is typically used for unit testing asynchronous code to make it completely synchronous and
-            deterministic.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Start">
-            <summary>
-            No Op
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Dispose">
-            <summary>
-            Invokes Disposables.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.EnqueueAll(System.Action[])">
-            <summary>
-            Adds all events to pending list.
-            </summary>
-            <param name="actions"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Enqueue(System.Action)">
-            <summary>
-            Add event to pending list.
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Add(System.IDisposable)">
-            <summary>
-            add to disposable list.
-            </summary>
-            <param name="disposable"></param>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="disposable"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.Schedule(System.Action,System.Int64)">
-            <summary>
-            Adds a scheduled event to the list. 
-            </summary>
-            <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
-            <summary>
-            Adds scheduled event to list.
-            </summary>
-            <param name="action"></param>
-            <param name="firstInMs"></param>
-            <param name="regularInMs"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllPending">
-            <summary>
-            Execute all actions in the pending list.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.SynchronousFiber.ExecuteAllScheduled">
-            <summary>
-            execute all scheduled.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.DisposableCount">
-            <summary>
-            Count of Disposables.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Disposables">
-            <summary>
-            All Disposables.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Pending">
-            <summary>
-            All Pending actions.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.Scheduled">
-            <summary>
-            All Scheduled events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.SynchronousFiber.ExecutePendingImmediately">
-            <summary>
-            If true events will be executed immediately rather than added to a pending list.
             </summary>
         </member>
         <member name="T:Retlang.Core.ActionExecutor">
