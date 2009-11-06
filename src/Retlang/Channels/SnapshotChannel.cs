@@ -3,18 +3,31 @@ using Retlang.Core;
 
 namespace Retlang.Channels
 {
+    ///<summary>
+    /// A SnapshotChannel is a channel that allows for the transmission of an initial snapshot followed by incremental updates.
+    /// The class is thread safe.
+    ///</summary>
+    ///<typeparam name="T"></typeparam>
     public class SnapshotChannel<T> : ISnapshotChannel<T>
     {
         private readonly int _timeoutInMs;
         private readonly IChannel<T> _updatesChannel = new Channel<T>();
         private readonly RequestReplyChannel<object, T> _requestChannel = new RequestReplyChannel<object, T>();
 
+        ///<summary>
+        ///</summary>
+        ///<param name="timeoutInMs">For initial snapshot</param>
         public SnapshotChannel(int timeoutInMs)
         {
             _timeoutInMs = timeoutInMs;
         }
 
-        public void PrimedSubscribe(IDisposingExecutor fiber, Action<T> handler)
+        ///<summary>
+        /// Subscribes for an initial snapshot and then incremental update.
+        ///</summary>
+        ///<param name="fiber">the target executor to receive the message</param>
+        ///<param name="receive"></param>
+        public void PrimedSubscribe(IDisposingExecutor fiber, Action<T> receive)
         {
             using (var reply = _requestChannel.SendRequest(new object()))
             {
@@ -29,20 +42,29 @@ namespace Retlang.Channels
                     throw new ArgumentException(typeof (T).Name + " synchronous request timed out in " + _timeoutInMs);
                 }
 
-                handler(result);
+                receive(result);
 
-                _updatesChannel.Subscribe(fiber, handler);
+                _updatesChannel.Subscribe(fiber, receive);
             }
         }
 
+        ///<summary>
+        /// Publishes the incremental update.
+        ///</summary>
+        ///<param name="update"></param>
         public void Publish(T update)
         {
             _updatesChannel.Publish(update);
         }
 
-        public void ReplyToPrimingRequest(IDisposingExecutor fiber, Func<T> getter)
+        ///<summary>
+        /// Ressponds to the request for an initial snapshot.
+        ///</summary>
+        ///<param name="fiber">the target executor to receive the message</param>
+        ///<param name="reply">returns the snapshot update</param>
+        public void ReplyToPrimingRequest(IDisposingExecutor fiber, Func<T> reply)
         {
-            _requestChannel.Subscribe(fiber, request => request.SendReply(getter()));
+            _requestChannel.Subscribe(fiber, request => request.SendReply(reply()));
         }
     }
 }
