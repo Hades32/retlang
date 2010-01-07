@@ -16,7 +16,7 @@ namespace Retlang.Fibers
     {
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly List<Action> _pending = new List<Action>();
-        private readonly List<ScheduledEvent> _scheduled = new List<ScheduledEvent>();
+        private readonly List<StubScheduledAction> _scheduled = new List<StubScheduledAction>();
 
         ///<summary>
         /// Default constructor.  ExecutePendingImmediately is defaulted to true.
@@ -113,10 +113,9 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
         {
-            var toAdd = new ScheduledEvent(action, timeTilEnqueueInMs);
+            var toAdd = new StubScheduledAction(action, timeTilEnqueueInMs, _scheduled);
             _scheduled.Add(toAdd);
-
-            return new StubTimerAction(action, timeTilEnqueueInMs, timeTilEnqueueInMs, _scheduled, toAdd);
+            return toAdd;
         }
 
         /// <summary>
@@ -128,10 +127,9 @@ namespace Retlang.Fibers
         /// <returns></returns>
         public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
-            var toAdd = new ScheduledEvent(action, firstInMs, regularInMs);
+            var toAdd = new StubScheduledAction(action, firstInMs, regularInMs, _scheduled);
             _scheduled.Add(toAdd);
-
-            return new StubTimerAction(action, firstInMs, regularInMs, _scheduled, toAdd);
+            return toAdd;
         }
 
         /// <summary>
@@ -153,7 +151,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// All Scheduled events.
         /// </summary>
-        public List<ScheduledEvent> Scheduled
+        public List<StubScheduledAction> Scheduled
         {
             get { return _scheduled; }
         }
@@ -182,8 +180,7 @@ namespace Retlang.Fibers
         {
             while (_scheduled.Count > 0)
             {
-                _scheduled[0].Action();
-                _scheduled.RemoveAt(0);
+                _scheduled[0].Execute();
             }
         }
 
@@ -206,9 +203,8 @@ namespace Retlang.Fibers
         {
             foreach (var scheduled in _scheduled.ToArray())
             {
-                scheduled.Action();
+                scheduled.Execute();
             }
-            _scheduled.Clear();
         }
     }
 }

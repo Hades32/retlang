@@ -121,9 +121,8 @@
     <Compile Include="Fibers\IThreadFiber.cs" />
     <Compile Include="Fibers\IThreadFiberFactory.cs" />
     <Compile Include="Fibers\PoolFiber.cs" />
-    <Compile Include="Fibers\ScheduledEvent.cs" />
     <Compile Include="Fibers\StubFiber.cs" />
-    <Compile Include="Fibers\StubTimerAction.cs" />
+    <Compile Include="Fibers\StubScheduledAction.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
     <Compile Include="Fibers\ThreadFiberFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
