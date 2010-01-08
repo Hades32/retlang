@@ -106,6 +106,58 @@
             </summary>
             <param name="message"></param>
         </member>
+        <member name="T:Retlang.Fibers.StubScheduledAction">
+            <summary>
+             For use only in testing.  Allows for controlled execution of scheduled actions on the StubFiber.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.ITimerControl">
+            <summary>
+            Controller to cancel event timer.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ITimerControl.Cancel">
+            <summary>
+            Cancels scheduled timer.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubScheduledAction.#ctor(System.Action,System.Int64,System.Int64,System.Collections.Generic.List{Retlang.Fibers.StubScheduledAction})">
+            <summary>
+             Use for recurring scheduled actions.
+            </summary>
+            <param name="action"></param>
+            <param name="firstIntervalInMs"></param>
+            <param name="intervalInMs"></param>
+            <param name="registry"></param>
+        </member>
+        <member name="M:Retlang.Fibers.StubScheduledAction.#ctor(System.Action,System.Int64,System.Collections.Generic.List{Retlang.Fibers.StubScheduledAction})">
+            <summary>
+             Use for scheduled actions that only occur once.
+            </summary>
+            <param name="action"></param>
+            <param name="timeTilEnqueueInMs"></param>
+            <param name="registry"></param>
+        </member>
+        <member name="M:Retlang.Fibers.StubScheduledAction.Execute">
+            <summary>
+             Executes the scheduled action.  If the action is not recurring it will be removed from the registry.
+            </summary>
+        </member>
+        <member name="M:Retlang.Fibers.StubScheduledAction.Cancel">
+            <summary>
+            Cancels scheduled action.  Removes scheduled action from registry.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubScheduledAction.FirstIntervalInMs">
+            <summary>
+             First interval in milliseconds.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.StubScheduledAction.IntervalInMs">
+            <summary>
+             Recurring interval in milliseconds.
+            </summary>
+        </member>
         <member name="T:Retlang.Core.IUnsubscriber">
             <summary>
             Unsubscribe controller.
@@ -224,16 +276,6 @@
             Receives message and batches as needed.
             </summary>
             <param name="msg"></param>
-        </member>
-        <member name="T:Retlang.Core.ITimerControl">
-            <summary>
-            Controller to cancel event timer.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.ITimerControl.Cancel">
-            <summary>
-            Cancels scheduled timer.
-            </summary>
         </member>
         <member name="T:Retlang.Fibers.FormFiber">
             <summary>
@@ -441,11 +483,11 @@
         </member>
         <member name="T:Retlang.Fibers.StubFiber">
             <summary>
-            StubFiber does not use a backing thread or a thread pool for execution. Events are added to pending
-            lists for execution. These events can be executed synchronously by a calling thread. This class
-            is not thread safe and probably should not be used in production code. 
+            StubFiber does not use a backing thread or a thread pool for execution. Actions are added to pending
+            lists for execution. These actions can be executed synchronously by the calling thread. This class
+            is not thread safe and should not be used in production code. 
             
-            The class is typically used for unit testing asynchronous code to make it completely synchronous and
+            The class is typically used for testing asynchronous code to make it completely synchronous and
             deterministic.
             </summary>
         </member>
@@ -1392,59 +1434,6 @@
             <param name="receive"></param>
             <param name="intervalInMs"></param>
             <returns></returns>
-        </member>
-        <member name="T:Retlang.Fibers.ScheduledEvent">
-            <summary>
-            Event scheduled to be executed.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64)">
-            <summary>
-            Schedule an event for a single execution
-            </summary>
-            <param name="runnable"></param>
-            <param name="time"></param>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.#ctor(System.Action,System.Int64,System.Int64)">
-            <summary>
-            Schedule Recurring Event.
-            </summary>
-            <param name="action"></param>
-            <param name="firstIntervalInMs"></param>
-            <param name="regularIntervalInMs"></param>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.Equals(System.Object)">
-            <summary>
-            Equality operation typically used for testing.
-            </summary>
-            <param name="o"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.ScheduledEvent.GetHashCode">
-            <summary>
-            Hash
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.Action">
-            <summary>
-            The Action to be executed.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.FirstIntervalInMs">
-            <summary>
-            The first time the event will be executed.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.RegularIntervalInMs">
-            <summary>
-            Regular interval in ms for action.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ScheduledEvent.IsRecurring">
-            <summary>
-            Determine if event will be fired on regular interval.
-            </summary>
         </member>
         <member name="T:Retlang.Fibers.ThreadFiberFactory">
             <summary>
