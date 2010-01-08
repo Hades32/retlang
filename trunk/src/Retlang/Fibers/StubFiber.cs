@@ -5,11 +5,11 @@ using Retlang.Core;
 namespace Retlang.Fibers
 {
     /// <summary>
-    /// StubFiber does not use a backing thread or a thread pool for execution. Events are added to pending
-    /// lists for execution. These events can be executed synchronously by a calling thread. This class
-    /// is not thread safe and probably should not be used in production code. 
+    /// StubFiber does not use a backing thread or a thread pool for execution. Actions are added to pending
+    /// lists for execution. These actions can be executed synchronously by the calling thread. This class
+    /// is not thread safe and should not be used in production code. 
     /// 
-    /// The class is typically used for unit testing asynchronous code to make it completely synchronous and
+    /// The class is typically used for testing asynchronous code to make it completely synchronous and
     /// deterministic.
     /// </summary>
     public class StubFiber : IFiber
