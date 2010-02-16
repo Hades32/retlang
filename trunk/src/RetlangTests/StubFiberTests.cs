@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Retlang.Channels;
 using Retlang.Fibers;
 
 namespace RetlangTests
@@ -58,6 +59,35 @@ namespace RetlangTests
             fiber.ExecuteAllScheduled();
             Assert.AreEqual(1, scheduleFired);
             Assert.AreEqual(2, scheduleOnIntervalFired);
+        }
+
+        [Test]
+        public void ShouldCompletelyClearPendingActionsBeforeExecutingNewActions()
+        {
+            var events = new List<int>();
+
+            var fiber = new StubFiber();
+            var channel = new Channel<int>();
+            const int count = 4;
+
+            channel.Subscribe(fiber, delegate(int x)
+                                         {
+                                             if (x == count)
+                                             {
+                                                 return;
+                                             }
+
+                                             channel.Publish(x + 1);
+                                             events.Add(x);
+                                         });
+
+            channel.Publish(0);
+
+            Assert.AreEqual(count, events.Count);
+            for (var i = 0; i < events.Count; i++)
+            {
+                Assert.AreEqual(i, events[i]);
+            }
         }
     }
 }

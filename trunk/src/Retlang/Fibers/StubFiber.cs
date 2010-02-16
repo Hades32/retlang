@@ -18,6 +18,8 @@ namespace Retlang.Fibers
         private readonly List<Action> _pending = new List<Action>();
         private readonly List<StubScheduledAction> _scheduled = new List<StubScheduledAction>();
 
+        private bool _root = true;
+
         ///<summary>
         /// Default constructor.  ExecutePendingImmediately is defaulted to true.
         ///</summary>
@@ -49,16 +51,9 @@ namespace Retlang.Fibers
         /// <param name="actions"></param>
         public void EnqueueAll(params Action[] actions)
         {
-            if (ExecutePendingImmediately)
+            foreach (var action in actions)
             {
-                foreach (var action in actions)
-                {
-                    action();
-                }
-            }
-            else
-            {
-                _pending.AddRange(actions);
+                Enqueue(action);
             }
         }
 
@@ -68,16 +63,25 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-            if (ExecutePendingImmediately)
+            if (_root && ExecutePendingImmediately)
             {
-                action();
+                try
+                {
+                    _root = false;
+                    action();
+                    ExecuteAllPendingUntilEmpty();
+                }
+                finally
+                {
+                    _root = true;
+                }
             }
             else
             {
                 _pending.Add(action);
             }
         }
-
+        
         /// <summary>
         /// add to disposable list.
         /// </summary>
