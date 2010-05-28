@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Retlang.Core;
 
@@ -32,7 +33,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
         /// </summary>
-        public void EnqueueAll(params Action[] actions)
+        public void EnqueueAll(List<Action> actions)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -130,9 +131,9 @@ namespace Retlang.Fibers
 
             lock (_lock)
             {
-                var actions = _queue.ToArray();
+                var actions = _queue.ToList();
                 _queue.Clear();
-                if (actions.Length > 0)
+                if (actions.Count > 0)
                 {
                     _invoker.Invoke(() => _executor.ExecuteAll(actions));
                 }

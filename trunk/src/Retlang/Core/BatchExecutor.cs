@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Retlang.Core
 {
@@ -10,9 +11,9 @@ namespace Retlang.Core
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IBatchExecutor.ExecuteAll(Action[])"/>
+        /// <see cref="IBatchExecutor.ExecuteAll(List<Action>)"/>
         /// </summary>
-        public void ExecuteAll(Action[] toExecute)
+        public void ExecuteAll(List<Action> toExecute)
         {
             foreach (var action in toExecute)
             {

@@ -97,6 +97,7 @@
     <Compile Include="Core\BatchExecutor.cs" />
     <Compile Include="Core\ActionExecutor.cs" />
     <Compile Include="Core\ActionTimer.cs" />
+    <Compile Include="Core\DefaultThreadPool.cs" />
     <Compile Include="Core\DisposableList.cs" />
     <Compile Include="Core\IBatchExecutor.cs" />
     <Compile Include="Core\IActionExecutor.cs" />
@@ -105,16 +106,14 @@
     <Compile Include="Core\IPendingActionRegistry.cs" />
     <Compile Include="Core\IPendingEvent.cs" />
     <Compile Include="Core\IScheduler.cs" />
-    <Compile Include="Core\IThreadController.cs" />
     <Compile Include="Core\IThreadPool.cs" />
     <Compile Include="Core\ITimerControl.cs" />
     <Compile Include="Core\PendingAction.cs" />
     <Compile Include="Core\QueueFullException.cs" />
     <Compile Include="Core\RecurringEvent.cs" />
+    <Compile Include="Core\RefSwap.cs" />
     <Compile Include="Core\SingleEvent.cs" />
-    <Compile Include="Core\SynchronousActionQueue.cs" />
     <Compile Include="Core\TimerAction.cs" />
-    <Compile Include="Core\TimerThread.cs" />
     <Compile Include="Core\Unsubscriber.cs" />
     <Compile Include="Fibers\BaseFiber.cs" />
     <Compile Include="Fibers\DispatcherFiber.cs" />
@@ -123,12 +122,10 @@
     <Compile Include="Fibers\IFiber.cs" />
     <Compile Include="Fibers\IThreadAdapter.cs" />
     <Compile Include="Fibers\IThreadFiber.cs" />
-    <Compile Include="Fibers\IThreadFiberFactory.cs" />
     <Compile Include="Fibers\PoolFiber.cs" />
     <Compile Include="Fibers\StubFiber.cs" />
     <Compile Include="Fibers\StubScheduledAction.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
-    <Compile Include="Fibers\ThreadFiberFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

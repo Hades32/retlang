@@ -240,22 +240,16 @@ namespace RetlangTests.Examples
             }
         }
 
-
         // Finally, our demonstration puts all the components together.
         [Test]
         public void DoDemonstration()
         {
             const int numberOfQuadratics = 10;
 
-            var executor = new BatchExecutor();
-
-            // Create a factory to instantiate all our cooperating thread fibers.
-            var processContextFactory = new ThreadFiberFactory();
 
             // We create a source to generate the quadratics.
-            var sourceFiber = processContextFactory.CreateThreadFiber(executor, "source");
-
-            var sinkFiber = processContextFactory.CreateThreadFiber(executor, "sink");
+            var sourceFiber = new ThreadFiber("source");
+            var sinkFiber = new ThreadFiber("sink");
 
           
                 // We create and store a reference to 10 solvers,
@@ -269,7 +263,7 @@ namespace RetlangTests.Examples
 
                 for (var idx = 0; idx < numberOfQuadratics; idx++)
                 {
-                    var fiber = processContextFactory.CreateThreadFiber(executor, "solver " + (idx + 1));
+                    var fiber = new ThreadFiber("solver " + (idx + 1));
                     fiber.Start();
                     
                     quadraticChannels[idx] = new Channel<Quadratic>();

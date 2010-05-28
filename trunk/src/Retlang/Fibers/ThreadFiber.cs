@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Retlang.Core;
 
@@ -18,36 +19,37 @@ namespace Retlang.Fibers
         private readonly ActionTimer _scheduler;
 
         /// <summary>
-        /// Creates a new thread with the backing executor.
+        /// Create a thread fiber with the default action executor.
+        /// </summary>
+        public ThreadFiber()
+            : this(new ActionExecutor())
+        {}
+
+        /// <summary>
+        /// Creates a thread fiber with a specified executor.
         /// </summary>
         /// <param name="executor"></param>
-        public ThreadFiber(IActionExecutor executor) : 
-            this(executor, "ThreadFiber-" + GetNextThreadId(), true, ThreadPriority.Normal)
+        public ThreadFiber(IActionExecutor executor) 
+            : this(executor, "ThreadFiber-" + GetNextThreadId())
         {}
 
         /// <summary>
-        /// Create a fiber thread with a default action executor.
+        /// Creates a thread fiber with a specified name.
         /// </summary>
-        public ThreadFiber() : this(new ActionExecutor())
+        /// /// <param name="threadName"></param>
+        public ThreadFiber(string threadName)
+            : this(new ActionExecutor(), threadName)
         {}
 
-        /// <summary>
-        /// Creates a new thread.
-        /// </summary>
-        /// <param name="executor">The queue</param>
-        /// <param name="threadName">custom thread name</param>
-        public ThreadFiber(IActionExecutor executor, string threadName)
-            : this(executor, threadName, true, ThreadPriority.Normal)
-        {}
 
         /// <summary>
-        /// Create fiber thread.
+        /// Creates a thread fiber.
         /// </summary>
         /// <param name="executor"></param>
         /// <param name="threadName"></param>
         /// <param name="isBackground"></param>
         /// <param name="priority"></param>
-        public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground, ThreadPriority priority)
+        public ThreadFiber(IActionExecutor executor, string threadName, bool isBackground = true, ThreadPriority priority = ThreadPriority.Normal)
         {
             _executor = executor;
             _thread = new Thread(RunThread);
@@ -76,10 +78,10 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(List{T})"/>
         /// </summary>
         /// <param name="actions"></param>
-        public void EnqueueAll(params Action[] actions)
+        public void EnqueueAll(List<Action> actions)
         {
             _executor.EnqueueAll(actions);
         }

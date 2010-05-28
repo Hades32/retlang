@@ -66,7 +66,7 @@ namespace RetlangTests
         {
             var events = new List<int>();
 
-            var fiber = new StubFiber();
+            var fiber = new StubFiber { ExecutePendingImmediately = true };
             var channel = new Channel<int>();
             const int count = 4;
 

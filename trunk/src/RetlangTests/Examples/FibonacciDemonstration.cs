@@ -90,8 +90,6 @@ namespace RetlangTests.Examples
         [Test]
         public void DoDemonstration()
         {
-            var factory = new ThreadFiberFactory();
-            var executor = new BatchExecutor();
 
             using (var disposables = new DisposableList())
             {
@@ -102,16 +100,16 @@ namespace RetlangTests.Examples
                 var limit = 1000;
 
                 // Two channels for communication.  Naming convention is inbound.
-                IChannel<IntPair> oddChannel = new Channel<IntPair>();
-                IChannel<IntPair> evenChannel = new Channel<IntPair>();
+                var oddChannel = new Channel<IntPair>();
+                var evenChannel = new Channel<IntPair>();
                 
-                var oddFiber = factory.CreateThreadFiber(executor);
+                var oddFiber = new ThreadFiber();
                 disposables.Add(oddFiber);
                 oddFiber.Start();
 
                 
                 var oddCalculator = new FibonacciCalculator(oddFiber, "Odd", oddChannel, evenChannel, limit);
-                var evenFiber = factory.CreateThreadFiber(executor);
+                var evenFiber = new ThreadFiber();
                 
                 disposables.Add(evenFiber); 
                 evenFiber.Start();
