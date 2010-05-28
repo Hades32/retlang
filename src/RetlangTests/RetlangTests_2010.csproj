@@ -82,7 +82,6 @@
     <Compile Include="RequestReplyChannelTests.cs" />
     <Compile Include="StubFiberTests.cs" />
     <Compile Include="TimerActionTests.cs" />
-    <Compile Include="TimerThreadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

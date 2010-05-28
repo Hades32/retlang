@@ -16,7 +16,8 @@ namespace Retlang.Core
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime;
 
-        private readonly List<Action> _actions = new List<Action>();
+        private List<Action> _actions = new List<Action>();
+        private List<Action> _toPass = new List<Action>();
 
         private IBatchExecutor _batchExecutor = new BatchExecutor();
 
@@ -48,14 +49,14 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(List{T})" />
         /// </summary>
         /// <param name="actions"></param>
-        public void EnqueueAll(params Action[] actions)
+        public void EnqueueAll(List<Action> actions)
         {
             lock (_lock)
             {
-                if (SpaceAvailable(actions.Length))
+                if (SpaceAvailable(actions.Count))
                 {
                     _actions.AddRange(actions);
                     Monitor.PulseAll(_lock);
@@ -131,20 +132,17 @@ namespace Retlang.Core
             return true;
         }
 
-        /// <summary>
-        /// Remove all actions.
-        /// </summary>
-        /// <returns></returns>
-        public Action[] DequeueAll()
+        private List<Action> DequeueAll()
         {
             lock (_lock)
             {
                 if (ReadyToDequeue())
                 {
-                    var toReturn = _actions.ToArray();
+                    Lists.Swap(ref _actions, ref _toPass);
                     _actions.Clear();
+
                     Monitor.PulseAll(_lock);
-                    return toReturn;
+                    return _toPass;
                 }
                 return null;
             }

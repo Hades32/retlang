@@ -12,10 +12,12 @@ namespace Retlang.Fibers
     {
         private readonly DisposableList _disposables = new DisposableList();
         private readonly object _lock = new object();
-        private readonly List<Action> _queue = new List<Action>();
         private readonly IThreadPool _pool;
         private readonly ActionTimer _timer;
         private readonly IBatchExecutor _executor;
+
+        private List<Action> _queue = new List<Action>();
+        private List<Action> _toPass = new List<Action>();
 
         private ExecutionState _started = ExecutionState.Created;
         private bool _flushPending;
@@ -47,10 +49,10 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(Action[])"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(List{T})"/>
         /// </summary>
         /// <param name="actions"></param>
-        public void EnqueueAll(params Action[] actions)
+        public void EnqueueAll(List<Action> actions)
         {
             if (_started == ExecutionState.Stopped)
             {
@@ -147,7 +149,7 @@ namespace Retlang.Fibers
             }
         }
 
-        private Action[] ClearActions()
+        private List<Action> ClearActions()
         {
             lock (_lock)
             {
@@ -156,9 +158,9 @@ namespace Retlang.Fibers
                     _flushPending = false;
                     return null;
                 }
-                var toReturn = _queue.ToArray();
+                Lists.Swap(ref _queue, ref _toPass);
                 _queue.Clear();
-                return toReturn;
+                return _toPass;
             }
         }
 
@@ -196,7 +198,7 @@ namespace Retlang.Fibers
             }
             _started = ExecutionState.Running;
             //flush any pending events in queue
-            Enqueue(delegate { });
+            Enqueue(() => { });
         }
 
         /// <summary>

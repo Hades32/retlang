@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Retlang.Core
 {
@@ -13,7 +14,7 @@ namespace Retlang.Core
         /// Append actions to end of queue.
         /// </summary>
         /// <param name="actions"></param>
-        void EnqueueAll(params Action[] actions);
+        void EnqueueAll(List<Action> actions);
 
         /// <summary>
         /// Enqueue a single action.

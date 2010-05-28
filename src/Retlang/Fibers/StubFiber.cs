@@ -20,14 +20,6 @@ namespace Retlang.Fibers
 
         private bool _root = true;
 
-        ///<summary>
-        /// Default constructor.  ExecutePendingImmediately is defaulted to true.
-        ///</summary>
-        public StubFiber()
-        {
-            ExecutePendingImmediately = true;
-        }
-
         /// <summary>
         /// No Op
         /// </summary>
@@ -49,7 +41,7 @@ namespace Retlang.Fibers
         /// Adds all events to pending list.
         /// </summary>
         /// <param name="actions"></param>
-        public void EnqueueAll(params Action[] actions)
+        public void EnqueueAll(List<Action> actions)
         {
             foreach (var action in actions)
             {

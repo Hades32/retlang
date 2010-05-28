@@ -106,7 +106,7 @@ namespace RetlangTests
     {
         public List<Exception> failed = new List<Exception>();
 
-        public void ExecuteAll(Action[] toExecute)
+        public void ExecuteAll(List<Action> toExecute)
         {
             foreach (var action in toExecute)
             {

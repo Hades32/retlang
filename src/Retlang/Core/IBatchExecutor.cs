@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Retlang.Core
 {
@@ -11,6 +12,6 @@ namespace Retlang.Core
         /// Execute all pending actions.
         /// </summary>
         /// <param name="toExecute"></param>
-        void ExecuteAll(Action[] toExecute);
+        void ExecuteAll(List<Action> toExecute);
     }
 }
