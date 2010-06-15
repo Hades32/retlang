@@ -11,7 +11,7 @@ namespace Retlang.Core
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IBatchExecutor.ExecuteAll(List{T})"/>
+        /// <see cref="IBatchExecutor.ExecuteAll(List{Action})"/>
         /// </summary>
         public void ExecuteAll(List<Action> toExecute)
         {

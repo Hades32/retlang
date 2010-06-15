@@ -4,11 +4,6 @@
         <name>Retlang</name>
     </assembly>
     <members>
-        <member name="T:Retlang.Core.TimerThread">
-            <summary>
-            A Thread dedicated to event scheduling.
-            </summary>
-        </member>
         <member name="T:Retlang.Core.ActionTimer">
             <summary>
              Enqueues actions on to executor after schedule elapses.  
@@ -175,7 +170,7 @@
             is disposed.
             </summary>
         </member>
-        <member name="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
             Append actions to end of queue.
             </summary>
@@ -292,9 +287,9 @@
             Creates an instance.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.BaseFiber.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Fibers.BaseFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
         </member>
         <member name="M:Retlang.Fibers.BaseFiber.Enqueue(System.Action)">
@@ -385,7 +380,7 @@
             Executes pending action(s).
             </summary>
         </member>
-        <member name="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])">
+        <member name="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Collections.Generic.List{System.Action})">
             <summary>
             Execute all pending actions.
             </summary>
@@ -411,9 +406,9 @@
             Default Action executor.
             </summary>
         </member>
-        <member name="M:Retlang.Core.BatchExecutor.ExecuteAll(System.Action[])">
+        <member name="M:Retlang.Core.BatchExecutor.ExecuteAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
         </member>
         <member name="P:Retlang.Core.BatchExecutor.IsEnabled">
@@ -491,11 +486,6 @@
             deterministic.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.#ctor">
-            <summary>
-             Default constructor.  ExecutePendingImmediately is defaulted to true.
-            </summary>
-        </member>
         <member name="M:Retlang.Fibers.StubFiber.Start">
             <summary>
             No Op
@@ -506,7 +496,7 @@
             Invokes Disposables.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Fibers.StubFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
             Adds all events to pending list.
             </summary>
@@ -615,9 +605,9 @@
             Create a pool fiber with the default thread pool and batch executor.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.PoolFiber.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Fibers.PoolFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
             <param name="actions"></param>
         </member>
@@ -725,21 +715,49 @@
         </member>
         <member name="T:Retlang.Fibers.DispatcherFiber">
             <summary>
-            Adapts Dispatcher to a Fiber
+            Adapts Dispatcher to a Fiber. Transparently moves actions onto the Dispatcher thread.
             </summary>
+        </member>
+        <member name="M:Retlang.Fibers.DispatcherFiber.#ctor(System.Windows.Threading.Dispatcher,System.Windows.Threading.DispatcherPriority,Retlang.Core.IBatchAndSingleExecutor)">
+            <summary>
+            Constructs a Fiber that executes on dispatcher thread.
+            </summary>
+            <param name="dispatcher">The dispatcher.</param>
+            <param name="priority">The priority.</param>
+            <param name="executor">The executor.</param>
         </member>
         <member name="M:Retlang.Fibers.DispatcherFiber.#ctor(System.Windows.Threading.Dispatcher,Retlang.Core.IBatchAndSingleExecutor)">
             <summary>
-            Constructs a Fiber that executes on dispatcher thread
+            Constructs a Fiber that executes on dispatcher thread.
             </summary>
-            <param name="dispatcher"></param>
-            <param name="executor"></param>
+            <param name="dispatcher">The dispatcher.</param>
+            <param name="executor">The priority.</param>
+        </member>
+        <member name="M:Retlang.Fibers.DispatcherFiber.#ctor(System.Windows.Threading.Dispatcher,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Constructs a Fiber that executes on dispatcher thread.
+            </summary>
+            <param name="dispatcher">The dispatcher.</param>
+            <param name="priority">The priority.</param>
         </member>
         <member name="M:Retlang.Fibers.DispatcherFiber.#ctor(System.Windows.Threading.Dispatcher)">
             <summary>
-            Constructor
+            Constructs a Fiber that executes on dispatcher thread.
             </summary>
-            <param name="dispatcher"></param>
+            <param name="dispatcher">The dispatcher.</param>
+        </member>
+        <member name="M:Retlang.Fibers.DispatcherFiber.#ctor(System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Constructs a Fiber that executes on dispatcher thread of the
+            current dispatcher.
+            </summary>
+            <param name="priority">The priority.</param>
+        </member>
+        <member name="M:Retlang.Fibers.DispatcherFiber.#ctor">
+            <summary>
+            Constructs a Fiber that executes on dispatcher thread of the
+            current dispatcher.
+            </summary>
         </member>
         <member name="T:Retlang.Core.IActionExecutor">
             <summary>
@@ -891,36 +909,35 @@
             <see cref="T:Retlang.Fibers.IFiber"/>
             </summary>
         </member>
+        <member name="M:Retlang.Fibers.ThreadFiber.#ctor">
+            <summary>
+            Create a thread fiber with the default action executor.
+            </summary>
+        </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor)">
             <summary>
-            Creates a new thread with the backing executor.
+            Creates a thread fiber with a specified executor.
             </summary>
             <param name="executor"></param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.#ctor">
+        <member name="M:Retlang.Fibers.ThreadFiber.#ctor(System.String)">
             <summary>
-            Create a fiber thread with a default action executor.
+            Creates a thread fiber with a specified name.
             </summary>
-        </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String)">
-            <summary>
-            Creates a new thread.
-            </summary>
-            <param name="executor">The queue</param>
-            <param name="threadName">custom thread name</param>
+            /// <param name="threadName"></param>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IActionExecutor,System.String,System.Boolean,System.Threading.ThreadPriority)">
             <summary>
-            Create fiber thread.
+            Creates a thread fiber.
             </summary>
             <param name="executor"></param>
             <param name="threadName"></param>
             <param name="isBackground"></param>
             <param name="priority"></param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Fibers.ThreadFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
             <param name="actions"></param>
         </member>
@@ -1062,51 +1079,6 @@
             <param name="p"></param>
             <returns>null if no subscribers registered for request.</returns>
         </member>
-        <member name="T:Retlang.Core.SynchronousActionQueue">
-            <summary>
-            A synchronous queue typically used for testing.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.EnqueueAll(System.Action[])">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)"/>
-            </summary>
-            <param name="actions"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Enqueue(System.Action)">
-            <summary>
-            Queue action
-            </summary>
-            <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Add(System.IDisposable)">
-            <summary>
-            Add Disposable.
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Run">
-            <summary>
-            Start Consuming events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.SynchronousActionQueue.Stop">
-            <summary>
-            Stop consuming events.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.SynchronousActionQueue.DisposableCount">
-            <summary>
-            Count of Disposables.
-            </summary>
-        </member>
         <member name="T:Retlang.Core.BatchAndSingleExecutor">
             <summary>
             Default Action executor.
@@ -1123,9 +1095,9 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Retlang.Core.BatchAndSingleExecutor.ExecuteAll(System.Action[])">
+        <member name="M:Retlang.Core.BatchAndSingleExecutor.ExecuteAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IBatchExecutor.ExecuteAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
         </member>
         <member name="M:Retlang.Core.BatchAndSingleExecutor.Execute(System.Action)">
@@ -1144,9 +1116,9 @@
             Default implementation.
             </summary>
         </member>
-        <member name="M:Retlang.Core.ActionExecutor.EnqueueAll(System.Action[])">
+        <member name="M:Retlang.Core.ActionExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Action[])"/>
+            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
             <param name="actions"></param>
         </member>
@@ -1167,12 +1139,6 @@
             Remove
             </summary>
             <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.ActionExecutor.DequeueAll">
-            <summary>
-            Remove all actions.
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Retlang.Core.ActionExecutor.ExecuteNextBatch">
@@ -1227,6 +1193,28 @@
             Time of expiration for this event
             </summary>
         </member>
+        <member name="T:Retlang.Core.DefaultThreadPool">
+            <summary>
+            Default implementation that uses the .NET thread pool.
+            </summary>
+        </member>
+        <member name="T:Retlang.Core.IThreadPool">
+            <summary>
+            A thread pool for executing asynchronous events.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IThreadPool.Queue(System.Threading.WaitCallback)">
+            <summary>
+            Queue event for execution.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:Retlang.Core.DefaultThreadPool.Queue(System.Threading.WaitCallback)">
+            <summary>
+            Queue event.
+            </summary>
+            <param name="callback"></param>
+        </member>
         <member name="T:Retlang.Channels.Filter`1">
             <summary>
             Message filter delegate
@@ -1253,46 +1241,6 @@
             Receives the event and queues the execution on the target queue.
             </summary>
             <param name="msg"></param>
-        </member>
-        <member name="T:Retlang.Fibers.IThreadFiberFactory">
-            <summary>
-            Factory for creating backing threads.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.IThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor)">
-            <summary>
-            Create ThreadFiber with IBatchExecutor
-            </summary>
-            <param name="executor"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.IThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor,System.String)">
-            <summary>
-            Create named fiber thread.
-            </summary>
-            <param name="executor"></param>
-            <param name="threadName"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Retlang.Core.IThreadController">
-            <summary>
-            Controls thread lifecycle.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Start">
-            <summary>
-            Starts thread execution.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Stop">
-            <summary>
-            Stops thread
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadController.Join">
-            <summary>
-            Waits for thread to finish.
-            </summary>
         </member>
         <member name="T:Retlang.Core.DisposableList">
             <summary>
@@ -1321,28 +1269,6 @@
             <summary>
             Number of registered disposables.
             </summary>
-        </member>
-        <member name="T:Retlang.Core.IThreadPool">
-            <summary>
-            A thread pool for executing asynchronous events.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IThreadPool.Queue(System.Threading.WaitCallback)">
-            <summary>
-            Queue event for execution.
-            </summary>
-            <param name="callback"></param>
-        </member>
-        <member name="T:Retlang.Core.DefaultThreadPool">
-            <summary>
-            Default implementation that uses the .NET thread pool.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.DefaultThreadPool.Queue(System.Threading.WaitCallback)">
-            <summary>
-            Queue event.
-            </summary>
-            <param name="callback"></param>
         </member>
         <member name="T:Retlang.Channels.QueueChannel`1">
             <summary>
@@ -1434,36 +1360,6 @@
             <param name="receive"></param>
             <param name="intervalInMs"></param>
             <returns></returns>
-        </member>
-        <member name="T:Retlang.Fibers.ThreadFiberFactory">
-            <summary>
-            Default implementation for IThreadFiberFactory
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.ThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor)">
-            <summary>
-            <see cref="M:Retlang.Fibers.IThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor)"/>
-            </summary>
-            <param name="executor"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Fibers.ThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor,System.String)">
-            <summary>
-            <see cref="M:Retlang.Fibers.IThreadFiberFactory.CreateThreadFiber(Retlang.Core.IBatchExecutor,System.String)"/>
-            </summary>
-            <param name="executor"></param>
-            <param name="threadName"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Fibers.ThreadFiberFactory.MaxQueueDepth">
-            <summary>
-            Maximum depth for queue.
-            </summary>
-        </member>
-        <member name="P:Retlang.Fibers.ThreadFiberFactory.MaxEnqueueWaitTime">
-            <summary>
-            Max time to wait for queue to clear.
-            </summary>
         </member>
     </members>
 </doc>

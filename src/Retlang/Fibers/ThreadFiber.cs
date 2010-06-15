@@ -78,7 +78,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(List{T})"/>
+        /// <see cref="IDisposingExecutor.EnqueueAll(List{Action})"/>
         /// </summary>
         /// <param name="actions"></param>
         public void EnqueueAll(List<Action> actions)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Retlang.Core
 {
-    public static class Lists
+    internal static class Lists
     {
         public static void Swap(ref List<Action> a, ref List<Action> b)
         {
