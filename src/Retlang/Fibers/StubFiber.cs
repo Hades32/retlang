@@ -171,17 +171,6 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Execute all actions in the scheduled list.  If any of the executed actions enqueue more actions, execute those as well.
-        /// </summary>
-        public void ExecuteAllScheduledUntilEmpty()
-        {
-            while (_scheduled.Count > 0)
-            {
-                _scheduled[0].Execute();
-            }
-        }
-
-        /// <summary>
         /// Execute all actions in the pending list.
         /// </summary>
         public void ExecuteAllPending()
