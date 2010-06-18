@@ -543,11 +543,6 @@
             Execute all actions in the pending list.  If any of the executed actions enqueue more actions, execute those as well.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.ExecuteAllScheduledUntilEmpty">
-            <summary>
-            Execute all actions in the scheduled list.  If any of the executed actions enqueue more actions, execute those as well.
-            </summary>
-        </member>
         <member name="M:Retlang.Fibers.StubFiber.ExecuteAllPending">
             <summary>
             Execute all actions in the pending list.
