@@ -164,8 +164,9 @@ namespace Retlang.Fibers
         {
             while (_pending.Count > 0)
             {
-                _pending[0]();
+                var toExecute = _pending[0];
                 _pending.RemoveAt(0);
+                toExecute();
             }
         }
 
@@ -185,11 +186,12 @@ namespace Retlang.Fibers
         /// </summary>
         public void ExecuteAllPending()
         {
-            foreach (var pending in _pending.ToArray())
+            var copy = _pending.ToArray();
+            _pending.Clear();
+            foreach (var pending in copy)
             {
                 pending();
             }
-            _pending.Clear();
         }
 
         /// <summary>

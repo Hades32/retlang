@@ -35,8 +35,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly : AssemblyVersion("1.0.0.0")]
-[assembly : AssemblyFileVersion("1.0.0.0")]
+[assembly : AssemblyVersion("1.0.1.0")]
+[assembly : AssemblyFileVersion("1.0.1.0")]
 [assembly :
     InternalsVisibleTo(
         "RetlangTests, PublicKey=00240000048000009400000006020000002400005253413100040000010001001ffdca16214e1bf7e3787e0c61e98c65c649a4d36cc9b6e77cfa526ba71787a4d8ff66227948a712197c6b3a595c512ed8f4db09669ac5fa0424dd3d311b6c1b0806c90d17a58f21758b8329cfe59f503c410aeea5a1cf0d618d6a8cf4d5fae50e43d3c241626e8cbcdcb81076631894d5a38175d37e615af7942460b20abceb"
