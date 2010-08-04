@@ -1,4 +1,0 @@
-#labels Featured
-=== Downloadable CHM Docs ===
-
-[http://code.google.com/p/retlang/downloads/list Downloads]
