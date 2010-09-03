@@ -24,9 +24,9 @@ namespace Retlang.Core
         ///<summary>
         /// Enqueues action on to executor after timer elapses.  
         ///</summary>
-        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long firstInMs)
         {
-            if (timeTilEnqueueInMs <= 0)
+            if (firstInMs <= 0)
             {
                 var pending = new PendingAction(action);
                 _executor.Enqueue(pending.ExecuteAction);
@@ -34,7 +34,7 @@ namespace Retlang.Core
             }
             else
             {
-                var pending = new TimerAction(action, timeTilEnqueueInMs, Timeout.Infinite);
+                var pending = new TimerAction(action, firstInMs, Timeout.Infinite);
                 AddPending(pending);
                 return pending;
             }

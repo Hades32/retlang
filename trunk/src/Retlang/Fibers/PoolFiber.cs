@@ -47,34 +47,7 @@ namespace Retlang.Fibers
         public PoolFiber() : this(new DefaultThreadPool(), new BatchExecutor())
         {
         }
-
-        /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(List{Action})"/>
-        /// </summary>
-        /// <param name="actions"></param>
-        public void EnqueueAll(List<Action> actions)
-        {
-            if (_started == ExecutionState.Stopped)
-            {
-                return;
-            }
-
-            lock (_lock)
-            {
-                _queue.AddRange(actions);
-                if (_started == ExecutionState.Created)
-                {
-                    return;
-                }
-                if (!_flushPending)
-                {
-                    _pool.Queue(Flush);
-                    _flushPending = true;
-                }
-            }
-        }
-
-
+        
         /// <summary>
         /// Queue action.
         /// </summary>
@@ -168,11 +141,11 @@ namespace Retlang.Fibers
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="timeTilEnqueueInMs"></param>
+        /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long firstInMs)
         {
-            return _timer.Schedule(action, timeTilEnqueueInMs);
+            return _timer.Schedule(action, firstInMs);
         }
 
         /// <summary>

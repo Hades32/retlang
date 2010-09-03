@@ -38,19 +38,7 @@ namespace Retlang.Fibers
 
             _subscriptions.Clear();
         }
-
-        /// <summary>
-        /// Adds all events to pending list.
-        /// </summary>
-        /// <param name="actions"></param>
-        public void EnqueueAll(List<Action> actions)
-        {
-            foreach (var action in actions)
-            {
-                Enqueue(action);
-            }
-        }
-
+        
         /// <summary>
         /// Add event to pending list.
         /// </summary>
@@ -107,11 +95,11 @@ namespace Retlang.Fibers
         /// Adds a scheduled event to the list. 
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="timeTilEnqueueInMs"></param>
+        /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long firstInMs)
         {
-            var toAdd = new StubScheduledAction(action, timeTilEnqueueInMs, _scheduled);
+            var toAdd = new StubScheduledAction(action, firstInMs, _scheduled);
             _scheduled.Add(toAdd);
             return toAdd;
         }
