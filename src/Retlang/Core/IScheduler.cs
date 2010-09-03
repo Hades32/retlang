@@ -3,25 +3,25 @@ using System;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Methods for schedule events that will be executed in the future.
+    /// Methods for scheduling actions that will be executed in the future.
     /// </summary>
     public interface IScheduler
     {
         /// <summary>
-        /// Schedules an event to be executes once.
+        /// Schedules an action to be executed once.
         /// </summary>
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
-        /// <returns>a controller to cancel the event.</returns>
-        ITimerControl Schedule(Action action, long firstInMs);
+        /// <returns>a handle to cancel the timer.</returns>
+        IDisposable Schedule(Action action, long firstInMs);
 
         /// <summary>
-        /// Schedule an event on a recurring interval.
+        /// Schedule an action to be executed on a recurring interval.
         /// </summary>
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
-        /// <returns>controller to cancel timer.</returns>
-        ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs);
+        /// <returns>a handle to cancel the timer.</returns>
+        IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs);
     }
 }

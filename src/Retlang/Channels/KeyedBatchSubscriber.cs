@@ -41,7 +41,7 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        public override ISubscriptions Subscriptions
+        public override ISubscriptionRegistry Subscriptions
         {
             get { return _fiber; }
         }

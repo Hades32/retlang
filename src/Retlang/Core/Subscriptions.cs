@@ -4,18 +4,18 @@ using System.Collections.Generic;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Registry for disposables. Provides thread safe methods for list of disposables.
+    /// Registry for subscriptions. Provides thread safe methods for list of subscriptions.
     /// </summary>
     public class Subscriptions : IDisposable
     {
         private readonly object _lock = new object();
-        private readonly List<IUnsubscriber> _items = new List<IUnsubscriber>();
+        private readonly List<IDisposable> _items = new List<IDisposable>();
 
         /// <summary>
         /// Add Disposable
         /// </summary>
         /// <param name="toAdd"></param>
-        public void Add(IUnsubscriber toAdd)
+        public void Add(IDisposable toAdd)
         {
             lock (_lock)
             {
@@ -28,7 +28,7 @@ namespace Retlang.Core
         /// </summary>
         /// <param name="toRemove"></param>
         /// <returns></returns>
-        public bool Remove(IUnsubscriber toRemove)
+        public bool Remove(IDisposable toRemove)
         {
             lock (_lock)
             {

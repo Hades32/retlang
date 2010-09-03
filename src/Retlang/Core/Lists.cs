@@ -7,7 +7,7 @@ namespace Retlang.Core
     {
         public static void Swap(ref List<Action> a, ref List<Action> b)
         {
-            List<Action> tmp = a;
+            var tmp = a;
             a = b;
             b = tmp;
         }

@@ -12,13 +12,13 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates an instance.
         /// </summary>
-        public FormFiber(ISynchronizeInvoke invoker, IBatchAndSingleExecutor executor)
+        public FormFiber(ISynchronizeInvoke invoker, IExecutor executor)
             : base(new FormAdapter(invoker), executor)
         {
         }
     }
 
-    internal class FormAdapter : IThreadAdapter
+    internal class FormAdapter : IContext
     {
         private readonly ISynchronizeInvoke _invoker;
 
@@ -27,9 +27,9 @@ namespace Retlang.Fibers
             _invoker = invoker;
         }
 
-        public void Invoke(Action act)
+        public void Enqueue(Action action)
         {
-            _invoker.BeginInvoke(act, null);
+            _invoker.BeginInvoke(action, null);
         }
     }
 }

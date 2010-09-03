@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Retlang.Core;
 
 namespace Retlang.Fibers
 {
@@ -40,7 +39,7 @@ namespace Retlang.Fibers
         }
         
         /// <summary>
-        /// Add event to pending list.
+        /// Add action to pending list.
         /// </summary>
         /// <param name="action"></param>
         public void Enqueue(Action action)
@@ -68,7 +67,7 @@ namespace Retlang.Fibers
         /// add to disposable list.
         /// </summary>
         /// <param name="disposable"></param>
-        public void Register(IUnsubscriber disposable)
+        public void RegisterSubscription(IDisposable disposable)
         {
             _subscriptions.Add(disposable);
         }
@@ -78,7 +77,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="disposable"></param>
         /// <returns></returns>
-        public bool Deregister(IUnsubscriber disposable)
+        public bool DeregisterSubscription(IDisposable disposable)
         {
             return _subscriptions.Remove(disposable);
         }
@@ -92,12 +91,12 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Adds a scheduled event to the list. 
+        /// Adds a scheduled action to the list. 
         /// </summary>
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, long firstInMs)
         {
             var toAdd = new StubScheduledAction(action, firstInMs, _scheduled);
             _scheduled.Add(toAdd);
@@ -105,13 +104,13 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Adds scheduled event to list.
+        /// Adds scheduled action to list.
         /// </summary>
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
             var toAdd = new StubScheduledAction(action, firstInMs, regularInMs, _scheduled);
             _scheduled.Add(toAdd);
@@ -119,7 +118,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// All Disposables.
+        /// All subscriptions.
         /// </summary>
         public List<IDisposable> Subscriptions
         {
@@ -127,7 +126,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// All Pending actions.
+        /// All pending actions.
         /// </summary>
         public List<Action> Pending
         {
@@ -135,7 +134,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// All Scheduled events.
+        /// All scheduled actions.
         /// </summary>
         public List<StubScheduledAction> Scheduled
         {
@@ -143,7 +142,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// If true events will be executed immediately rather than added to a pending list.
+        /// If true events will be executed immediately rather than added to the pending list.
         /// </summary>
         public bool ExecutePendingImmediately { get; set; }
 

@@ -7,16 +7,16 @@ namespace Retlang.Core
     ///<summary>
     /// Enqueues actions on to executor after schedule elapses.  
     ///</summary>
-    public class ActionTimer : IPendingActionRegistry, IScheduler, IDisposable
+    public class Scheduler : ISchedulerRegistry, IScheduler, IDisposable
     {
         private volatile bool _running = true;
-        private readonly IDisposingExecutor _executor;
-        private List<ITimerControl> _pending = new List<ITimerControl>();
+        private readonly IContext _executor;
+        private List<IDisposable> _pending = new List<IDisposable>();
 
         ///<summary>
         /// Constructs new instance.
         ///</summary>
-        public ActionTimer(IDisposingExecutor executor)
+        public Scheduler(IContext executor)
         {
             _executor = executor;
         }
@@ -24,7 +24,7 @@ namespace Retlang.Core
         ///<summary>
         /// Enqueues action on to executor after timer elapses.  
         ///</summary>
-        public ITimerControl Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, long firstInMs)
         {
             if (firstInMs <= 0)
             {
@@ -43,7 +43,7 @@ namespace Retlang.Core
         ///<summary>
         /// Enqueues actions on to executor after schedule elapses.  
         ///</summary>
-        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
             var pending = new TimerAction(action, firstInMs, regularInMs);
             AddPending(pending);
@@ -54,17 +54,16 @@ namespace Retlang.Core
         /// Removes a pending scheduled action.
         ///</summary>
         ///<param name="toRemove"></param>
-        public void Remove(ITimerControl toRemove)
+        public void Remove(IDisposable toRemove)
         {
-            Action removeAction = () => _pending.Remove(toRemove);
-            _executor.Enqueue(removeAction);
+            _executor.Enqueue(() => _pending.Remove(toRemove));
         }
 
         ///<summary>
         /// Enqueues actions on to executor immediately.
         ///</summary>
         ///<param name="action"></param>
-        public void EnqueueTask(Action action)
+        public void Enqueue(Action action)
         {
             _executor.Enqueue(action);
         }
@@ -88,10 +87,10 @@ namespace Retlang.Core
         public void Dispose()
         {
             _running = false;
-            var old = Interlocked.Exchange(ref _pending, new List<ITimerControl>());
-            foreach (var control in old)
+            var old = Interlocked.Exchange(ref _pending, new List<IDisposable>());
+            foreach (var timer in old)
             {
-                control.Cancel();
+                timer.Dispose();
             }
         }
     }

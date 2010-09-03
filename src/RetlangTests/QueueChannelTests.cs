@@ -102,7 +102,7 @@ namespace RetlangTests
         }
     }
 
-    public class StubExecutor : IBatchExecutor
+    public class StubExecutor : IExecutor
     {
         public List<Exception> failed = new List<Exception>();
 

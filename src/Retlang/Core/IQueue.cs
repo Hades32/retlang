@@ -3,15 +3,15 @@ namespace Retlang.Core
     /// <summary>
     /// A runable queue implementation.
     /// </summary>
-    public interface IActionExecutor : IDisposingExecutor
+    public interface IQueue : IContext
     {
         /// <summary>
-        /// Consume events.
+        /// Start consuming actions.
         /// </summary>
         void Run();
 
         /// <summary>
-        /// Stop consuming events.
+        /// Stop consuming actions.
         /// </summary>
         void Stop();
     }

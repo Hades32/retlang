@@ -1,4 +1,4 @@
-using Retlang.Core;
+using System;
 
 namespace Retlang.Channels
 {
@@ -10,10 +10,10 @@ namespace Retlang.Channels
     public interface IChannel<T> : ISubscriber<T>, IPublisher<T>
     {
         /// <summary>
-        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+        /// Subscribes to actions on producer threads. Subscriber could be called from multiple threads.
         /// </summary>
         /// <param name="subscriber"></param>
         /// <returns></returns>
-        IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber);
+        IDisposable SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber);
     }
 }

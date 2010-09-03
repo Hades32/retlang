@@ -5,11 +5,13 @@ using System.Threading;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Default implementation.
+    /// Queue with bounded capacity.  Will throw exception if capacity does not recede prior to wait time.
     /// </summary>
-    public class ActionExecutor : IActionExecutor
+    public class BoundedQueue : IQueue
     {
         private readonly object _lock = new object();
+        private readonly IExecutor _executor;
+
         private bool _running = true;
         private int _maxQueueDepth = -1;
         private int _maxEnqueueWaitTime;
@@ -17,19 +19,25 @@ namespace Retlang.Core
         private List<Action> _actions = new List<Action>();
         private List<Action> _toPass = new List<Action>();
 
-        private IBatchExecutor _batchExecutor = new BatchExecutor();
-
-        /// <summary>
-        /// Executor for events.
-        /// </summary>
-        public IBatchExecutor BatchExecutor
+        ///<summary>
+        /// Creates a bounded queue with a custom executor.
+        ///</summary>
+        ///<param name="executor"></param>
+        public BoundedQueue(IExecutor executor)
         {
-            get { return _batchExecutor; }
-            set { _batchExecutor = value; }
+            _executor = executor;
+        }
+
+        ///<summary>
+        /// Creates a bounded queue with the default executor.
+        ///</summary>
+        public BoundedQueue()
+            : this(new DefaultExecutor())
+        {
         }
 
         /// <summary>
-        /// Max number of events to be queued.
+        /// Max number of actions to be queued.
         /// </summary>
         public int MaxDepth
         {
@@ -47,7 +55,7 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// Queue action.
+        /// Enqueue action.
         /// </summary>
         /// <param name="action"></param>
         public void Enqueue(Action action)
@@ -59,6 +67,26 @@ namespace Retlang.Core
                     _actions.Add(action);
                     Monitor.PulseAll(_lock);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Execute actions until stopped.
+        /// </summary>
+        public void Run()
+        {
+            while (ExecuteNextBatch()) { }
+        }
+
+        /// <summary>
+        /// Stop consuming actions.
+        /// </summary>
+        public void Stop()
+        {
+            lock (_lock)
+            {
+                _running = false;
+                Monitor.PulseAll(_lock);
             }
         }
 
@@ -127,30 +155,8 @@ namespace Retlang.Core
             {
                 return false;
             }
-            _batchExecutor.ExecuteAll(toExecute);
+            _executor.ExecuteAll(toExecute);
             return true;
-        }
-
-        /// <summary>
-        /// Execute actions until stopped.
-        /// </summary>
-        public void Run()
-        {
-            while (ExecuteNextBatch())
-            {
-            }
-        }
-
-        /// <summary>
-        /// Stop consuming events.
-        /// </summary>
-        public void Stop()
-        {
-            lock (_lock)
-            {
-                _running = false;
-                Monitor.PulseAll(_lock);
-            }
         }
     }
 }

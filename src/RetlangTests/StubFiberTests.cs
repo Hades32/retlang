@@ -54,7 +54,7 @@ namespace RetlangTests
             Assert.AreEqual(1, scheduleFired);
             Assert.AreEqual(2, scheduleOnIntervalFired);
 
-            intervalSub.Cancel();
+            intervalSub.Dispose();
 
             fiber.ExecuteAllScheduled();
             Assert.AreEqual(1, scheduleFired);
@@ -64,7 +64,7 @@ namespace RetlangTests
         [Test]
         public void ShouldCompletelyClearPendingActionsBeforeExecutingNewActions()
         {
-            var events = new List<int>();
+            var msgs = new List<int>();
 
             var fiber = new StubFiber { ExecutePendingImmediately = true };
             var channel = new Channel<int>();
@@ -78,15 +78,15 @@ namespace RetlangTests
                                              }
 
                                              channel.Publish(x + 1);
-                                             events.Add(x);
+                                             msgs.Add(x);
                                          });
 
             channel.Publish(0);
 
-            Assert.AreEqual(count, events.Count);
-            for (var i = 0; i < events.Count; i++)
+            Assert.AreEqual(count, msgs.Count);
+            for (var i = 0; i < msgs.Count; i++)
             {
-                Assert.AreEqual(i, events[i]);
+                Assert.AreEqual(i, msgs[i]);
             }
         }
     }

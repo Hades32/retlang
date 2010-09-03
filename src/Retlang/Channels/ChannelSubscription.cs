@@ -5,7 +5,7 @@ using Retlang.Fibers;
 namespace Retlang.Channels
 {
     /// <summary>
-    /// Subscription for events on a channel.
+    /// Subscription for actions on a channel.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ChannelSubscription<T> : BaseSubscription<T>
@@ -27,13 +27,13 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        public override ISubscriptions Subscriptions
+        public override ISubscriptionRegistry Subscriptions
         {
             get { return _fiber; }
         }
 
         /// <summary>
-        /// Receives the event and queues the execution on the target executor.
+        /// Receives the action and queues the execution on the target fiber.
         /// </summary>
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)

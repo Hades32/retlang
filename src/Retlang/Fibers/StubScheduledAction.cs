@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Retlang.Core;
 
 namespace Retlang.Fibers
 {
     ///<summary>
     /// For use only in testing.  Allows for controlled execution of scheduled actions on the StubFiber.
     ///</summary>
-    public class StubScheduledAction : ITimerControl
+    public class StubScheduledAction : IDisposable
     {
         private readonly Action _action;
         private readonly long _firstIntervalInMs;
@@ -65,14 +64,14 @@ namespace Retlang.Fibers
             _action();
             if (_intervalInMs == -1)
             {
-                Cancel();
+                Dispose();
             }
         }
 
         /// <summary>
         /// Cancels scheduled action.  Removes scheduled action from registry.
         /// </summary>
-        public void Cancel()
+        public void Dispose()
         {
             _registry.Remove(this);
         }

@@ -1,21 +1,23 @@
-﻿namespace Retlang.Core
+﻿using System;
+
+namespace Retlang.Core
 {
     ///<summary>
     /// Allows for the registration and deregistration of subscriptions
     ///</summary>
-    public interface ISubscriptions
+    public interface ISubscriptionRegistry
     {
         ///<summary>
-        /// Register unsubscriber to be called when the IFiber is disposed
+        /// Register subscription to be unsubcribed from when the fiber is disposed
         ///</summary>
         ///<param name="toAdd"></param>
-        void Register(IUnsubscriber toAdd);
+        void RegisterSubscription(IDisposable toAdd);
 
         ///<summary>
         /// Deregister a subscription
         ///</summary>
         ///<param name="toRemove"></param>
         ///<returns></returns>
-        bool Deregister(IUnsubscriber toRemove);
+        bool DeregisterSubscription(IDisposable toRemove);
     }
 }

@@ -6,7 +6,7 @@ using Retlang.Fibers;
 namespace Retlang.Channels
 {
     /// <summary>
-    /// Batches events for the consuming thread.
+    /// Batches actions for the consuming thread.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class BatchSubscriber<T> : BaseSubscription<T>
@@ -33,7 +33,7 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        public override ISubscriptions Subscriptions
+        public override ISubscriptionRegistry Subscriptions
         {
             get { return _fiber; }
         }

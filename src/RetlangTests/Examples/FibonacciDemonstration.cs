@@ -41,13 +41,13 @@ namespace RetlangTests.Examples
         // When a specified limit is reached, it stops processing.
         class FibonacciCalculator
         {
-            private readonly IThreadFiber _threadFiber;
+            private readonly ThreadFiber _threadFiber;
             private readonly string _name;
             private readonly ISubscriber<IntPair> _inboundChannel;
             private readonly IChannel<IntPair> _outboundChannel;
             private readonly int _limit;
 
-            public FibonacciCalculator(IThreadFiber fiber, string name, 
+            public FibonacciCalculator(ThreadFiber fiber, string name, 
                 ISubscriber<IntPair> inboundChannel, 
                 IChannel<IntPair> outboundChannel,
                 int limit)

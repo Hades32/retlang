@@ -39,7 +39,7 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        public abstract ISubscriptions Subscriptions { get; }
+        public abstract ISubscriptionRegistry Subscriptions { get; }
 
         /// <summary>
         /// Called after message has been filtered.

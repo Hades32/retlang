@@ -4,18 +4,18 @@ namespace Retlang.Core
 {
     internal class RecurringEvent : IPendingEvent
     {
-        private readonly IDisposingExecutor _executor;
+        private readonly IContext _context;
         private readonly Action _toExecute;
         private readonly long _regularInterval;
 
         private long _expiration;
         private bool _canceled;
 
-        public RecurringEvent(IDisposingExecutor executor, Action toExecute, 
+        public RecurringEvent(IContext context, Action toExecute, 
             long scheduledTimeInMs, long regularInterval, long currentTime)
         {
             _expiration = currentTime + scheduledTimeInMs;
-            _executor = executor;
+            _context = context;
             _toExecute = toExecute;
             _regularInterval = regularInterval;
         }
@@ -29,14 +29,14 @@ namespace Retlang.Core
         {
             if (!_canceled)
             {
-                _executor.Enqueue(_toExecute);
+                _context.Enqueue(_toExecute);
                 _expiration = currentTime + _regularInterval;
                 return this;
             }
             return null;
         }
 
-        public void Cancel()
+        public void Dispose()
         {
             _canceled = true;
         }

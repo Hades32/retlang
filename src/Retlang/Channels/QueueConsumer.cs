@@ -3,14 +3,14 @@ using Retlang.Core;
 
 namespace Retlang.Channels
 {
-    internal class QueueConsumer<T> : IUnsubscriber
+    internal class QueueConsumer<T> : IDisposable
     {
         private bool _flushPending;
-        private readonly IDisposingExecutor _target;
+        private readonly IContext _target;
         private readonly Action<T> _callback;
         private readonly QueueChannel<T> _channel;
 
-        public QueueConsumer(IDisposingExecutor target, Action<T> callback, QueueChannel<T> channel)
+        public QueueConsumer(IContext target, Action<T> callback, QueueChannel<T> channel)
         {
             _target = target;
             _callback = callback;

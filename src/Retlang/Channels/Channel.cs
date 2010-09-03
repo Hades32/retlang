@@ -19,7 +19,7 @@ namespace Retlang.Channels
         /// <param name="fiber"></param>
         /// <param name="receive"></param>
         /// <returns></returns>
-        public IUnsubscriber Subscribe(IFiber fiber, Action<T> receive)
+        public IDisposable Subscribe(IFiber fiber, Action<T> receive)
         {
             return SubscribeOnProducerThreads(new ChannelSubscription<T>(fiber, receive));
         }
@@ -31,7 +31,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IUnsubscriber SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
+        public IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new BatchSubscriber<T>(fiber, receive, intervalInMs));
         }
@@ -45,7 +45,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IUnsubscriber SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
+        public IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new KeyedBatchSubscriber<K, T>(keyResolver, receive, fiber, intervalInMs));
         }
@@ -58,34 +58,34 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IUnsubscriber SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs)
+        public IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new LastSubscriber<T>(receive, fiber, intervalInMs));
         }
 
         /// <summary>
-        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+        /// Subscribes to actions on producer threads. Subscriber could be called from multiple threads.
         /// </summary>
         /// <param name="subscriber"></param>
         /// <returns></returns>
-        public IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber)
+        public IDisposable SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber)
         {
             return SubscribeOnProducerThreads(subscriber.ReceiveOnProducerThread, subscriber.Subscriptions);
         }
 
         /// <summary>
-        /// Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
+        /// Subscribes an action to be executed for every action posted to the channel. Action should be thread safe. 
         /// Action may be invoked on multiple threads.
         /// </summary>
         /// <param name="subscriber"></param>
         /// <param name="subscriptions"></param>
         /// <returns></returns>
-        private IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber, ISubscriptions subscriptions)
+        private IDisposable SubscribeOnProducerThreads(Action<T> subscriber, ISubscriptionRegistry subscriptions)
         {
             _subscribers += subscriber;
 
             var unsubscriber = new Unsubscriber<T>(subscriber, this, subscriptions);
-            subscriptions.Register(unsubscriber);
+            subscriptions.RegisterSubscription(unsubscriber);
 
             return unsubscriber;
         }

@@ -8,7 +8,7 @@ namespace Retlang.Core
     public class DefaultThreadPool : IThreadPool
     {
         /// <summary>
-        /// Queue event.
+        /// Enqueues action.
         /// </summary>
         /// <param name="callback"></param>
         public void Queue(WaitCallback callback)
