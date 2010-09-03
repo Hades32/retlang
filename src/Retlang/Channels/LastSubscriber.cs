@@ -1,5 +1,6 @@
 using System;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -11,7 +12,7 @@ namespace Retlang.Channels
     {
         private readonly object _lock = new object();
 
-        private readonly IScheduler _context;
+        private readonly IFiber _fiber;
         private readonly Action<T> _target;
         private readonly int _flushIntervalInMs;
 
@@ -22,13 +23,21 @@ namespace Retlang.Channels
         /// New instance.
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="context"></param>
+        /// <param name="fiber"></param>
         /// <param name="flushIntervalInMs"></param>
-        public LastSubscriber(Action<T> target, IScheduler context, int flushIntervalInMs)
+        public LastSubscriber(Action<T> target, IFiber fiber, int flushIntervalInMs)
         {
-            _context = context;
+            _fiber = fiber;
             _target = target;
             _flushIntervalInMs = flushIntervalInMs;
+        }
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        public override ISubscriptions Subscriptions
+        {
+            get { return _fiber; }
         }
 
         /// <summary>
@@ -41,7 +50,7 @@ namespace Retlang.Channels
             {
                 if (!_flushPending)
                 {
-                    _context.Schedule(Flush, _flushIntervalInMs);
+                    _fiber.Schedule(Flush, _flushIntervalInMs);
                     _flushPending = true;
                 }
                 _pending = msg;

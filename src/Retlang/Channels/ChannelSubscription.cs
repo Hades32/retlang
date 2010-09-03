@@ -1,5 +1,6 @@
 using System;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -9,28 +10,35 @@ namespace Retlang.Channels
     /// <typeparam name="T"></typeparam>
     public class ChannelSubscription<T> : BaseSubscription<T>
     {
-        private readonly Action<T> _receiveMethod;
-        private readonly IDisposingExecutor _targetExecutor;
+        private readonly Action<T> _receiver;
+        private readonly IFiber _fiber;
 
         /// <summary>
         /// Construct the subscription
         /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="receiveMethod"></param>
-        public ChannelSubscription(IDisposingExecutor queue, Action<T> receiveMethod)
+        /// <param name="fiber"></param>
+        /// <param name="receiver"></param>
+        public ChannelSubscription(IFiber fiber, Action<T> receiver)
         {
-            _receiveMethod = receiveMethod;
-            _targetExecutor = queue;
+            _fiber = fiber;
+            _receiver = receiver;
+        }
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        public override ISubscriptions Subscriptions
+        {
+            get { return _fiber; }
         }
 
         /// <summary>
-        /// Receives the event and queues the execution on the target queue.
+        /// Receives the event and queues the execution on the target executor.
         /// </summary>
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-            Action asyncExec = () => _receiveMethod(msg);
-            _targetExecutor.Enqueue(asyncExec);
+            _fiber.Enqueue(() => _receiver(msg));
         }
     }
 }

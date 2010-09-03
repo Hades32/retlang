@@ -14,7 +14,7 @@ namespace Retlang.Fibers
     /// </summary>
     public class StubFiber : IFiber
     {
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+        private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
         private readonly List<Action> _pending = new List<Action>();
         private readonly List<StubScheduledAction> _scheduled = new List<StubScheduledAction>();
 
@@ -27,14 +27,16 @@ namespace Retlang.Fibers
         {}
 
         /// <summary>
-        /// Invokes Disposables.
+        /// Unsubscribes from all subscriptions.
         /// </summary>
         public void Dispose()
         {
-            foreach (var d in _disposables.ToArray())
+            foreach (var subscription in _subscriptions.ToArray())
             {
-                d.Dispose();
+                subscription.Dispose();
             }
+
+            _subscriptions.Clear();
         }
 
         /// <summary>
@@ -78,9 +80,9 @@ namespace Retlang.Fibers
         /// add to disposable list.
         /// </summary>
         /// <param name="disposable"></param>
-        public void Add(IDisposable disposable)
+        public void Register(IUnsubscriber disposable)
         {
-            _disposables.Add(disposable);
+            _subscriptions.Add(disposable);
         }
 
         /// <summary>
@@ -88,17 +90,17 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="disposable"></param>
         /// <returns></returns>
-        public bool Remove(IDisposable disposable)
+        public bool Deregister(IUnsubscriber disposable)
         {
-            return _disposables.Remove(disposable);
+            return _subscriptions.Remove(disposable);
         }
 
         /// <summary>
         /// Count of Disposables.
         /// </summary>
-        public int DisposableCount
+        public int NumSubscriptions
         {
-            get { return _disposables.Count; }
+            get { return _subscriptions.Count; }
         }
 
         /// <summary>
@@ -131,9 +133,9 @@ namespace Retlang.Fibers
         /// <summary>
         /// All Disposables.
         /// </summary>
-        public List<IDisposable> Disposables
+        public List<IDisposable> Subscriptions
         {
-            get { return _disposables; }
+            get { return _subscriptions; }
         }
 
         /// <summary>

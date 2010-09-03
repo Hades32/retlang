@@ -1,3 +1,5 @@
+using Retlang.Core;
+
 namespace Retlang.Channels
 {
     /// <summary>
@@ -11,5 +13,10 @@ namespace Retlang.Channels
         /// </summary>
         /// <param name="msg"></param>
         void ReceiveOnProducerThread(T msg);
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        ISubscriptions Subscriptions { get; }
     }
 }

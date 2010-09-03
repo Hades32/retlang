@@ -12,7 +12,7 @@ namespace Retlang.Fibers
     public class ThreadFiber : IThreadFiber
     {
         private static int THREAD_COUNT;
-        private readonly DisposableList _disposables = new DisposableList();
+        private readonly Subscriptions _subscriptions = new Subscriptions();
 
         private readonly Thread _thread;
         private readonly IActionExecutor _executor;
@@ -99,27 +99,27 @@ namespace Retlang.Fibers
         /// Add Disposable to be invoked when Fiber is disposed.
         /// </summary>
         /// <param name="toAdd"></param>
-        public void Add(IDisposable toAdd)
+        public void Register(IUnsubscriber toAdd)
         {
-            _disposables.Add(toAdd);
+            _subscriptions.Add(toAdd);
         }
 
         /// <summary>
         /// Remove disposable.
         /// </summary>
-        /// <param name="victim"></param>
+        /// <param name="toRemove"></param>
         /// <returns></returns>
-        public bool Remove(IDisposable victim)
+        public bool Deregister(IUnsubscriber toRemove)
         {
-            return _disposables.Remove(victim);
+            return _subscriptions.Remove(toRemove);
         }
 
         /// <summary>
         /// Number of disposables.
         /// </summary>
-        public int DisposableCount
+        public int NumSubscriptions
         {
-            get { return _disposables.Count; }
+            get { return _subscriptions.Count; }
         }
 
         /// <summary>
@@ -166,6 +166,7 @@ namespace Retlang.Fibers
         public void Dispose()
         {
             _scheduler.Dispose();
+            _subscriptions.Dispose();
             _executor.Stop();
         }
     }

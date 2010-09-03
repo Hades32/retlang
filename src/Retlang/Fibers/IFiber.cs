@@ -6,7 +6,7 @@ namespace Retlang.Fibers
     /// <summary>
     /// Queues pending events for the fiber.
     /// </summary>
-    public interface IFiber : IDisposingExecutor, IScheduler, IDisposable
+    public interface IFiber : ISubscriptions, IDisposingExecutor, IScheduler, IDisposable
     {
         /// <summary>
         /// Start consuming events.

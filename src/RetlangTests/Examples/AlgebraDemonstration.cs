@@ -171,8 +171,7 @@ namespace RetlangTests.Examples
         {
             private readonly IChannel<SolvedQuadratic> _solvedChannel;
 
-            public QuadraticSolver(IDisposingExecutor fiber, ISubscriber<Quadratic> channel,
-                                   IChannel<SolvedQuadratic> solvedChannel)
+            public QuadraticSolver(IFiber fiber, ISubscriber<Quadratic> channel, IChannel<SolvedQuadratic> solvedChannel)
             {
                 _solvedChannel = solvedChannel;
                 channel.Subscribe(fiber, ProcessReceivedQuadratic);

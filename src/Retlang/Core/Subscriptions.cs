@@ -6,16 +6,16 @@ namespace Retlang.Core
     /// <summary>
     /// Registry for disposables. Provides thread safe methods for list of disposables.
     /// </summary>
-    public class DisposableList : IDisposable
+    public class Subscriptions : IDisposable
     {
         private readonly object _lock = new object();
-        private readonly List<IDisposable> _items = new List<IDisposable>();
+        private readonly List<IUnsubscriber> _items = new List<IUnsubscriber>();
 
         /// <summary>
         /// Add Disposable
         /// </summary>
         /// <param name="toAdd"></param>
-        public void Add(IDisposable toAdd)
+        public void Add(IUnsubscriber toAdd)
         {
             lock (_lock)
             {
@@ -26,13 +26,13 @@ namespace Retlang.Core
         /// <summary>
         /// Remove Disposable.
         /// </summary>
-        /// <param name="victim"></param>
+        /// <param name="toRemove"></param>
         /// <returns></returns>
-        public bool Remove(IDisposable victim)
+        public bool Remove(IUnsubscriber toRemove)
         {
             lock (_lock)
             {
-                return _items.Remove(victim);
+                return _items.Remove(toRemove);
             }
         }
 
@@ -47,6 +47,7 @@ namespace Retlang.Core
                 {
                     victim.Dispose();
                 }
+                _items.Clear();
             }
         }
 

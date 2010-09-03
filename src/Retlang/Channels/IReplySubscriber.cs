@@ -1,5 +1,6 @@
 using System;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -13,9 +14,9 @@ namespace Retlang.Channels
         /// <summary>
         /// Subscribe to a request on the channel.
         /// </summary>
-        /// <param name="responder"></param>
+        /// <param name="fiber"></param>
         /// <param name="onRequest"></param>
         /// <returns></returns>
-        IUnsubscriber Subscribe(IDisposingExecutor responder, Action<IRequest<R, M>> onRequest);
+        IUnsubscriber Subscribe(IFiber fiber, Action<IRequest<R, M>> onRequest);
     }
 }
