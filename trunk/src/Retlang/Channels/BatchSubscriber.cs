@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -11,7 +12,7 @@ namespace Retlang.Channels
     public class BatchSubscriber<T> : BaseSubscription<T>
     {
         private readonly object _lock = new object();
-        private readonly IScheduler _queue;
+        private readonly IFiber _fiber;
         private readonly Action<IList<T>> _receive;
         private readonly int _interval;
         private List<T> _pending;
@@ -19,14 +20,22 @@ namespace Retlang.Channels
         /// <summary>
         /// Construct new instance.
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="fiber"></param>
         /// <param name="receive"></param>
         /// <param name="interval"></param>
-        public BatchSubscriber(IScheduler queue, Action<IList<T>> receive, int interval)
+        public BatchSubscriber(IFiber fiber, Action<IList<T>> receive, int interval)
         {
-            _queue = queue;
+            _fiber = fiber;
             _receive = receive;
             _interval = interval;
+        }
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        public override ISubscriptions Subscriptions
+        {
+            get { return _fiber; }
         }
 
         /// <summary>
@@ -40,7 +49,7 @@ namespace Retlang.Channels
                 if (_pending == null)
                 {
                     _pending = new List<T>();
-                    _queue.Schedule(Flush, _interval);
+                    _fiber.Schedule(Flush, _interval);
                 }
                 _pending.Add(msg);
             }

@@ -9,8 +9,6 @@ namespace Retlang.Core
     /// </summary>
     public class ActionExecutor : IActionExecutor
     {
-        private readonly DisposableList _disposables = new DisposableList();
-
         private readonly object _lock = new object();
         private bool _running = true;
         private int _maxQueueDepth = -1;
@@ -78,33 +76,6 @@ namespace Retlang.Core
                     Monitor.PulseAll(_lock);
                 }
             }
-        }
-
-        /// <summary>
-        /// Add disposable.
-        /// </summary>
-        /// <param name="toAdd"></param>
-        public void Add(IDisposable toAdd)
-        {
-            _disposables.Add(toAdd);
-        }
-
-        /// <summary>
-        /// Remove
-        /// </summary>
-        /// <param name="victim"></param>
-        /// <returns></returns>
-        public bool Remove(IDisposable victim)
-        {
-            return _disposables.Remove(victim);
-        }
-
-        /// <summary>
-        /// Disposable Count.
-        /// </summary>
-        public int DisposableCount
-        {
-            get { return _disposables.Count; }
         }
 
         private bool SpaceAvailable(int toAdd)

@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using Retlang.Channels;
-using Retlang.Core;
 using Retlang.Fibers;
 
 namespace RetlangTests.Examples
@@ -90,28 +89,22 @@ namespace RetlangTests.Examples
         [Test]
         public void DoDemonstration()
         {
+            // Two instances of the calculator are created.  One is named "Odd" 
+            // (it calculates the 1st, 3rd, 5th... values in the sequence) the
+            // other is named "Even".  They message each other back and forth
+            // with the latest two values and successively build the sequence.
+            var limit = 1000;
 
-            using (var disposables = new DisposableList())
+            // Two channels for communication.  Naming convention is inbound.
+            var oddChannel = new Channel<IntPair>();
+            var evenChannel = new Channel<IntPair>();
+
+            using (ThreadFiber oddFiber = new ThreadFiber(), evenFiber = new ThreadFiber())
             {
-                // Two instances of the calculator are created.  One is named "Odd" 
-                // (it calculates the 1st, 3rd, 5th... values in the sequence) the
-                // other is named "Even".  They message each other back and forth
-                // with the latest two values and successively build the sequence.
-                var limit = 1000;
-
-                // Two channels for communication.  Naming convention is inbound.
-                var oddChannel = new Channel<IntPair>();
-                var evenChannel = new Channel<IntPair>();
-                
-                var oddFiber = new ThreadFiber();
-                disposables.Add(oddFiber);
                 oddFiber.Start();
 
-                
                 var oddCalculator = new FibonacciCalculator(oddFiber, "Odd", oddChannel, evenChannel, limit);
-                var evenFiber = new ThreadFiber();
-                
-                disposables.Add(evenFiber); 
+
                 evenFiber.Start();
 
                 new FibonacciCalculator(evenFiber, "Even", evenChannel, oddChannel, limit);
@@ -121,7 +114,6 @@ namespace RetlangTests.Examples
                 oddFiber.Join();
                 evenFiber.Join();
             }
-            
         }
     }
 }

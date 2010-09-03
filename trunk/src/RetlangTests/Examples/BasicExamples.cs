@@ -42,10 +42,11 @@ namespace RetlangTests.Examples
                 Assert.IsTrue(reset.WaitOne(5000, false));
             }
         }
+
         [Test]
         public void PubSubWithDedicatedThreadWithFilter()
         {
-            using (IFiber fiber = new ThreadFiber())
+            using (var fiber = new ThreadFiber())
             {
                 fiber.Start();
                 var channel = new Channel<int>();
@@ -70,7 +71,6 @@ namespace RetlangTests.Examples
                 Assert.IsTrue(reset.WaitOne(5000, false));
             }
         }
-
 
         [Test]
         public void Batching()
@@ -104,7 +104,7 @@ namespace RetlangTests.Examples
         [Test]
         public void BatchingWithKey()
         {
-            using (IFiber fiber = new ThreadFiber())
+            using (var fiber = new ThreadFiber())
             {
                 fiber.Start();
                 var counter = new Channel<int>();
@@ -145,5 +145,80 @@ namespace RetlangTests.Examples
             }
         }
 
+        [Test]
+        public void ShouldIncreasePoolFiberSubscriberCountByOne()
+        {
+            var fiber = new PoolFiber();
+            fiber.Start();
+            var channel = new Channel<int>();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+            channel.Subscribe(fiber, x => { });
+
+            Assert.AreEqual(1, fiber.NumSubscriptions);
+            Assert.AreEqual(1, channel.NumSubscribers);
+            fiber.Dispose();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+        }
+
+        [Test]
+        public void ShouldIncreaseThreadFiberSubscriberCountByOne()
+        {
+            var fiber = new ThreadFiber();
+            fiber.Start();
+            var channel = new Channel<int>();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+            channel.Subscribe(fiber, x => { });
+
+            Assert.AreEqual(1, fiber.NumSubscriptions);
+            Assert.AreEqual(1, channel.NumSubscribers);
+            fiber.Dispose();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+        }
+
+        [Test]
+        public void ShouldIncreaseStubFiberSubscriberCountByOne()
+        {
+            var fiber = new StubFiber();
+            fiber.Start();
+            var channel = new Channel<int>();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+            channel.Subscribe(fiber, x => { });
+
+            Assert.AreEqual(1, fiber.NumSubscriptions);
+            Assert.AreEqual(1, channel.NumSubscribers);
+            fiber.Dispose();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+        }
+
+        [Test]
+        public void UnsubscriptionShouldRemoveSubscriber()
+        {
+            var fiber = new PoolFiber();
+            fiber.Start();
+            var channel = new Channel<int>();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+            var unsubscriber = channel.Subscribe(fiber, x => { });
+
+            Assert.AreEqual(1, fiber.NumSubscriptions);
+            Assert.AreEqual(1, channel.NumSubscribers);
+            unsubscriber.Dispose();
+
+            Assert.AreEqual(0, fiber.NumSubscriptions);
+            Assert.AreEqual(0, channel.NumSubscribers);
+        }
     }
 }

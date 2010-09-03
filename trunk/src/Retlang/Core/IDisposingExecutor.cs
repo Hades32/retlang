@@ -21,23 +21,5 @@ namespace Retlang.Core
         /// </summary>
         /// <param name="action"></param>
         void Enqueue(Action action);
-
-        /// <summary>
-        /// Register disposable.
-        /// </summary>
-        /// <param name="toAdd"></param>
-        void Add(IDisposable toAdd);
-
-        /// <summary>
-        /// Remove Disposable.
-        /// </summary>
-        /// <param name="victim"></param>
-        /// <returns></returns>
-        bool Remove(IDisposable victim);
-    
-        /// <summary>
-        /// Number of registered disposables.
-        /// </summary>
-        int DisposableCount { get; }
     }
 }

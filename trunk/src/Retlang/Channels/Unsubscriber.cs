@@ -5,18 +5,21 @@ namespace Retlang.Channels
 {
     internal class Unsubscriber<T> : IUnsubscriber
     {
-        private readonly Action<T> _receiveMethod;
+        private readonly Action<T> _receiver;
         private readonly Channel<T> _channel;
+        private readonly ISubscriptions _subscriptions;
 
-        public Unsubscriber(Action<T> receiveMethod, Channel<T> channel)
+        public Unsubscriber(Action<T> receiver, Channel<T> channel, ISubscriptions subscriptions)
         {
-            _receiveMethod = receiveMethod;
+            _receiver = receiver;
             _channel = channel;
+            _subscriptions = subscriptions;
         }
 
         public void Dispose()
         {
-            _channel.Unsubscribe(_receiveMethod);
+            _channel.Unsubscribe(_receiver);
+            _subscriptions.Deregister(this);
         }
     }
 }

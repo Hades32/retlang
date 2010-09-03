@@ -1,3 +1,5 @@
+using Retlang.Core;
+
 namespace Retlang.Channels
 {
     /// <summary>
@@ -33,6 +35,11 @@ namespace Retlang.Channels
                 OnMessageOnProducerThread(msg);
             }
         }
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        public abstract ISubscriptions Subscriptions { get; }
 
         /// <summary>
         /// Called after message has been filtered.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -13,15 +14,80 @@ namespace Retlang.Channels
         private event Action<T> _subscribers;
 
         /// <summary>
-        /// <see cref="ISubscriber{T}.Subscribe(IDisposingExecutor,Action{T})"/>
+        /// <see cref="ISubscriber{T}.Subscribe(IFiber,Action{T})"/>
         /// </summary>
-        /// <param name="executor"></param>
+        /// <param name="fiber"></param>
         /// <param name="receive"></param>
         /// <returns></returns>
-        public IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> receive)
+        public IUnsubscriber Subscribe(IFiber fiber, Action<T> receive)
         {
-            var subscriber = new ChannelSubscription<T>(executor, receive);
-            return SubscribeOnProducerThreads(subscriber);
+            return SubscribeOnProducerThreads(new ChannelSubscription<T>(fiber, receive));
+        }
+
+        /// <summary>
+        /// <see cref="ISubscriber{T}.SubscribeToBatch(IFiber,Action{IList{T}},int)"/>
+        /// </summary>
+        /// <param name="fiber"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
+        {
+            return SubscribeOnProducerThreads(new BatchSubscriber<T>(fiber, receive, intervalInMs));
+        }
+
+        /// <summary>
+        /// <see cref="ISubscriber{T}.SubscribeToKeyedBatch{K}(IFiber,Converter{T,K},Action{IDictionary{K,T}},int)"/>
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <param name="fiber"></param>
+        /// <param name="keyResolver"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
+        {
+            return SubscribeOnProducerThreads(new KeyedBatchSubscriber<K, T>(keyResolver, receive, fiber, intervalInMs));
+        }
+
+        /// <summary>
+        /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+        /// has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+        /// </summary>
+        /// <param name="fiber"></param>
+        /// <param name="receive"></param>
+        /// <param name="intervalInMs"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs)
+        {
+            return SubscribeOnProducerThreads(new LastSubscriber<T>(receive, fiber, intervalInMs));
+        }
+
+        /// <summary>
+        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <returns></returns>
+        public IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber)
+        {
+            return SubscribeOnProducerThreads(subscriber.ReceiveOnProducerThread, subscriber.Subscriptions);
+        }
+
+        /// <summary>
+        /// Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
+        /// Action may be invoked on multiple threads.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <param name="subscriptions"></param>
+        /// <returns></returns>
+        private IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber, ISubscriptions subscriptions)
+        {
+            _subscribers += subscriber;
+
+            var unsubscriber = new Unsubscriber<T>(subscriber, this, subscriptions);
+            subscriptions.Register(unsubscriber);
+
+            return unsubscriber;
         }
 
         internal void Unsubscribe(Action<T> toUnsubscribe)
@@ -45,78 +111,20 @@ namespace Retlang.Channels
             return false;
         }
 
+        ///<summary>
+        /// Number of subscribers
+        ///</summary>
+        public int NumSubscribers
+        {
+            get { return _subscribers == null ? 0 : _subscribers.GetInvocationList().Length; }
+        }
+
         /// <summary>
         /// Remove all subscribers.
         /// </summary>
         public void ClearSubscribers()
         {
             _subscribers = null;
-        }
-
-        /// <summary>
-        /// <see cref="ISubscriber{T}.SubscribeToBatch(IScheduler,Action{IList{T}},int)"/>
-        /// </summary>
-        /// <param name="scheduler"></param>
-        /// <param name="receive"></param>
-        /// <param name="intervalInMs"></param>
-        /// <returns></returns>
-        public IUnsubscriber SubscribeToBatch(IScheduler scheduler, Action<IList<T>> receive, int intervalInMs)
-        {
-            var batch = new BatchSubscriber<T>(scheduler, receive, intervalInMs);
-            return SubscribeOnProducerThreads(batch);
-        }
-
-        /// <summary>
-        /// <see cref="ISubscriber{T}.SubscribeToKeyedBatch{K}(IScheduler,Converter{T,K},Action{IDictionary{K,T}},int)"/>
-        /// </summary>
-        /// <typeparam name="K"></typeparam>
-        /// <param name="scheduler"></param>
-        /// <param name="keyResolver"></param>
-        /// <param name="receive"></param>
-        /// <param name="intervalInMs"></param>
-        /// <returns></returns>
-        public IUnsubscriber SubscribeToKeyedBatch<K>(IScheduler scheduler,
-                                                      Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive,
-                                                      int intervalInMs)
-        {
-            var batch = new KeyedBatchSubscriber<K, T>(keyResolver, receive, scheduler, intervalInMs);
-            return SubscribeOnProducerThreads(batch);
-        }
-
-        /// <summary>
-        /// Subscribes to events on producer threads. Subscriber could be called from multiple threads.
-        /// </summary>
-        /// <param name="subscriber"></param>
-        /// <returns></returns>
-        public IUnsubscriber SubscribeOnProducerThreads(IProducerThreadSubscriber<T> subscriber)
-        {
-            return SubscribeOnProducerThreads(subscriber.ReceiveOnProducerThread);
-        }
-
-        /// <summary>
-        /// Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
-        /// Action may be invoked on multiple threads.
-        /// </summary>
-        /// <param name="subscriber"></param>
-        /// <returns></returns>
-        public IUnsubscriber SubscribeOnProducerThreads(Action<T> subscriber)
-        {
-            _subscribers += subscriber;
-            return new Unsubscriber<T>(subscriber, this);
-        }
-
-        /// <summary>
-        /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
-        /// has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
-        /// </summary>
-        /// <param name="scheduler"></param>
-        /// <param name="receive"></param>
-        /// <param name="intervalInMs"></param>
-        /// <returns></returns>
-        public IUnsubscriber SubscribeToLast(IScheduler scheduler, Action<T> receive, int intervalInMs)
-        {
-            var sub = new LastSubscriber<T>(receive, scheduler, intervalInMs);
-            return SubscribeOnProducerThreads(sub);
         }
     }
 }

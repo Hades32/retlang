@@ -1,5 +1,6 @@
 ﻿using System;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -27,7 +28,7 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="receive"></param>
-        public void PrimedSubscribe(IDisposingExecutor fiber, Action<T> receive)
+        public void PrimedSubscribe(IFiber fiber, Action<T> receive)
         {
             using (var reply = _requestChannel.SendRequest(new object()))
             {
@@ -62,7 +63,7 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="reply">returns the snapshot update</param>
-        public void ReplyToPrimingRequest(IDisposingExecutor fiber, Func<T> reply)
+        public void ReplyToPrimingRequest(IFiber fiber, Func<T> reply)
         {
             _requestChannel.Subscribe(fiber, request => request.SendReply(reply()));
         }

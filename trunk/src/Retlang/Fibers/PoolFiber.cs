@@ -10,7 +10,7 @@ namespace Retlang.Fibers
     /// </summary>
     public class PoolFiber : IFiber
     {
-        private readonly DisposableList _disposables = new DisposableList();
+        private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
         private readonly IThreadPool _pool;
         private readonly ActionTimer _timer;
@@ -105,27 +105,27 @@ namespace Retlang.Fibers
         /// Register Disposable.
         /// </summary>
         /// <param name="toAdd"></param>
-        public void Add(IDisposable toAdd)
+        public void Register(IUnsubscriber toAdd)
         {
-            _disposables.Add(toAdd);
+            _subscriptions.Add(toAdd);
         }
 
         /// <summary>
         /// Remove Disposable.
         /// </summary>
-        /// <param name="victim"></param>
+        /// <param name="toRemove"></param>
         /// <returns></returns>
-        public bool Remove(IDisposable victim)
+        public bool Deregister(IUnsubscriber toRemove)
         {
-            return _disposables.Remove(victim);
+            return _subscriptions.Remove(toRemove);
         }
 
         /// <summary>
-        /// Number of currently registered disposables.
+        /// Number of currently registered subscription.
         /// </summary>
-        public int DisposableCount
+        public int NumSubscriptions
         {
-            get { return _disposables.Count; }
+            get { return _subscriptions.Count; }
         }
 
         private void Flush(object state)
@@ -208,6 +208,7 @@ namespace Retlang.Fibers
         {
             _timer.Dispose();
             _started = ExecutionState.Stopped;
+            _subscriptions.Dispose();
         }
 
         /// <summary>

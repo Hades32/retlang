@@ -11,7 +11,7 @@ namespace Retlang.Fibers
     ///</summary>
     public class BaseFiber : IFiber
     {
-        private readonly DisposableList _disposables = new DisposableList();
+        private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
         private readonly IThreadAdapter _invoker;
         private readonly ActionTimer _timer;
@@ -79,28 +79,32 @@ namespace Retlang.Fibers
             _invoker.Invoke(() => _executor.Execute(action));
         }
 
-        /// <summary>
-        /// <see cref="IDisposingExecutor.Add(IDisposable)"/>
-        /// </summary>
-        public void Add(IDisposable toAdd)
+
+        ///<summary>
+        /// Register unsubscriber to be called when IFiber is disposed
+        ///</summary>
+        ///<param name="toAdd"></param>
+        public void Register(IUnsubscriber toAdd)
         {
-            _disposables.Add(toAdd);
+            _subscriptions.Add(toAdd);
         }
 
-        /// <summary>
-        /// <see cref="IDisposingExecutor.Remove(IDisposable)"/>
-        /// </summary>
-        public bool Remove(IDisposable victim)
+        ///<summary>
+        /// Deregister a subscription
+        ///</summary>
+        ///<param name="toRemove"></param>
+        ///<returns></returns>
+        public bool Deregister(IUnsubscriber toRemove)
         {
-            return _disposables.Remove(victim);
+            return _subscriptions.Remove(toRemove);
         }
 
-        /// <summary>
-        /// <see cref="IDisposingExecutor.DisposableCount"/>
-        /// </summary>
-        public int DisposableCount
+        ///<summary>
+        /// Number of subscriptions
+        ///</summary>
+        public int NumSubscriptions
         {
-            get { return _disposables.Count; }
+            get { return _subscriptions.Count; }
         }
 
         /// <summary>
@@ -142,20 +146,21 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
+        /// <see cref="IDisposable.Dispose()"/>
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
+        }
+
+        /// <summary>
         /// Stops the fiber.
         /// </summary>
         public void Stop()
         {
             _timer.Dispose();
             _started = ExecutionState.Stopped;
-        }
-
-        /// <summary>
-        /// <see cref="IDisposable.Dispose()"/>
-        /// </summary>
-        public void Dispose()
-        {
-            Stop();
+            _subscriptions.Dispose();
         }
     }
 }

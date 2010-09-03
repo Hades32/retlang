@@ -98,7 +98,8 @@
     <Compile Include="Core\ActionExecutor.cs" />
     <Compile Include="Core\ActionTimer.cs" />
     <Compile Include="Core\DefaultThreadPool.cs" />
-    <Compile Include="Core\DisposableList.cs" />
+    <Compile Include="Core\ISubscriptions.cs" />
+    <Compile Include="Core\Subscriptions.cs" />
     <Compile Include="Core\IBatchExecutor.cs" />
     <Compile Include="Core\IActionExecutor.cs" />
     <Compile Include="Core\IDisposingExecutor.cs" />

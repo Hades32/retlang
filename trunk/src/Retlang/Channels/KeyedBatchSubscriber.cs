@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -13,7 +14,7 @@ namespace Retlang.Channels
     {
         private readonly object _batchLock = new object();
 
-        private readonly IScheduler _context;
+        private readonly IFiber _fiber;
         private readonly Action<IDictionary<K, T>> _target;
         private readonly int _flushIntervalInMs;
         private readonly Converter<T, K> _keyResolver;
@@ -25,16 +26,24 @@ namespace Retlang.Channels
         /// </summary>
         /// <param name="keyResolver"></param>
         /// <param name="target"></param>
-        /// <param name="context"></param>
+        /// <param name="fiber"></param>
         /// <param name="flushIntervalInMs"></param>
         public KeyedBatchSubscriber(Converter<T, K> keyResolver,
                                     Action<IDictionary<K, T>> target,
-                                    IScheduler context, int flushIntervalInMs)
+                                    IFiber fiber, int flushIntervalInMs)
         {
             _keyResolver = keyResolver;
-            _context = context;
+            _fiber = fiber;
             _target = target;
             _flushIntervalInMs = flushIntervalInMs;
+        }
+
+        ///<summary>
+        /// Allows for the registration and deregistration of subscriptions
+        ///</summary>
+        public override ISubscriptions Subscriptions
+        {
+            get { return _fiber; }
         }
 
         /// <summary>
@@ -49,7 +58,7 @@ namespace Retlang.Channels
                 if (_pending == null)
                 {
                     _pending = new Dictionary<K, T>();
-                    _context.Schedule(Flush, _flushIntervalInMs);
+                    _fiber.Schedule(Flush, _flushIntervalInMs);
                 }
                 _pending[key] = msg;
             }

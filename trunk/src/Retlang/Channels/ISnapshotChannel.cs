@@ -1,5 +1,5 @@
 ﻿using System;
-using Retlang.Core;
+using Retlang.Fibers;
 
 namespace Retlang.Channels
 {
@@ -15,7 +15,7 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="receive"></param>
-        void PrimedSubscribe(IDisposingExecutor fiber, Action<T> receive);
+        void PrimedSubscribe(IFiber fiber, Action<T> receive);
         ///<summary>
         /// Publishes the incremental update.
         ///</summary>
@@ -26,6 +26,6 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="reply">returns the snapshot update</param>
-        void ReplyToPrimingRequest(IDisposingExecutor fiber, Func<T> reply);
+        void ReplyToPrimingRequest(IFiber fiber, Func<T> reply);
     }
 }

@@ -163,6 +163,24 @@
             Queues pending events for the fiber.
             </summary>
         </member>
+        <member name="T:Retlang.Core.ISubscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.ISubscriptions.Register(Retlang.Core.IUnsubscriber)">
+            <summary>
+             Register unsubscriber to be called when the IFiber is disposed
+            </summary>
+            <param name="toAdd"></param>
+        </member>
+        <member name="M:Retlang.Core.ISubscriptions.Deregister(Retlang.Core.IUnsubscriber)">
+            <summary>
+             Deregister a subscription
+            </summary>
+            <param name="toRemove"></param>
+            <returns></returns>
+        </member>
         <member name="T:Retlang.Core.IDisposingExecutor">
             <summary>
             Queues actions. Disposable objects can be added and removed. All dispose methods registered with the executor 
@@ -181,24 +199,6 @@
             Enqueue a single action.
             </summary>
             <param name="action"></param>
-        </member>
-        <member name="M:Retlang.Core.IDisposingExecutor.Add(System.IDisposable)">
-            <summary>
-            Register disposable.
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.IDisposingExecutor.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Retlang.Core.IDisposingExecutor.DisposableCount">
-            <summary>
-            Number of registered disposables.
-            </summary>
         </member>
         <member name="M:Retlang.Fibers.IFiber.Start">
             <summary>
@@ -235,6 +235,11 @@
             </summary>
             <param name="msg"></param>
         </member>
+        <member name="P:Retlang.Channels.IProducerThreadSubscriber`1.Subscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
+            </summary>
+        </member>
         <member name="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread">
             <summary>
             Filter called from producer threads. Should be thread safe as it may be called from
@@ -258,11 +263,16 @@
             <see cref="P:Retlang.Channels.ISubscribable`1.FilterOnProducerThread"/>
             </summary>
         </member>
-        <member name="M:Retlang.Channels.BatchSubscriber`1.#ctor(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+        <member name="P:Retlang.Channels.BaseSubscription`1.Subscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
+            </summary>
+        </member>
+        <member name="M:Retlang.Channels.BatchSubscriber`1.#ctor(Retlang.Fibers.IFiber,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
             <summary>
             Construct new instance.
             </summary>
-            <param name="queue"></param>
+            <param name="fiber"></param>
             <param name="receive"></param>
             <param name="interval"></param>
         </member>
@@ -271,6 +281,11 @@
             Receives message and batches as needed.
             </summary>
             <param name="msg"></param>
+        </member>
+        <member name="P:Retlang.Channels.BatchSubscriber`1.Subscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
+            </summary>
         </member>
         <member name="T:Retlang.Fibers.FormFiber">
             <summary>
@@ -297,15 +312,18 @@
             <see cref="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)"/>
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.BaseFiber.Add(System.IDisposable)">
+        <member name="M:Retlang.Fibers.BaseFiber.Register(Retlang.Core.IUnsubscriber)">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.Add(System.IDisposable)"/>
+             Register unsubscriber to be called when IFiber is disposed
             </summary>
+            <param name="toAdd"></param>
         </member>
-        <member name="M:Retlang.Fibers.BaseFiber.Remove(System.IDisposable)">
+        <member name="M:Retlang.Fibers.BaseFiber.Deregister(Retlang.Core.IUnsubscriber)">
             <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.Remove(System.IDisposable)"/>
+             Deregister a subscription
             </summary>
+            <param name="toRemove"></param>
+            <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.BaseFiber.Schedule(System.Action,System.Int64)">
             <summary>
@@ -322,19 +340,19 @@
             <see cref="M:Retlang.Fibers.IFiber.Start"/>
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.BaseFiber.Stop">
-            <summary>
-            Stops the fiber.
-            </summary>
-        </member>
         <member name="M:Retlang.Fibers.BaseFiber.Dispose">
             <summary>
             <see cref="M:System.IDisposable.Dispose"/>
             </summary>
         </member>
-        <member name="P:Retlang.Fibers.BaseFiber.DisposableCount">
+        <member name="M:Retlang.Fibers.BaseFiber.Stop">
             <summary>
-            <see cref="P:Retlang.Core.IDisposingExecutor.DisposableCount"/>
+            Stops the fiber.
+            </summary>
+        </member>
+        <member name="P:Retlang.Fibers.BaseFiber.NumSubscriptions">
+            <summary>
+             Number of subscriptions
             </summary>
         </member>
         <member name="M:Retlang.Fibers.FormFiber.#ctor(System.ComponentModel.ISynchronizeInvoke,Retlang.Core.IBatchAndSingleExecutor)">
@@ -431,7 +449,7 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.ISnapshotChannel`1.PrimedSubscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.ISnapshotChannel`1.PrimedSubscribe(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
              Subscribes for an initial snapshot and then incremental update.
             </summary>
@@ -444,7 +462,7 @@
             </summary>
             <param name="update"></param>
         </member>
-        <member name="M:Retlang.Channels.ISnapshotChannel`1.ReplyToPrimingRequest(Retlang.Core.IDisposingExecutor,System.Func{`0})">
+        <member name="M:Retlang.Channels.ISnapshotChannel`1.ReplyToPrimingRequest(Retlang.Fibers.IFiber,System.Func{`0})">
             <summary>
              Ressponds to the request for an initial snapshot.
             </summary>
@@ -456,7 +474,7 @@
             </summary>
             <param name="timeoutInMs">For initial snapshot</param>
         </member>
-        <member name="M:Retlang.Channels.SnapshotChannel`1.PrimedSubscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.SnapshotChannel`1.PrimedSubscribe(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
              Subscribes for an initial snapshot and then incremental update.
             </summary>
@@ -469,7 +487,7 @@
             </summary>
             <param name="update"></param>
         </member>
-        <member name="M:Retlang.Channels.SnapshotChannel`1.ReplyToPrimingRequest(Retlang.Core.IDisposingExecutor,System.Func{`0})">
+        <member name="M:Retlang.Channels.SnapshotChannel`1.ReplyToPrimingRequest(Retlang.Fibers.IFiber,System.Func{`0})">
             <summary>
              Ressponds to the request for an initial snapshot.
             </summary>
@@ -493,7 +511,7 @@
         </member>
         <member name="M:Retlang.Fibers.StubFiber.Dispose">
             <summary>
-            Invokes Disposables.
+            Unsubscribes from all subscriptions.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
@@ -508,13 +526,13 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.Add(System.IDisposable)">
+        <member name="M:Retlang.Fibers.StubFiber.Register(Retlang.Core.IUnsubscriber)">
             <summary>
             add to disposable list.
             </summary>
             <param name="disposable"></param>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.Remove(System.IDisposable)">
+        <member name="M:Retlang.Fibers.StubFiber.Deregister(Retlang.Core.IUnsubscriber)">
             <summary>
             Remove Disposable.
             </summary>
@@ -553,12 +571,12 @@
             Execute all actions in the scheduled list.
             </summary>
         </member>
-        <member name="P:Retlang.Fibers.StubFiber.DisposableCount">
+        <member name="P:Retlang.Fibers.StubFiber.NumSubscriptions">
             <summary>
             Count of Disposables.
             </summary>
         </member>
-        <member name="P:Retlang.Fibers.StubFiber.Disposables">
+        <member name="P:Retlang.Fibers.StubFiber.Subscriptions">
             <summary>
             All Disposables.
             </summary>
@@ -612,17 +630,17 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Retlang.Fibers.PoolFiber.Add(System.IDisposable)">
+        <member name="M:Retlang.Fibers.PoolFiber.Register(Retlang.Core.IUnsubscriber)">
             <summary>
             Register Disposable.
             </summary>
             <param name="toAdd"></param>
         </member>
-        <member name="M:Retlang.Fibers.PoolFiber.Remove(System.IDisposable)">
+        <member name="M:Retlang.Fibers.PoolFiber.Deregister(Retlang.Core.IUnsubscriber)">
             <summary>
             Remove Disposable.
             </summary>
-            <param name="victim"></param>
+            <param name="toRemove"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.Schedule(System.Action,System.Int64)">
@@ -657,9 +675,9 @@
             Stops the fiber.
             </summary>
         </member>
-        <member name="P:Retlang.Fibers.PoolFiber.DisposableCount">
+        <member name="P:Retlang.Fibers.PoolFiber.NumSubscriptions">
             <summary>
-            Number of currently registered disposables.
+            Number of currently registered subscription.
             </summary>
         </member>
         <member name="T:Retlang.Channels.KeyedBatchSubscriber`2">
@@ -669,13 +687,13 @@
             <typeparam name="K"></typeparam>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.#ctor(System.Converter{`1,`0},System.Action{System.Collections.Generic.IDictionary{`0,`1}},Retlang.Core.IScheduler,System.Int32)">
+        <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.#ctor(System.Converter{`1,`0},System.Action{System.Collections.Generic.IDictionary{`0,`1}},Retlang.Fibers.IFiber,System.Int32)">
             <summary>
             Construct new instance.
             </summary>
             <param name="keyResolver"></param>
             <param name="target"></param>
-            <param name="context"></param>
+            <param name="fiber"></param>
             <param name="flushIntervalInMs"></param>
         </member>
         <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.OnMessageOnProducerThread(`1)">
@@ -687,6 +705,11 @@
         <member name="M:Retlang.Channels.KeyedBatchSubscriber`2.Flush">
             <summary>
             Flushed from fiber
+            </summary>
+        </member>
+        <member name="P:Retlang.Channels.KeyedBatchSubscriber`2.Subscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
             </summary>
         </member>
         <member name="T:Retlang.Channels.IRequest`2">
@@ -775,12 +798,12 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.LastSubscriber`1.#ctor(System.Action{`0},Retlang.Core.IScheduler,System.Int32)">
+        <member name="M:Retlang.Channels.LastSubscriber`1.#ctor(System.Action{`0},Retlang.Fibers.IFiber,System.Int32)">
             <summary>
             New instance.
             </summary>
             <param name="target"></param>
-            <param name="context"></param>
+            <param name="fiber"></param>
             <param name="flushIntervalInMs"></param>
         </member>
         <member name="M:Retlang.Channels.LastSubscriber`1.OnMessageOnProducerThread(`0)">
@@ -792,6 +815,11 @@
         <member name="M:Retlang.Channels.LastSubscriber`1.Flush">
             <summary>
             Flushes on IFiber thread.
+            </summary>
+        </member>
+        <member name="P:Retlang.Channels.LastSubscriber`1.Subscriptions">
+            <summary>
+             Allows for the registration and deregistration of subscriptions
             </summary>
         </member>
         <member name="T:Retlang.Channels.IPublisher`1">
@@ -820,59 +848,51 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
              Subscribe to messages on this channel. The provided action will be invoked via a Action on the provided executor.
             </summary>
-            <param name="executor">the target executor to receive the message</param>
+            <param name="fiber">the target executor to receive the message</param>
             <param name="receive"></param>
             <returns>Unsubscriber object</returns>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.ClearSubscribers">
-            <summary>
-            Removes all subscribers.
-            </summary>
-        </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Fibers.IFiber,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
             <summary>
             Subscribes to events on the channel in batch form. The events will be batched if the consumer is unable to process the events 
             faster than the arrival rate.
             </summary>
-            <param name="scheduler">The target context to execute the action</param>
+            <param name="fiber">The target context to execute the action</param>
             <param name="receive"></param>
             <param name="intervalInMs">Time in Ms to batch events. If 0 events will be delivered as fast as consumer can process</param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
+        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Fibers.IFiber,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
             <summary>
              Batches events based upon keyed values allowing for duplicates to be dropped. 
             </summary>
-            <param name="scheduler"></param>
+            <param name="fiber"></param>
             <param name="keyResolver"></param>
             <param name="receive"></param>
             <param name="intervalInMs"></param>
             <typeparam name="K"></typeparam>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToLast(Retlang.Core.IScheduler,System.Action{`0},System.Int32)">
+        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeToLast(Retlang.Fibers.IFiber,System.Action{`0},System.Int32)">
             <summary>
             Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
             has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
             </summary>
-            <param name="scheduler"></param>
+            <param name="fiber"></param>
             <param name="receive"></param>
             <param name="intervalInMs"></param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeOnProducerThreads(System.Action{`0})">
+        <member name="M:Retlang.Channels.ISubscriber`1.ClearSubscribers">
             <summary>
-            Subscribes to messages on producer threads. Action will be invoked on producer thread. Action must
-            be thread safe.
+            Removes all subscribers.
             </summary>
-            <param name="subscriber"></param>
-            <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.ISubscriber`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
+        <member name="M:Retlang.Channels.IChannel`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
             <summary>
             Subscribes to events on producer threads. Subscriber could be called from multiple threads.
             </summary>
@@ -942,17 +962,17 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.Add(System.IDisposable)">
+        <member name="M:Retlang.Fibers.ThreadFiber.Register(Retlang.Core.IUnsubscriber)">
             <summary>
             Add Disposable to be invoked when Fiber is disposed.
             </summary>
             <param name="toAdd"></param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.Remove(System.IDisposable)">
+        <member name="M:Retlang.Fibers.ThreadFiber.Deregister(Retlang.Core.IUnsubscriber)">
             <summary>
             Remove disposable.
             </summary>
-            <param name="victim"></param>
+            <param name="toRemove"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.Schedule(System.Action,System.Int64)">
@@ -991,7 +1011,7 @@
             <see cref="T:Retlang.Fibers.IFiber"/>
             </summary>
         </member>
-        <member name="P:Retlang.Fibers.ThreadFiber.DisposableCount">
+        <member name="P:Retlang.Fibers.ThreadFiber.NumSubscriptions">
             <summary>
             Number of disposables.
             </summary>
@@ -1051,19 +1071,19 @@
             <typeparam name="R"></typeparam>
             <typeparam name="M"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.IReplySubscriber`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
+        <member name="M:Retlang.Channels.IReplySubscriber`2.Subscribe(Retlang.Fibers.IFiber,System.Action{Retlang.Channels.IRequest{`0,`1}})">
             <summary>
             Subscribe to a request on the channel.
             </summary>
-            <param name="responder"></param>
+            <param name="fiber"></param>
             <param name="onRequest"></param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.RequestReplyChannel`2.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{Retlang.Channels.IRequest{`0,`1}})">
+        <member name="M:Retlang.Channels.RequestReplyChannel`2.Subscribe(Retlang.Fibers.IFiber,System.Action{Retlang.Channels.IRequest{`0,`1}})">
             <summary>
             Subscribe to requests.
             </summary>
-            <param name="responder"></param>
+            <param name="fiber"></param>
             <param name="onRequest"></param>
             <returns></returns>
         </member>
@@ -1123,19 +1143,6 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Retlang.Core.ActionExecutor.Add(System.IDisposable)">
-            <summary>
-            Add disposable.
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.ActionExecutor.Remove(System.IDisposable)">
-            <summary>
-            Remove
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
         <member name="M:Retlang.Core.ActionExecutor.ExecuteNextBatch">
             <summary>
             Remove all actions and execute.
@@ -1165,11 +1172,6 @@
         <member name="P:Retlang.Core.ActionExecutor.MaxEnqueueWaitTime">
             <summary>
             Max time to wait for space in the queue.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.ActionExecutor.DisposableCount">
-            <summary>
-            Disposable Count.
             </summary>
         </member>
         <member name="T:Retlang.Core.IPendingEvent">
@@ -1224,45 +1226,22 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.ChannelSubscription`1.#ctor(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.ChannelSubscription`1.#ctor(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
             Construct the subscription
             </summary>
-            <param name="queue"></param>
-            <param name="receiveMethod"></param>
+            <param name="fiber"></param>
+            <param name="receiver"></param>
         </member>
         <member name="M:Retlang.Channels.ChannelSubscription`1.OnMessageOnProducerThread(`0)">
             <summary>
-            Receives the event and queues the execution on the target queue.
+            Receives the event and queues the execution on the target executor.
             </summary>
             <param name="msg"></param>
         </member>
-        <member name="T:Retlang.Core.DisposableList">
+        <member name="P:Retlang.Channels.ChannelSubscription`1.Subscriptions">
             <summary>
-            Registry for disposables. Provides thread safe methods for list of disposables.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Add(System.IDisposable)">
-            <summary>
-            Add Disposable
-            </summary>
-            <param name="toAdd"></param>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Remove(System.IDisposable)">
-            <summary>
-            Remove Disposable.
-            </summary>
-            <param name="victim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Core.DisposableList.Dispose">
-            <summary>
-            Disposes all disposables registered in list.
-            </summary>
-        </member>
-        <member name="P:Retlang.Core.DisposableList.Count">
-            <summary>
-            Number of registered disposables.
+             Allows for the registration and deregistration of subscriptions
             </summary>
         </member>
         <member name="T:Retlang.Channels.QueueChannel`1">
@@ -1291,12 +1270,58 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Retlang.Channels.Channel`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})">
+        <member name="M:Retlang.Channels.Channel`1.Subscribe(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Core.IDisposingExecutor,System.Action{`0})"/>
+            <see cref="M:Retlang.Channels.ISubscriber`1.Subscribe(Retlang.Fibers.IFiber,System.Action{`0})"/>
             </summary>
-            <param name="executor"></param>
+            <param name="fiber"></param>
             <param name="receive"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToBatch(Retlang.Fibers.IFiber,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+            <summary>
+            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Fibers.IFiber,System.Action{System.Collections.Generic.IList{`0}},System.Int32)"/>
+            </summary>
+            <param name="fiber"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToKeyedBatch``1(Retlang.Fibers.IFiber,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
+            <summary>
+            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Fibers.IFiber,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)"/>
+            </summary>
+            <typeparam name="K"></typeparam>
+            <param name="fiber"></param>
+            <param name="keyResolver"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeToLast(Retlang.Fibers.IFiber,System.Action{`0},System.Int32)">
+            <summary>
+            Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
+            has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
+            </summary>
+            <param name="fiber"></param>
+            <param name="receive"></param>
+            <param name="intervalInMs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
+            <summary>
+            Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+            </summary>
+            <param name="subscriber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(System.Action{`0},Retlang.Core.ISubscriptions)">
+            <summary>
+            Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
+            Action may be invoked on multiple threads.
+            </summary>
+            <param name="subscriber"></param>
+            <param name="subscriptions"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Channels.Channel`1.Publish(`0)">
@@ -1311,50 +1336,38 @@
             Remove all subscribers.
             </summary>
         </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)">
+        <member name="P:Retlang.Channels.Channel`1.NumSubscribers">
             <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToBatch(Retlang.Core.IScheduler,System.Action{System.Collections.Generic.IList{`0}},System.Int32)"/>
+             Number of subscribers
             </summary>
-            <param name="scheduler"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
+        </member>
+        <member name="T:Retlang.Core.Subscriptions">
+            <summary>
+            Registry for disposables. Provides thread safe methods for list of disposables.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.Subscriptions.Add(Retlang.Core.IUnsubscriber)">
+            <summary>
+            Add Disposable
+            </summary>
+            <param name="toAdd"></param>
+        </member>
+        <member name="M:Retlang.Core.Subscriptions.Remove(Retlang.Core.IUnsubscriber)">
+            <summary>
+            Remove Disposable.
+            </summary>
+            <param name="toRemove"></param>
             <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)">
+        <member name="M:Retlang.Core.Subscriptions.Dispose">
             <summary>
-            <see cref="M:Retlang.Channels.ISubscriber`1.SubscribeToKeyedBatch``1(Retlang.Core.IScheduler,System.Converter{`0,``0},System.Action{System.Collections.Generic.IDictionary{``0,`0}},System.Int32)"/>
+            Disposes all disposables registered in list.
             </summary>
-            <typeparam name="K"></typeparam>
-            <param name="scheduler"></param>
-            <param name="keyResolver"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
-            <returns></returns>
         </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(Retlang.Channels.IProducerThreadSubscriber{`0})">
+        <member name="P:Retlang.Core.Subscriptions.Count">
             <summary>
-            Subscribes to events on producer threads. Subscriber could be called from multiple threads.
+            Number of registered disposables.
             </summary>
-            <param name="subscriber"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeOnProducerThreads(System.Action{`0})">
-            <summary>
-            Subscribes an action to be executed for every event posted to the channel. Action should be thread safe. 
-            Action may be invoked on multiple threads.
-            </summary>
-            <param name="subscriber"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Retlang.Channels.Channel`1.SubscribeToLast(Retlang.Core.IScheduler,System.Action{`0},System.Int32)">
-            <summary>
-            Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
-            has a chance to process the message, the pending message is replaced by the newer message. The old message is discarded.
-            </summary>
-            <param name="scheduler"></param>
-            <param name="receive"></param>
-            <param name="intervalInMs"></param>
-            <returns></returns>
         </member>
     </members>
 </doc>
