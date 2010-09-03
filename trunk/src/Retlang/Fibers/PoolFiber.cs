@@ -13,8 +13,8 @@ namespace Retlang.Fibers
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
         private readonly IThreadPool _pool;
-        private readonly ActionTimer _timer;
-        private readonly IBatchExecutor _executor;
+        private readonly Scheduler _timer;
+        private readonly IExecutor _executor;
 
         private List<Action> _queue = new List<Action>();
         private List<Action> _toPass = new List<Action>();
@@ -27,9 +27,9 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="pool"></param>
         /// <param name="executor"></param>
-        public PoolFiber(IThreadPool pool, IBatchExecutor executor)
+        public PoolFiber(IThreadPool pool, IExecutor executor)
         {
-            _timer = new ActionTimer(this);
+            _timer = new Scheduler(this);
             _pool = pool;
             _executor = executor;
         }
@@ -37,14 +37,16 @@ namespace Retlang.Fibers
         /// <summary>
         /// Create a pool fiber with the default thread pool.
         /// </summary>
-        public PoolFiber(IBatchExecutor executor) : this(new DefaultThreadPool(), executor)
+        public PoolFiber(IExecutor executor) 
+            : this(new DefaultThreadPool(), executor)
         {
         }
 
         /// <summary>
-        /// Create a pool fiber with the default thread pool and batch executor.
+        /// Create a pool fiber with the default thread pool and default executor.
         /// </summary>
-        public PoolFiber() : this(new DefaultThreadPool(), new BatchExecutor())
+        public PoolFiber() 
+            : this(new DefaultThreadPool(), new DefaultExecutor())
         {
         }
         
@@ -78,7 +80,7 @@ namespace Retlang.Fibers
         /// Register Disposable.
         /// </summary>
         /// <param name="toAdd"></param>
-        public void Register(IUnsubscriber toAdd)
+        public void RegisterSubscription(IDisposable toAdd)
         {
             _subscriptions.Add(toAdd);
         }
@@ -88,7 +90,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="toRemove"></param>
         /// <returns></returns>
-        public bool Deregister(IUnsubscriber toRemove)
+        public bool DeregisterSubscription(IDisposable toRemove)
         {
             return _subscriptions.Remove(toRemove);
         }
@@ -143,7 +145,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, long firstInMs)
         {
             return _timer.Schedule(action, firstInMs);
         }
@@ -155,13 +157,13 @@ namespace Retlang.Fibers
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
             return _timer.ScheduleOnInterval(action, firstInMs, regularInMs);
         }
 
         /// <summary>
-        /// Start consuming events.
+        /// Start consuming actions.
         /// </summary>
         public void Start()
         {
@@ -175,7 +177,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Stop consuming events.
+        /// Stop consuming actions.
         /// </summary>
         public void Stop()
         {

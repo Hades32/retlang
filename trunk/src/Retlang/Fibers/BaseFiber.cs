@@ -13,9 +13,9 @@ namespace Retlang.Fibers
     {
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
-        private readonly IThreadAdapter _invoker;
-        private readonly ActionTimer _timer;
-        private readonly IBatchAndSingleExecutor _executor;
+        private readonly IContext _context;
+        private readonly Scheduler _timer;
+        private readonly IExecutor _executor;
         private readonly List<Action> _queue = new List<Action>();
 
         private volatile ExecutionState _started = ExecutionState.Created;
@@ -23,15 +23,15 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates an instance.
         /// </summary>
-        public BaseFiber(IThreadAdapter invoker, IBatchAndSingleExecutor executor)
+        public BaseFiber(IContext context, IExecutor executor)
         {
-            _timer = new ActionTimer(this);
-            _invoker = invoker;
+            _timer = new Scheduler(this);
+            _context = context;
             _executor = executor;
         }
         
         /// <summary>
-        /// <see cref="IDisposingExecutor.Enqueue(Action)"/>
+        /// <see cref="IContext.Enqueue(Action)"/>
         /// </summary>
         public void Enqueue(Action action)
         {
@@ -52,15 +52,14 @@ namespace Retlang.Fibers
                 }
             }
 
-            _invoker.Invoke(() => _executor.Execute(action));
+            _context.Enqueue(() => _executor.ExecuteAll(new List<Action> { action }));
         }
-
 
         ///<summary>
         /// Register unsubscriber to be called when IFiber is disposed
         ///</summary>
         ///<param name="toAdd"></param>
-        public void Register(IUnsubscriber toAdd)
+        public void RegisterSubscription(IDisposable toAdd)
         {
             _subscriptions.Add(toAdd);
         }
@@ -70,7 +69,7 @@ namespace Retlang.Fibers
         ///</summary>
         ///<param name="toRemove"></param>
         ///<returns></returns>
-        public bool Deregister(IUnsubscriber toRemove)
+        public bool DeregisterSubscription(IDisposable toRemove)
         {
             return _subscriptions.Remove(toRemove);
         }
@@ -86,7 +85,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
-        public ITimerControl Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, long firstInMs)
         {
             return _timer.Schedule(action, firstInMs);
         }
@@ -94,7 +93,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
-        public ITimerControl ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
             return _timer.ScheduleOnInterval(action, firstInMs, regularInMs);
         }
@@ -115,7 +114,7 @@ namespace Retlang.Fibers
                 _queue.Clear();
                 if (actions.Count > 0)
                 {
-                    _invoker.Invoke(() => _executor.ExecuteAll(actions));
+                    _context.Enqueue(() => _executor.ExecuteAll(actions));
                 }
                 _started = ExecutionState.Running;
             }

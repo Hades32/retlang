@@ -7,7 +7,7 @@ using Rhino.Mocks;
 namespace RetlangTests
 {
     [TestFixture]
-    public class ActionExecutorTests
+    public class BoundedQueueTests
     {
         [Test]
         public void NoExceptionHandling()
@@ -20,7 +20,7 @@ namespace RetlangTests
 
             repo.ReplayAll();
 
-            var queue = new ActionExecutor();
+            var queue = new DefaultQueue();
             queue.Enqueue(action);
 
             try
@@ -51,7 +51,7 @@ namespace RetlangTests
 
             using (mockery.Playback())
             {
-                var queue = new ActionExecutor();
+                var queue = new DefaultQueue();
                 queue.Enqueue(action1);
 
                 var run = new Thread(queue.Run);
@@ -69,7 +69,7 @@ namespace RetlangTests
         [Test]
         public void MaxDepth()
         {
-            var queue = new ActionExecutor();
+            var queue = new BoundedQueue();
             queue.MaxDepth = 2;
             queue.Enqueue(delegate { });
             queue.Enqueue(delegate { });

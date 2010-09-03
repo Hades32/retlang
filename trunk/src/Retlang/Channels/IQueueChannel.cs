@@ -16,7 +16,7 @@ namespace Retlang.Channels
         /// <param name="executor"></param>
         /// <param name="onMessage"></param>
         /// <returns></returns>
-        IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> onMessage);
+        IDisposable Subscribe(IContext executor, Action<T> onMessage);
 
         /// <summary>
         /// Pushes a message into the queue. Message will be processed by first available consumer.

@@ -71,7 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionExecutorTests.cs" />
+    <Compile Include="BoundedQueueTests.cs" />
     <Compile Include="Examples\AlgebraDemonstration.cs" />
     <Compile Include="Examples\BasicExamples.cs" />
     <Compile Include="Examples\FibonacciDemonstration.cs" />

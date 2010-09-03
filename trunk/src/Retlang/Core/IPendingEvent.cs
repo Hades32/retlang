@@ -1,9 +1,11 @@
+using System;
+
 namespace Retlang.Core
 {
     /// <summary>
     /// A scheduled event.
     /// </summary>
-    public interface IPendingEvent : ITimerControl
+    public interface IPendingEvent : IDisposable
     {
         /// <summary>
         /// Time of expiration for this event

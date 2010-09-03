@@ -1,5 +1,4 @@
 ﻿using System;
-using Retlang.Core;
 using Retlang.Fibers;
 
 namespace Retlang.Channels

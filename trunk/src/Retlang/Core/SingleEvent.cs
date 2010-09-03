@@ -4,15 +4,15 @@ namespace Retlang.Core
 {
     internal class SingleEvent : IPendingEvent
     {
-        private readonly IDisposingExecutor _queue;
+        private readonly IContext _context;
         private readonly Action _toExecute;
         private readonly long _expiration;
         private bool _canceled;
 
-        public SingleEvent(IDisposingExecutor queue, Action toExecute, long scheduledTimeInMs, long now)
+        public SingleEvent(IContext context, Action toExecute, long scheduledTimeInMs, long now)
         {
             _expiration = now + scheduledTimeInMs;
-            _queue = queue;
+            _context = context;
             _toExecute = toExecute;
         }
 
@@ -25,12 +25,12 @@ namespace Retlang.Core
         {
             if (!_canceled)
             {
-                _queue.Enqueue(_toExecute);
+                _context.Enqueue(_toExecute);
             }
             return null;
         }
 
-        public void Cancel()
+        public void Dispose()
         {
             _canceled = true;
         }

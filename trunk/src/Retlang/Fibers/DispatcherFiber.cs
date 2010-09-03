@@ -15,7 +15,7 @@ namespace Retlang.Fibers
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="priority">The priority.</param>
         /// <param name="executor">The executor.</param>
-        public DispatcherFiber(Dispatcher dispatcher, DispatcherPriority priority, IBatchAndSingleExecutor executor)
+        public DispatcherFiber(Dispatcher dispatcher, DispatcherPriority priority, IExecutor executor)
             : base(new DispatcherAdapter(dispatcher, priority), executor)
         {
         }
@@ -25,7 +25,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="executor">The priority.</param>
-        public DispatcherFiber(Dispatcher dispatcher, IBatchAndSingleExecutor executor)
+        public DispatcherFiber(Dispatcher dispatcher, IExecutor executor)
             : this(dispatcher, DispatcherPriority.Normal, executor)
         {
         }
@@ -36,7 +36,7 @@ namespace Retlang.Fibers
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="priority">The priority.</param>
         public DispatcherFiber(Dispatcher dispatcher, DispatcherPriority priority)
-            : this(dispatcher, priority, new BatchAndSingleExecutor())
+            : this(dispatcher, priority, new DefaultExecutor())
         {
         }
 
@@ -45,7 +45,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="dispatcher">The dispatcher.</param>
         public DispatcherFiber(Dispatcher dispatcher)
-            : this(dispatcher, new BatchAndSingleExecutor())
+            : this(dispatcher, new DefaultExecutor())
         {
         }
 
@@ -55,7 +55,7 @@ namespace Retlang.Fibers
         /// </summary>
         /// <param name="priority">The priority.</param>
         public DispatcherFiber(DispatcherPriority priority)
-            : this(Dispatcher.CurrentDispatcher, priority, new BatchAndSingleExecutor())
+            : this(Dispatcher.CurrentDispatcher, priority, new DefaultExecutor())
         {
         }
 
@@ -64,12 +64,12 @@ namespace Retlang.Fibers
         /// current dispatcher.
         /// </summary>
         public DispatcherFiber()
-            : this(Dispatcher.CurrentDispatcher, new BatchAndSingleExecutor())
+            : this(Dispatcher.CurrentDispatcher, new DefaultExecutor())
         {
         }
     }
 
-    internal class DispatcherAdapter : IThreadAdapter
+    internal class DispatcherAdapter : IContext
     {
         private readonly Dispatcher _dispatcher;
         private readonly DispatcherPriority _priority;
@@ -80,7 +80,7 @@ namespace Retlang.Fibers
             _priority = priority;
         }
 
-        public void Invoke(Action method)
+        public void Enqueue(Action method)
         {
             _dispatcher.BeginInvoke(method, _priority);
         }

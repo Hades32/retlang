@@ -6,7 +6,7 @@ namespace Retlang.Core
     /// <summary>
     /// Executes pending action(s).
     /// </summary>
-    public interface IBatchExecutor
+    public interface IExecutor
     {
         /// <summary>
         /// Execute all pending actions.

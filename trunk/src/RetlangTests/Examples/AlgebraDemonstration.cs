@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Retlang.Channels;
-using Retlang.Core;
 using Retlang.Fibers;
 
 namespace RetlangTests.Examples
@@ -126,12 +125,12 @@ namespace RetlangTests.Examples
         private class QuadraticSource
         {
             // The class has its own thread to use for publishing.
-            private readonly IThreadFiber _threadFiber;
+            private readonly ThreadFiber _threadFiber;
             private readonly IChannel<Quadratic>[] _channels;
             private readonly int _numberToGenerate;
             private readonly Random _random;
 
-            public QuadraticSource(IThreadFiber threadFiber, IChannel<Quadratic>[] channels, int numberToGenerate, int seed)
+            public QuadraticSource(ThreadFiber threadFiber, IChannel<Quadratic>[] channels, int numberToGenerate, int seed)
             {
                 _threadFiber = threadFiber;
                 _channels = channels;
@@ -214,11 +213,11 @@ namespace RetlangTests.Examples
         // the same socket.
         private class SolvedQuadraticSink
         {
-            private readonly IThreadFiber _fiber;
+            private readonly ThreadFiber _fiber;
             private readonly int _numberToOutput;
             private int _solutionsReceived = 0;
 
-            public SolvedQuadraticSink(IThreadFiber fiber, ISubscriber<SolvedQuadratic> solvedChannel,
+            public SolvedQuadraticSink(ThreadFiber fiber, ISubscriber<SolvedQuadratic> solvedChannel,
                                        int numberToOutput)
             {
                 solvedChannel.Subscribe(fiber, PrintSolution);

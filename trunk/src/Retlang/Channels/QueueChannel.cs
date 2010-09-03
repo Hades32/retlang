@@ -19,7 +19,7 @@ namespace Retlang.Channels
         /// <param name="executor"></param>
         /// <param name="onMessage"></param>
         /// <returns></returns>
-        public IUnsubscriber Subscribe(IDisposingExecutor executor, Action<T> onMessage)
+        public IDisposable Subscribe(IContext executor, Action<T> onMessage)
         {
             var consumer = new QueueConsumer<T>(executor, onMessage, this);
             consumer.Subscribe();

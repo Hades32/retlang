@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Default Action executor.
+    /// Default executor.
     /// </summary>
-    public class BatchExecutor : IBatchExecutor
+    public class DefaultExecutor : IExecutor
     {
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IBatchExecutor.ExecuteAll(List{Action})"/>
+        /// <see cref="IExecutor.ExecuteAll(List{Action})"/>
         /// </summary>
         public void ExecuteAll(List<Action> toExecute)
         {

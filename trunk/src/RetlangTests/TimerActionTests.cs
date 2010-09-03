@@ -17,7 +17,7 @@ namespace RetlangTests
             var timer = new TimerAction(action, 1, 2);
             timer.ExecuteOnFiberThread();
             Assert.AreEqual(1, executionCount);
-            timer.Cancel();
+            timer.Dispose();
             timer.ExecuteOnFiberThread();
 
             Assert.AreEqual(1, executionCount);
@@ -30,8 +30,8 @@ namespace RetlangTests
 
             var action = mocks.CreateMock<Action>();
             var timer = new TimerAction(action, 2, 3);
-            var registry = mocks.CreateMock<IPendingActionRegistry>();
-            registry.EnqueueTask(timer.ExecuteOnFiberThread);
+            var registry = mocks.CreateMock<ISchedulerRegistry>();
+            registry.Enqueue(timer.ExecuteOnFiberThread);
 
             mocks.ReplayAll();
 
@@ -44,13 +44,13 @@ namespace RetlangTests
             var mocks = new MockRepository();
             var action = mocks.CreateMock<Action>();
             var timer = new TimerAction(action, 2, 3);
-            var registry = mocks.CreateMock<IPendingActionRegistry>();
+            var registry = mocks.CreateMock<ISchedulerRegistry>();
 
             registry.Remove(timer);
 
             mocks.ReplayAll();
 
-            timer.Cancel();
+            timer.Dispose();
             timer.ExecuteOnTimerThread(registry);
         }
 
@@ -60,10 +60,10 @@ namespace RetlangTests
             var mocks = new MockRepository();
             var action = mocks.CreateMock<Action>();
             var timer = new TimerAction(action, 2, Timeout.Infinite);
-            var registry = mocks.CreateMock<IPendingActionRegistry>();
+            var registry = mocks.CreateMock<ISchedulerRegistry>();
 
             registry.Remove(timer);
-            registry.EnqueueTask(timer.ExecuteOnFiberThread);
+            registry.Enqueue(timer.ExecuteOnFiberThread);
 
             mocks.ReplayAll();
             timer.ExecuteOnTimerThread(registry);

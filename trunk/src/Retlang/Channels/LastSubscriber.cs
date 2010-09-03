@@ -5,7 +5,7 @@ using Retlang.Fibers;
 namespace Retlang.Channels
 {
     /// <summary>
-    /// Subscribes to last event received on the channel. 
+    /// Subscribes to last action received on the channel. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class LastSubscriber<T> : BaseSubscription<T>
@@ -35,7 +35,7 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        public override ISubscriptions Subscriptions
+        public override ISubscriptionRegistry Subscriptions
         {
             get { return _fiber; }
         }

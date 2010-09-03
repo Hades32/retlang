@@ -8,13 +8,13 @@ using Retlang.Fibers;
 
 namespace RetlangTests
 {
-    public class PerfExecutor : IBatchExecutor
+    public class PerfExecutor : IExecutor
     {
         public void ExecuteAll(List<Action> toExecute)
         {
-            for (var i = 0; i < toExecute.Count; i++)
+            foreach (var action in toExecute)
             {
-                toExecute[i]();
+                action();
             }
             if (toExecute.Count < 10000)
             {
@@ -34,15 +34,12 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithStruct()
         {
-            var executor = new ActionExecutor();
-            executor.BatchExecutor = new PerfExecutor();
-            executor.MaxDepth = 10000;
-            executor.MaxEnqueueWaitTime = 1000;
-            using (IFiber bus = new ThreadFiber(executor))
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
+            using (var fiber = new ThreadFiber(executor))
             {
-                bus.Start();
-                IChannel<MsgStruct> channel = new Channel<MsgStruct>();
-                var max = 5000000;
+                fiber.Start();
+                var channel = new Channel<MsgStruct>();
+                const int max = 5000000;
                 var reset = new AutoResetEvent(false);
                 Action<MsgStruct> onMsg = delegate(MsgStruct count)
                                               {
@@ -51,14 +48,42 @@ namespace RetlangTests
                                                       reset.Set();
                                                   }
                                               };
-                channel.Subscribe(bus, onMsg);
+                channel.Subscribe(fiber, onMsg);
                 using (new PerfTimer(max))
                 {
                     for (var i = 0; i <= max; i++)
                     {
-                        var msg = new MsgStruct();
-                        msg.count = i;
-                        channel.Publish(msg);
+                        channel.Publish(new MsgStruct { count = i });
+                    }
+                    Console.WriteLine("done pub");
+                    Assert.IsTrue(reset.WaitOne(30000, false));
+                }
+            }
+        }
+
+        [Test, Explicit]
+        public void BusyWaitQueuePointToPointPerfTestWithStruct()
+        {
+            var executor = new BusyWaitQueue(new PerfExecutor(), int.MaxValue, 0);
+            using (var fiber = new ThreadFiber(executor))
+            {
+                fiber.Start();
+                var channel = new Channel<MsgStruct>();
+                const int max = 5000000;
+                var reset = new AutoResetEvent(false);
+                Action<MsgStruct> onMsg = delegate(MsgStruct count)
+                {
+                    if (count.count == max)
+                    {
+                        reset.Set();
+                    }
+                };
+                channel.Subscribe(fiber, onMsg);
+                using (new PerfTimer(max))
+                {
+                    for (var i = 0; i <= max; i++)
+                    {
+                        channel.Publish(new MsgStruct { count = i });
                     }
                     Console.WriteLine("done pub");
                     Assert.IsTrue(reset.WaitOne(30000, false));
@@ -69,15 +94,12 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithInt()
         {
-            var executor = new ActionExecutor();
-            executor.BatchExecutor = new PerfExecutor();
-            executor.MaxDepth = 10000;
-            executor.MaxEnqueueWaitTime = 1000;
-            using (IFiber bus = new ThreadFiber(executor))
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
+            using (var fiber = new ThreadFiber(executor))
             {
-                bus.Start();
-                IChannel<int> channel = new Channel<int>();
-                var max = 5000000;
+                fiber.Start();
+                var channel = new Channel<int>();
+                const int max = 5000000;
                 var reset = new AutoResetEvent(false);
                 Action<int> onMsg = delegate(int count)
                                         {
@@ -86,7 +108,7 @@ namespace RetlangTests
                                                 reset.Set();
                                             }
                                         };
-                channel.Subscribe(bus, onMsg);
+                channel.Subscribe(fiber, onMsg);
                 using (new PerfTimer(max))
                 {
                     for (var i = 0; i <= max; i++)
@@ -102,15 +124,12 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithObject()
         {
-            var executor = new ActionExecutor();
-            executor.BatchExecutor = new PerfExecutor();
-            executor.MaxDepth = 100000;
-            executor.MaxEnqueueWaitTime = 1000;
-            using (IFiber bus = new ThreadFiber(executor))
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 100000, MaxEnqueueWaitTime = 1000 };
+            using (var fiber = new ThreadFiber(executor))
             {
-                bus.Start();
-                IChannel<object> channel = new Channel<object>();
-                var max = 5000000;
+                fiber.Start();
+                var channel = new Channel<object>();
+                const int max = 5000000;
                 var reset = new AutoResetEvent(false);
                 var end = new object();
                 Action<object> onMsg = delegate(object msg)
@@ -120,7 +139,7 @@ namespace RetlangTests
                                                    reset.Set();
                                                }
                                            };
-                channel.Subscribe(bus, onMsg);
+                channel.Subscribe(fiber, onMsg);
                 using (new PerfTimer(max))
                 {
                     var msg = new object();

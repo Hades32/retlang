@@ -3,7 +3,7 @@ using Retlang.Core;
 namespace Retlang.Channels
 {
     /// <summary>
-    /// Event Subscriber that receives events on producer thread.
+    /// Action subscriber that receives actions on producer thread.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IProducerThreadSubscriber<T>
@@ -17,6 +17,6 @@ namespace Retlang.Channels
         ///<summary>
         /// Allows for the registration and deregistration of subscriptions
         ///</summary>
-        ISubscriptions Subscriptions { get; }
+        ISubscriptionRegistry Subscriptions { get; }
     }
 }

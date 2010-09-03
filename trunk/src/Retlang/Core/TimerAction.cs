@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Retlang.Core
 {
-    internal class TimerAction : ITimerControl
+    internal class TimerAction : IDisposable
     {
         private readonly Action _action;
         private readonly long _firstIntervalInMs;
@@ -19,13 +19,12 @@ namespace Retlang.Core
             _intervalInMs = intervalInMs;
         }
 
-        public void Schedule(IPendingActionRegistry registry)
+        public void Schedule(ISchedulerRegistry registry)
         {
-            TimerCallback timerCallBack = delegate { ExecuteOnTimerThread(registry); };
-            _timer = new Timer(timerCallBack, null, _firstIntervalInMs, _intervalInMs);
+            _timer = new Timer(x => ExecuteOnTimerThread(registry), null, _firstIntervalInMs, _intervalInMs);
         }
 
-        public void ExecuteOnTimerThread(IPendingActionRegistry registry)
+        public void ExecuteOnTimerThread(ISchedulerRegistry registry)
         {
             if (_intervalInMs == Timeout.Infinite || _cancelled)
             {
@@ -39,7 +38,7 @@ namespace Retlang.Core
 
             if (!_cancelled)
             {
-                registry.EnqueueTask(ExecuteOnFiberThread);
+                registry.Enqueue(ExecuteOnFiberThread);
             }
         }
 
@@ -51,7 +50,7 @@ namespace Retlang.Core
             }
         }
 
-        public virtual void Cancel()
+        public virtual void Dispose()
         {
             _cancelled = true;
         }

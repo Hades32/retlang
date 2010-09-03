@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Retlang.Fibers;
 using System.Windows;
-using Retlang.Core;
+using Retlang.Fibers;
 
 namespace WpfExample
 {
     public class UpdateController
     {
         private readonly IFiber fiber = new ThreadFiber();
-        private ITimerControl timer;
+        private IDisposable timer;
         private readonly WindowChannels channels;
 
         public UpdateController(WindowChannels winChannels)
@@ -21,11 +17,11 @@ namespace WpfExample
             fiber.Start();
         }
 
-        private void OnStart(RoutedEventArgs obj)
+        private void OnStart(RoutedEventArgs msg)
         {
             if (timer != null)
             {
-                timer.Cancel();
+                timer.Dispose();
                 timer = null;
             }
             else

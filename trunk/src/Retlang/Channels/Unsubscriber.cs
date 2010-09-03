@@ -3,13 +3,13 @@ using Retlang.Core;
 
 namespace Retlang.Channels
 {
-    internal class Unsubscriber<T> : IUnsubscriber
+    internal class Unsubscriber<T> : IDisposable
     {
         private readonly Action<T> _receiver;
         private readonly Channel<T> _channel;
-        private readonly ISubscriptions _subscriptions;
+        private readonly ISubscriptionRegistry _subscriptions;
 
-        public Unsubscriber(Action<T> receiver, Channel<T> channel, ISubscriptions subscriptions)
+        public Unsubscriber(Action<T> receiver, Channel<T> channel, ISubscriptionRegistry subscriptions)
         {
             _receiver = receiver;
             _channel = channel;
@@ -19,7 +19,7 @@ namespace Retlang.Channels
         public void Dispose()
         {
             _channel.Unsubscribe(_receiver);
-            _subscriptions.Deregister(this);
+            _subscriptions.DeregisterSubscription(this);
         }
     }
 }
