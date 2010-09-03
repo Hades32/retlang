@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Retlang.Core;
 
@@ -78,15 +77,6 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(List{Action})"/>
-        /// </summary>
-        /// <param name="actions"></param>
-        public void EnqueueAll(List<Action> actions)
-        {
-            _executor.EnqueueAll(actions);
-        }
-
-        /// <summary>
         /// Queue action.
         /// </summary>
         /// <param name="action"></param>
@@ -126,11 +116,11 @@ namespace Retlang.Fibers
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="timeTilEnqueueInMs"></param>
+        /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long firstInMs)
         {
-            return _scheduler.Schedule(action, timeTilEnqueueInMs);
+            return _scheduler.Schedule(action, firstInMs);
         }
 
         /// <summary>

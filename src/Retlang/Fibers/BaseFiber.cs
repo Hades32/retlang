@@ -29,31 +29,7 @@ namespace Retlang.Fibers
             _invoker = invoker;
             _executor = executor;
         }
-
-        /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(List{Action})"/>
-        /// </summary>
-        public void EnqueueAll(List<Action> actions)
-        {
-            if (_started == ExecutionState.Stopped)
-            {
-                return;
-            }
-
-            if (_started == ExecutionState.Created)
-            {
-                lock (_lock)
-                {
-                    if (_started == ExecutionState.Created)
-                    {
-                        _queue.AddRange(actions);
-                        return;
-                    }
-                }
-            }
-            _invoker.Invoke(() => _executor.ExecuteAll(actions));
-        }
-
+        
         /// <summary>
         /// <see cref="IDisposingExecutor.Enqueue(Action)"/>
         /// </summary>
@@ -110,9 +86,9 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
-        public ITimerControl Schedule(Action action, long timeTilEnqueueInMs)
+        public ITimerControl Schedule(Action action, long firstInMs)
         {
-            return _timer.Schedule(action, timeTilEnqueueInMs);
+            return _timer.Schedule(action, firstInMs);
         }
 
         /// <summary>

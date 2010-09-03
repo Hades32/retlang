@@ -36,7 +36,7 @@
             Schedules an event to be executes once.
             </summary>
             <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
+            <param name="firstInMs"></param>
             <returns>a controller to cancel the event.</returns>
         </member>
         <member name="M:Retlang.Core.IScheduler.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
@@ -188,12 +188,6 @@
             is disposed.
             </summary>
         </member>
-        <member name="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            Append actions to end of queue.
-            </summary>
-            <param name="actions"></param>
-        </member>
         <member name="M:Retlang.Core.IDisposingExecutor.Enqueue(System.Action)">
             <summary>
             Enqueue a single action.
@@ -300,11 +294,6 @@
         <member name="M:Retlang.Fibers.BaseFiber.#ctor(Retlang.Fibers.IThreadAdapter,Retlang.Core.IBatchAndSingleExecutor)">
             <summary>
             Creates an instance.
-            </summary>
-        </member>
-        <member name="M:Retlang.Fibers.BaseFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
             </summary>
         </member>
         <member name="M:Retlang.Fibers.BaseFiber.Enqueue(System.Action)">
@@ -514,12 +503,6 @@
             Unsubscribes from all subscriptions.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.StubFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            Adds all events to pending list.
-            </summary>
-            <param name="actions"></param>
-        </member>
         <member name="M:Retlang.Fibers.StubFiber.Enqueue(System.Action)">
             <summary>
             Add event to pending list.
@@ -544,7 +527,7 @@
             Adds a scheduled event to the list. 
             </summary>
             <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
+            <param name="firstInMs"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
@@ -618,12 +601,6 @@
             Create a pool fiber with the default thread pool and batch executor.
             </summary>
         </member>
-        <member name="M:Retlang.Fibers.PoolFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
-            </summary>
-            <param name="actions"></param>
-        </member>
         <member name="M:Retlang.Fibers.PoolFiber.Enqueue(System.Action)">
             <summary>
             Queue action.
@@ -648,7 +625,7 @@
             <see cref="M:Retlang.Core.IScheduler.Schedule(System.Action,System.Int64)"/>
             </summary>
             <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
+            <param name="firstInMs"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
@@ -950,12 +927,6 @@
             <param name="isBackground"></param>
             <param name="priority"></param>
         </member>
-        <member name="M:Retlang.Fibers.ThreadFiber.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
-            </summary>
-            <param name="actions"></param>
-        </member>
         <member name="M:Retlang.Fibers.ThreadFiber.Enqueue(System.Action)">
             <summary>
             Queue action.
@@ -980,7 +951,7 @@
             <see cref="M:Retlang.Core.IScheduler.Schedule(System.Action,System.Int64)"/>
             </summary>
             <param name="action"></param>
-            <param name="timeTilEnqueueInMs"></param>
+            <param name="firstInMs"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
@@ -1130,12 +1101,6 @@
             <summary>
             Default implementation.
             </summary>
-        </member>
-        <member name="M:Retlang.Core.ActionExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})">
-            <summary>
-            <see cref="M:Retlang.Core.IDisposingExecutor.EnqueueAll(System.Collections.Generic.List{System.Action})"/>
-            </summary>
-            <param name="actions"></param>
         </member>
         <member name="M:Retlang.Core.ActionExecutor.Enqueue(System.Action)">
             <summary>

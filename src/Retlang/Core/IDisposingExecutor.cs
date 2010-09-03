@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Retlang.Core
 {
@@ -10,12 +9,6 @@ namespace Retlang.Core
     /// </summary>
     public interface IDisposingExecutor
     {
-        /// <summary>
-        /// Append actions to end of queue.
-        /// </summary>
-        /// <param name="actions"></param>
-        void EnqueueAll(List<Action> actions);
-
         /// <summary>
         /// Enqueue a single action.
         /// </summary>

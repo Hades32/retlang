@@ -47,22 +47,6 @@ namespace Retlang.Core
         }
 
         /// <summary>
-        /// <see cref="IDisposingExecutor.EnqueueAll(List{Action})" />
-        /// </summary>
-        /// <param name="actions"></param>
-        public void EnqueueAll(List<Action> actions)
-        {
-            lock (_lock)
-            {
-                if (SpaceAvailable(actions.Count))
-                {
-                    _actions.AddRange(actions);
-                    Monitor.PulseAll(_lock);
-                }
-            }
-        }
-
-        /// <summary>
         /// Queue action.
         /// </summary>
         /// <param name="action"></param>
