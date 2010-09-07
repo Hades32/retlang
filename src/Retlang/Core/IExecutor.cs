@@ -9,9 +9,15 @@ namespace Retlang.Core
     public interface IExecutor
     {
         /// <summary>
-        /// Execute all pending actions.
+        /// Executes all actions.
         /// </summary>
         /// <param name="toExecute"></param>
-        void ExecuteAll(List<Action> toExecute);
+        void Execute(List<Action> toExecute);
+
+        ///<summary>
+        /// Executes a single action. 
+        ///</summary>
+        ///<param name="toExecute"></param>
+        void Execute(Action toExecute);
     }
 }

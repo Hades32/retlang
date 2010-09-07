@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using Retlang.Core;
 
 namespace Retlang.Fibers
@@ -7,7 +6,7 @@ namespace Retlang.Fibers
     /// <summary>
     /// Adapts Dispatcher to a Fiber. Transparently moves actions onto the Dispatcher thread.
     /// </summary>
-    public class DispatcherFiber : BaseFiber
+    public class DispatcherFiber : GuiFiber
     {
         /// <summary>
         /// Constructs a Fiber that executes on dispatcher thread.
@@ -66,23 +65,6 @@ namespace Retlang.Fibers
         public DispatcherFiber()
             : this(Dispatcher.CurrentDispatcher, new DefaultExecutor())
         {
-        }
-    }
-
-    internal class DispatcherAdapter : IContext
-    {
-        private readonly Dispatcher _dispatcher;
-        private readonly DispatcherPriority _priority;
-
-        public DispatcherAdapter(Dispatcher dispatcher, DispatcherPriority priority)
-        {
-            _dispatcher = dispatcher;
-            _priority = priority;
-        }
-
-        public void Enqueue(Action method)
-        {
-            _dispatcher.BeginInvoke(method, _priority);
         }
     }
 }

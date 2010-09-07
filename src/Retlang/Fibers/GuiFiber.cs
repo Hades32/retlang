@@ -9,7 +9,7 @@ namespace Retlang.Fibers
     ///<summary>
     /// Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
     ///</summary>
-    public class BaseFiber : IFiber
+    public class GuiFiber : IFiber
     {
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
@@ -23,7 +23,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates an instance.
         /// </summary>
-        public BaseFiber(IContext context, IExecutor executor)
+        public GuiFiber(IContext context, IExecutor executor)
         {
             _timer = new Scheduler(this);
             _context = context;
@@ -52,7 +52,7 @@ namespace Retlang.Fibers
                 }
             }
 
-            _context.Enqueue(() => _executor.ExecuteAll(new List<Action> { action }));
+            _context.Enqueue(() => _executor.Execute(action));
         }
 
         ///<summary>
@@ -114,7 +114,7 @@ namespace Retlang.Fibers
                 _queue.Clear();
                 if (actions.Count > 0)
                 {
-                    _context.Enqueue(() => _executor.ExecuteAll(actions));
+                    _context.Enqueue(() => _executor.Execute(actions));
                 }
                 _started = ExecutionState.Running;
             }

@@ -108,7 +108,7 @@ namespace Retlang.Fibers
             var toExecute = ClearActions();
             if (toExecute != null)
             {
-                _executor.ExecuteAll(toExecute);
+                _executor.Execute(toExecute);
                 lock (_lock)
                 {
                     if (_queue.Count > 0)

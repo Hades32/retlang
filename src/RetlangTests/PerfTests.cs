@@ -10,7 +10,7 @@ namespace RetlangTests
 {
     public class PerfExecutor : IExecutor
     {
-        public void ExecuteAll(List<Action> toExecute)
+        public void Execute(List<Action> toExecute)
         {
             foreach (var action in toExecute)
             {
@@ -20,6 +20,11 @@ namespace RetlangTests
             {
                 Thread.Sleep(1);
             }
+        }
+
+        public void Execute(Action toExecute)
+        {
+            toExecute();
         }
     }
 
