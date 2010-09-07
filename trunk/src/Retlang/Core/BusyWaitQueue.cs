@@ -123,7 +123,7 @@ namespace Retlang.Core
             {
                 return false;
             }
-            _executor.ExecuteAll(toExecute);
+            _executor.Execute(toExecute);
             return true;
         }
     }

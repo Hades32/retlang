@@ -11,19 +11,25 @@ namespace Retlang.Core
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IExecutor.ExecuteAll(List{Action})"/>
+        /// <see cref="IExecutor.Execute"/>
         /// </summary>
-        public void ExecuteAll(List<Action> toExecute)
+        public void Execute(List<Action> toExecute)
         {
             foreach (var action in toExecute)
             {
-                if (_running)
-                {
-                    action();
-                }
+                Execute(action);
+
             }
         }
-        
+
+        public void Execute(Action toExecute)
+        {
+            if (_running)
+            {
+                toExecute();
+            }
+        }
+
         /// <summary>
         /// When disabled, actions will be ignored by executor. The executor is typically disabled at shutdown
         /// to prevent any pending actions from being executed. 

@@ -114,7 +114,9 @@
     <Compile Include="Core\Lists.cs" />
     <Compile Include="Core\SingleEvent.cs" />
     <Compile Include="Core\TimerAction.cs" />
-    <Compile Include="Fibers\BaseFiber.cs" />
+    <Compile Include="Fibers\DispatcherAdapter.cs" />
+    <Compile Include="Fibers\FormAdapter.cs" />
+    <Compile Include="Fibers\GuiFiber.cs" />
     <Compile Include="Fibers\DispatcherFiber.cs" />
     <Compile Include="Fibers\ExecutionState.cs" />
     <Compile Include="Fibers\FormFiber.cs" />
