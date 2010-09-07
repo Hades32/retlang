@@ -4,12 +4,12 @@ namespace Retlang.Core
 {
     internal class PendingAction : IDisposable
     {
-        private readonly Action _toExecute;
+        private readonly Action _action;
         private bool _cancelled;
 
-        public PendingAction(Action toExecute)
+        public PendingAction(Action action)
         {
-            _toExecute = toExecute;
+            _action = action;
         }
 
         public void Dispose()
@@ -21,13 +21,13 @@ namespace Retlang.Core
         {
             if (!_cancelled)
             {
-                _toExecute();
+                _action();
             }
         }
 
         public override string ToString()
         {
-            return _toExecute.ToString();
+            return _action.ToString();
         }
     }
 }
