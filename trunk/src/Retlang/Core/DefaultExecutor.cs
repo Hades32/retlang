@@ -11,17 +11,21 @@ namespace Retlang.Core
         private bool _running = true;
 
         /// <summary>
-        /// <see cref="IExecutor.Execute"/>
+        /// Executes all actions.
         /// </summary>
+        /// <param name="toExecute"></param>
         public void Execute(List<Action> toExecute)
         {
             foreach (var action in toExecute)
             {
                 Execute(action);
-
             }
         }
 
+        ///<summary>
+        /// Executes a single action. 
+        ///</summary>
+        ///<param name="toExecute"></param>
         public void Execute(Action toExecute)
         {
             if (_running)

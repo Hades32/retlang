@@ -3,9 +3,9 @@ using System;
 namespace Retlang.Core
 {
     /// <summary>
-    /// Enqueues actions.
+    /// Context of execution.
     /// </summary>
-    public interface IContext
+    public interface IExecutionContext
     {
         /// <summary>
         /// Enqueue a single action.

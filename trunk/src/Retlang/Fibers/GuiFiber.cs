@@ -13,7 +13,7 @@ namespace Retlang.Fibers
     {
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();
-        private readonly IContext _context;
+        private readonly IExecutionContext _executionContext;
         private readonly Scheduler _timer;
         private readonly IExecutor _executor;
         private readonly List<Action> _queue = new List<Action>();
@@ -23,15 +23,15 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates an instance.
         /// </summary>
-        public GuiFiber(IContext context, IExecutor executor)
+        public GuiFiber(IExecutionContext executionContext, IExecutor executor)
         {
             _timer = new Scheduler(this);
-            _context = context;
+            _executionContext = executionContext;
             _executor = executor;
         }
         
         /// <summary>
-        /// <see cref="IContext.Enqueue(Action)"/>
+        /// <see cref="IExecutionContext.Enqueue(Action)"/>
         /// </summary>
         public void Enqueue(Action action)
         {
@@ -52,7 +52,7 @@ namespace Retlang.Fibers
                 }
             }
 
-            _context.Enqueue(() => _executor.Execute(action));
+            _executionContext.Enqueue(() => _executor.Execute(action));
         }
 
         ///<summary>
@@ -114,7 +114,7 @@ namespace Retlang.Fibers
                 _queue.Clear();
                 if (actions.Count > 0)
                 {
-                    _context.Enqueue(() => _executor.Execute(actions));
+                    _executionContext.Enqueue(() => _executor.Execute(actions));
                 }
                 _started = ExecutionState.Running;
             }
