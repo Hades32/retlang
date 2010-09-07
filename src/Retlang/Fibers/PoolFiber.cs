@@ -49,9 +49,9 @@ namespace Retlang.Fibers
             : this(new DefaultThreadPool(), new DefaultExecutor())
         {
         }
-        
+
         /// <summary>
-        /// Queue action.
+        /// Enqueue a single action.
         /// </summary>
         /// <param name="action"></param>
         public void Enqueue(Action action)
@@ -76,28 +76,28 @@ namespace Retlang.Fibers
             }
         }
 
-        /// <summary>
-        /// Register Disposable.
-        /// </summary>
-        /// <param name="toAdd"></param>
+        ///<summary>
+        /// Register subscription to be unsubcribed from when the fiber is disposed.
+        ///</summary>
+        ///<param name="toAdd"></param>
         public void RegisterSubscription(IDisposable toAdd)
         {
             _subscriptions.Add(toAdd);
         }
 
-        /// <summary>
-        /// Remove Disposable.
-        /// </summary>
-        /// <param name="toRemove"></param>
-        /// <returns></returns>
+        ///<summary>
+        /// Deregister a subscription.
+        ///</summary>
+        ///<param name="toRemove"></param>
+        ///<returns></returns>
         public bool DeregisterSubscription(IDisposable toRemove)
         {
             return _subscriptions.Remove(toRemove);
         }
 
-        /// <summary>
-        /// Number of currently registered subscription.
-        /// </summary>
+        ///<summary>
+        /// Number of subscriptions.
+        ///</summary>
         public int NumSubscriptions
         {
             get { return _subscriptions.Count; }
