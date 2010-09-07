@@ -17,12 +17,17 @@ namespace Retlang.Core
             _cancelled = true;
         }
 
-        public void ExecuteAction()
+        public void Execute()
         {
             if (!_cancelled)
             {
                 _toExecute();
             }
+        }
+
+        public override string ToString()
+        {
+            return _toExecute.ToString();
         }
     }
 }
