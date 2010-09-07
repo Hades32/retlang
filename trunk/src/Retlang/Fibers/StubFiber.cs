@@ -37,9 +37,9 @@ namespace Retlang.Fibers
 
             _subscriptions.Clear();
         }
-        
+
         /// <summary>
-        /// Add action to pending list.
+        /// Enqueue a single action.
         /// </summary>
         /// <param name="action"></param>
         public void Enqueue(Action action)
@@ -62,29 +62,29 @@ namespace Retlang.Fibers
                 _pending.Add(action);
             }
         }
-        
-        /// <summary>
-        /// add to disposable list.
-        /// </summary>
-        /// <param name="disposable"></param>
-        public void RegisterSubscription(IDisposable disposable)
+
+        ///<summary>
+        /// Register subscription to be unsubcribed from when the fiber is disposed.
+        ///</summary>
+        ///<param name="toAdd"></param>
+        public void RegisterSubscription(IDisposable toAdd)
         {
-            _subscriptions.Add(disposable);
+            _subscriptions.Add(toAdd);
         }
 
-        /// <summary>
-        /// Remove Disposable.
-        /// </summary>
-        /// <param name="disposable"></param>
-        /// <returns></returns>
-        public bool DeregisterSubscription(IDisposable disposable)
+        ///<summary>
+        /// Deregister a subscription.
+        ///</summary>
+        ///<param name="toRemove"></param>
+        ///<returns></returns>
+        public bool DeregisterSubscription(IDisposable toRemove)
         {
-            return _subscriptions.Remove(disposable);
+            return _subscriptions.Remove(toRemove);
         }
 
-        /// <summary>
-        /// Count of Disposables.
-        /// </summary>
+        ///<summary>
+        /// Number of subscriptions.
+        ///</summary>
         public int NumSubscriptions
         {
             get { return _subscriptions.Count; }

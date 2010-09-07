@@ -18,7 +18,7 @@ namespace Retlang.Fibers
         private readonly Scheduler _scheduler;
 
         /// <summary>
-        /// Create a thread fiber with the default action executor.
+        /// Create a thread fiber with the default executor.
         /// </summary>
         public ThreadFiber() 
             : this(new DefaultQueue())
@@ -77,7 +77,7 @@ namespace Retlang.Fibers
         }
 
         /// <summary>
-        /// Queue action.
+        /// Enqueue a single action.
         /// </summary>
         /// <param name="action"></param>
         public void Enqueue(Action action)
@@ -85,28 +85,28 @@ namespace Retlang.Fibers
             _executor.Enqueue(action);
         }
 
-        /// <summary>
-        /// Add Disposable to be invoked when Fiber is disposed.
-        /// </summary>
-        /// <param name="subscription"></param>
-        public void RegisterSubscription(IDisposable subscription)
+        ///<summary>
+        /// Register subscription to be unsubcribed from when the fiber is disposed.
+        ///</summary>
+        ///<param name="toAdd"></param>
+        public void RegisterSubscription(IDisposable toAdd)
         {
-            _subscriptions.Add(subscription);
+            _subscriptions.Add(toAdd);
         }
 
-        /// <summary>
-        /// Remove disposable.
-        /// </summary>
-        /// <param name="subscription"></param>
-        /// <returns></returns>
-        public bool DeregisterSubscription(IDisposable subscription)
+        ///<summary>
+        /// Deregister a subscription.
+        ///</summary>
+        ///<param name="toRemove"></param>
+        ///<returns></returns>
+        public bool DeregisterSubscription(IDisposable toRemove)
         {
-            return _subscriptions.Remove(subscription);
+            return _subscriptions.Remove(toRemove);
         }
 
-        /// <summary>
-        /// Number of disposables.
-        /// </summary>
+        ///<summary>
+        /// Number of subscriptions.
+        ///</summary>
         public int NumSubscriptions
         {
             get { return _subscriptions.Count; }

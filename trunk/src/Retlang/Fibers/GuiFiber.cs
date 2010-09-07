@@ -29,10 +29,11 @@ namespace Retlang.Fibers
             _executionContext = executionContext;
             _executor = executor;
         }
-        
+
         /// <summary>
-        /// <see cref="IExecutionContext.Enqueue(Action)"/>
+        /// Enqueue a single action.
         /// </summary>
+        /// <param name="action"></param>
         public void Enqueue(Action action)
         {
             if (_started == ExecutionState.Stopped)
@@ -56,7 +57,7 @@ namespace Retlang.Fibers
         }
 
         ///<summary>
-        /// Register unsubscriber to be called when IFiber is disposed
+        /// Register subscription to be unsubcribed from when the fiber is disposed.
         ///</summary>
         ///<param name="toAdd"></param>
         public void RegisterSubscription(IDisposable toAdd)
@@ -65,7 +66,7 @@ namespace Retlang.Fibers
         }
 
         ///<summary>
-        /// Deregister a subscription
+        /// Deregister a subscription.
         ///</summary>
         ///<param name="toRemove"></param>
         ///<returns></returns>
@@ -75,7 +76,7 @@ namespace Retlang.Fibers
         }
 
         ///<summary>
-        /// Number of subscriptions
+        /// Number of subscriptions.
         ///</summary>
         public int NumSubscriptions
         {
