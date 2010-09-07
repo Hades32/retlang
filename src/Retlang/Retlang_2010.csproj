@@ -103,7 +103,7 @@
     <Compile Include="Core\Subscriptions.cs" />
     <Compile Include="Core\IExecutor.cs" />
     <Compile Include="Core\IQueue.cs" />
-    <Compile Include="Core\IContext.cs" />
+    <Compile Include="Core\IExecutionContext.cs" />
     <Compile Include="Core\ISchedulerRegistry.cs" />
     <Compile Include="Core\IPendingEvent.cs" />
     <Compile Include="Core\IScheduler.cs" />

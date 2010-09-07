@@ -10,15 +10,15 @@ namespace Retlang.Core
     public class Scheduler : ISchedulerRegistry, IScheduler, IDisposable
     {
         private volatile bool _running = true;
-        private readonly IContext _context;
+        private readonly IExecutionContext _executionContext;
         private List<IDisposable> _pending = new List<IDisposable>();
 
         ///<summary>
         /// Constructs new instance.
         ///</summary>
-        public Scheduler(IContext context)
+        public Scheduler(IExecutionContext executionContext)
         {
-            _context = context;
+            _executionContext = executionContext;
         }
 
         ///<summary>
@@ -29,7 +29,7 @@ namespace Retlang.Core
             if (firstInMs <= 0)
             {
                 var pending = new PendingAction(action);
-                _context.Enqueue(pending.ExecuteAction);
+                _executionContext.Enqueue(pending.ExecuteAction);
                 return pending;
             }
             else
@@ -56,7 +56,7 @@ namespace Retlang.Core
         ///<param name="toRemove"></param>
         public void Remove(IDisposable toRemove)
         {
-            _context.Enqueue(() => _pending.Remove(toRemove));
+            _executionContext.Enqueue(() => _pending.Remove(toRemove));
         }
 
         ///<summary>
@@ -65,7 +65,7 @@ namespace Retlang.Core
         ///<param name="action"></param>
         public void Enqueue(Action action)
         {
-            _context.Enqueue(action);
+            _executionContext.Enqueue(action);
         }
 
         private void AddPending(TimerAction pending)
@@ -78,7 +78,7 @@ namespace Retlang.Core
                                              pending.Schedule(this);
                                          }
                                      };
-            _context.Enqueue(addAction);
+            _executionContext.Enqueue(addAction);
         }
 
         ///<summary>

@@ -16,12 +16,12 @@ namespace Retlang.Channels
         /// <summary>
         /// Subscribe to executor messages. 
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="executionContext"></param>
         /// <param name="onMessage"></param>
         /// <returns></returns>
-        public IDisposable Subscribe(IContext context, Action<T> onMessage)
+        public IDisposable Subscribe(IExecutionContext executionContext, Action<T> onMessage)
         {
-            var consumer = new QueueConsumer<T>(context, onMessage, this);
+            var consumer = new QueueConsumer<T>(executionContext, onMessage, this);
             consumer.Subscribe();
             return consumer;
         }

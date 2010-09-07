@@ -13,10 +13,10 @@ namespace Retlang.Channels
         /// <summary>
         /// Subscribe to the context.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="executionContext"></param>
         /// <param name="onMessage"></param>
         /// <returns></returns>
-        IDisposable Subscribe(IContext context, Action<T> onMessage);
+        IDisposable Subscribe(IExecutionContext executionContext, Action<T> onMessage);
 
         /// <summary>
         /// Pushes a message into the queue. Message will be processed by first available consumer.

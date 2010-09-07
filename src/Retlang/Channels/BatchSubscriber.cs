@@ -11,7 +11,7 @@ namespace Retlang.Channels
     /// <typeparam name="T"></typeparam>
     public class BatchSubscriber<T> : BaseSubscription<T>
     {
-        private readonly object _lock = new object();
+        private readonly object _batchLock = new object();
         private readonly IFiber _fiber;
         private readonly Action<IList<T>> _receive;
         private readonly int _interval;
@@ -44,7 +44,7 @@ namespace Retlang.Channels
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-            lock (_lock)
+            lock (_batchLock)
             {
                 if (_pending == null)
                 {
@@ -58,7 +58,7 @@ namespace Retlang.Channels
         private void Flush()
         {
             IList<T> toFlush = null;
-            lock (_lock)
+            lock (_batchLock)
             {
                 if (_pending != null)
                 {

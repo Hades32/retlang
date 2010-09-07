@@ -10,7 +10,7 @@ namespace Retlang.Channels
     /// <typeparam name="T"></typeparam>
     public class LastSubscriber<T> : BaseSubscription<T>
     {
-        private readonly object _lock = new object();
+        private readonly object _batchLock = new object();
 
         private readonly IFiber _fiber;
         private readonly Action<T> _target;
@@ -46,7 +46,7 @@ namespace Retlang.Channels
         /// <param name="msg"></param>
         protected override void OnMessageOnProducerThread(T msg)
         {
-            lock (_lock)
+            lock (_batchLock)
             {
                 if (!_flushPending)
                 {
@@ -68,7 +68,7 @@ namespace Retlang.Channels
 
         private T ClearPending()
         {
-            lock (_lock)
+            lock (_batchLock)
             {
                 _flushPending = false;
                 return _pending;
