@@ -39,37 +39,34 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithStruct()
         {
-            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
-            using (var fiber = new ThreadFiber(executor))
-            {
-                fiber.Start();
-                var channel = new Channel<MsgStruct>();
-                const int max = 5000000;
-                var reset = new AutoResetEvent(false);
-                Action<MsgStruct> onMsg = delegate(MsgStruct count)
-                                              {
-                                                  if (count.count == max)
-                                                  {
-                                                      reset.Set();
-                                                  }
-                                              };
-                channel.Subscribe(fiber, onMsg);
-                using (new PerfTimer(max))
-                {
-                    for (var i = 0; i <= max; i++)
-                    {
-                        channel.Publish(new MsgStruct { count = i });
-                    }
-                    Console.WriteLine("done pub");
-                    Assert.IsTrue(reset.WaitOne(30000, false));
-                }
-            }
+            RunBoundedQueue();
         }
 
         [Test, Explicit]
         public void BusyWaitQueuePointToPointPerfTestWithStruct()
         {
-            var executor = new BusyWaitQueue(new PerfExecutor(), int.MaxValue, 0);
+            RunBusyWaitQueue();
+        }
+
+        [Test, Explicit]
+        public void BusyWaitVsBounded()
+        {
+            Console.WriteLine("\n== BoundedQueue ==");
+            RunBoundedQueue();
+
+            Console.WriteLine("\n== BusyWaitQueue ==");
+            RunBusyWaitQueue();
+
+            Console.WriteLine("\n== BoundedQueue ==");
+            RunBoundedQueue();
+
+            Console.WriteLine("\n== BusyWaitQueue ==");
+            RunBusyWaitQueue();
+        }
+
+        private static void RunBoundedQueue()
+        {
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
             using (var fiber = new ThreadFiber(executor))
             {
                 fiber.Start();
@@ -90,7 +87,34 @@ namespace RetlangTests
                     {
                         channel.Publish(new MsgStruct { count = i });
                     }
-                    Console.WriteLine("done pub");
+                    Assert.IsTrue(reset.WaitOne(30000, false));
+                }
+            }
+        }
+
+        private static void RunBusyWaitQueue()
+        {
+            var executor = new BusyWaitQueue(new PerfExecutor(), 100000, 1);
+            using (var fiber = new ThreadFiber(executor))
+            {
+                fiber.Start();
+                var channel = new Channel<MsgStruct>();
+                const int max = 5000000;
+                var reset = new AutoResetEvent(false);
+                Action<MsgStruct> onMsg = delegate(MsgStruct count)
+                                              {
+                                                  if (count.count == max)
+                                                  {
+                                                      reset.Set();
+                                                  }
+                                              };
+                channel.Subscribe(fiber, onMsg);
+                using (new PerfTimer(max))
+                {
+                    for (var i = 0; i <= max; i++)
+                    {
+                        channel.Publish(new MsgStruct { count = i });
+                    }
                     Assert.IsTrue(reset.WaitOne(30000, false));
                 }
             }
@@ -120,7 +144,6 @@ namespace RetlangTests
                     {
                         channel.Publish(i);
                     }
-                    Console.WriteLine("done pub");
                     Assert.IsTrue(reset.WaitOne(30000, false));
                 }
             }
@@ -153,7 +176,6 @@ namespace RetlangTests
                         channel.Publish(msg);
                     }
                     channel.Publish(end);
-                    Console.WriteLine("done pub");
                     Assert.IsTrue(reset.WaitOne(30000, false));
                 }
             }
