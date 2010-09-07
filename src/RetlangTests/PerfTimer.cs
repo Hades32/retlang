@@ -19,7 +19,7 @@ namespace RetlangTests
             _stopWatch.Stop();
             var elapsed = _stopWatch.ElapsedMilliseconds;
             Console.WriteLine("Elapsed: " + elapsed + " Actions: " + _count);
-            Console.WriteLine("Avg Actions/s: " + (_count/(elapsed/1000.00)));
+            Console.WriteLine("actions/ms: " + (_count/elapsed));
         }
     }
 }
