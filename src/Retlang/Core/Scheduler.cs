@@ -5,7 +5,7 @@ using System.Threading;
 namespace Retlang.Core
 {
     ///<summary>
-    /// Enqueues actions on to executor after schedule elapses.  
+    /// Enqueues actions on to context after schedule elapses.  
     ///</summary>
     public class Scheduler : ISchedulerRegistry, IScheduler, IDisposable
     {
@@ -22,14 +22,14 @@ namespace Retlang.Core
         }
 
         ///<summary>
-        /// Enqueues action on to executor after timer elapses.  
+        /// Enqueues action on to context after timer elapses.  
         ///</summary>
         public IDisposable Schedule(Action action, long firstInMs)
         {
             if (firstInMs <= 0)
             {
                 var pending = new PendingAction(action);
-                _executionContext.Enqueue(pending.ExecuteAction);
+                _executionContext.Enqueue(pending.Execute);
                 return pending;
             }
             else
@@ -41,7 +41,7 @@ namespace Retlang.Core
         }
 
         ///<summary>
-        /// Enqueues actions on to executor after schedule elapses.  
+        /// Enqueues actions on to context after schedule elapses.  
         ///</summary>
         public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
         {
@@ -60,7 +60,7 @@ namespace Retlang.Core
         }
 
         ///<summary>
-        /// Enqueues actions on to executor immediately.
+        /// Enqueues actions on to context immediately.
         ///</summary>
         ///<param name="action"></param>
         public void Enqueue(Action action)
