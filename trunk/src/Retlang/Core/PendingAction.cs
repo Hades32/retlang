@@ -24,10 +24,5 @@ namespace Retlang.Core
                 _action();
             }
         }
-
-        public override string ToString()
-        {
-            return _action.ToString();
-        }
     }
 }

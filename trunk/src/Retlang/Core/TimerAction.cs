@@ -54,10 +54,5 @@ namespace Retlang.Core
         {
             _cancelled = true;
         }
-
-        public override string ToString()
-        {
-            return _action.ToString();
-        }
     }
 }
