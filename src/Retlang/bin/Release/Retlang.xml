@@ -4,6 +4,17 @@
         <name>Retlang</name>
     </assembly>
     <members>
+        <member name="T:Retlang.Core.IExecutionContext">
+            <summary>
+            Context of execution.
+            </summary>
+        </member>
+        <member name="M:Retlang.Core.IExecutionContext.Enqueue(System.Action)">
+            <summary>
+            Enqueue a single action.
+            </summary>
+            <param name="action"></param>
+        </member>
         <member name="T:Retlang.Channels.IQueueChannel`1">
             <summary>
             Creates a queue that will deliver a message to a single consumer. Load balancing can be achieved by creating 
@@ -107,27 +118,16 @@
         </member>
         <member name="M:Retlang.Core.ISubscriptionRegistry.RegisterSubscription(System.IDisposable)">
             <summary>
-             Register subscription to be unsubcribed from when the fiber is disposed
+             Register subscription to be unsubcribed from when the fiber is disposed.
             </summary>
             <param name="toAdd"></param>
         </member>
         <member name="M:Retlang.Core.ISubscriptionRegistry.DeregisterSubscription(System.IDisposable)">
             <summary>
-             Deregister a subscription
+             Deregister a subscription.
             </summary>
             <param name="toRemove"></param>
             <returns></returns>
-        </member>
-        <member name="T:Retlang.Core.IExecutionContext">
-            <summary>
-            Context of execution.
-            </summary>
-        </member>
-        <member name="M:Retlang.Core.IExecutionContext.Enqueue(System.Action)">
-            <summary>
-            Enqueue a single action.
-            </summary>
-            <param name="action"></param>
         </member>
         <member name="T:Retlang.Core.IScheduler">
             <summary>
@@ -255,18 +255,19 @@
         </member>
         <member name="M:Retlang.Fibers.GuiFiber.Enqueue(System.Action)">
             <summary>
-            <see cref="M:Retlang.Core.IExecutionContext.Enqueue(System.Action)"/>
+            Enqueue a single action.
             </summary>
+            <param name="action"></param>
         </member>
         <member name="M:Retlang.Fibers.GuiFiber.RegisterSubscription(System.IDisposable)">
             <summary>
-             Register unsubscriber to be called when IFiber is disposed
+             Register subscription to be unsubcribed from when the fiber is disposed.
             </summary>
             <param name="toAdd"></param>
         </member>
         <member name="M:Retlang.Fibers.GuiFiber.DeregisterSubscription(System.IDisposable)">
             <summary>
-             Deregister a subscription
+             Deregister a subscription.
             </summary>
             <param name="toRemove"></param>
             <returns></returns>
@@ -298,7 +299,7 @@
         </member>
         <member name="P:Retlang.Fibers.GuiFiber.NumSubscriptions">
             <summary>
-             Number of subscriptions
+             Number of subscriptions.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.FormFiber.#ctor(System.ComponentModel.ISynchronizeInvoke,Retlang.Core.IExecutor)">
@@ -409,21 +410,21 @@
         </member>
         <member name="M:Retlang.Fibers.StubFiber.Enqueue(System.Action)">
             <summary>
-            Add action to pending list.
+            Enqueue a single action.
             </summary>
             <param name="action"></param>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.RegisterSubscription(System.IDisposable)">
             <summary>
-            add to disposable list.
+             Register subscription to be unsubcribed from when the fiber is disposed.
             </summary>
-            <param name="disposable"></param>
+            <param name="toAdd"></param>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.DeregisterSubscription(System.IDisposable)">
             <summary>
-            Remove Disposable.
+             Deregister a subscription.
             </summary>
-            <param name="disposable"></param>
+            <param name="toRemove"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.Schedule(System.Action,System.Int64)">
@@ -460,7 +461,7 @@
         </member>
         <member name="P:Retlang.Fibers.StubFiber.NumSubscriptions">
             <summary>
-            Count of Disposables.
+             Number of subscriptions.
             </summary>
         </member>
         <member name="P:Retlang.Fibers.StubFiber.Subscriptions">
@@ -507,19 +508,19 @@
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.Enqueue(System.Action)">
             <summary>
-            Queue action.
+            Enqueue a single action.
             </summary>
             <param name="action"></param>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.RegisterSubscription(System.IDisposable)">
             <summary>
-            Register Disposable.
+             Register subscription to be unsubcribed from when the fiber is disposed.
             </summary>
             <param name="toAdd"></param>
         </member>
         <member name="M:Retlang.Fibers.PoolFiber.DeregisterSubscription(System.IDisposable)">
             <summary>
-            Remove Disposable.
+             Deregister a subscription.
             </summary>
             <param name="toRemove"></param>
             <returns></returns>
@@ -558,7 +559,7 @@
         </member>
         <member name="P:Retlang.Fibers.PoolFiber.NumSubscriptions">
             <summary>
-            Number of currently registered subscription.
+             Number of subscriptions.
             </summary>
         </member>
         <member name="T:Retlang.Core.IExecutor">
@@ -580,7 +581,7 @@
         </member>
         <member name="T:Retlang.Core.Scheduler">
             <summary>
-             Enqueues actions on to executor after schedule elapses.  
+             Enqueues actions on to context after schedule elapses.  
             </summary>
         </member>
         <member name="T:Retlang.Core.ISchedulerRegistry">
@@ -607,12 +608,12 @@
         </member>
         <member name="M:Retlang.Core.Scheduler.Schedule(System.Action,System.Int64)">
             <summary>
-             Enqueues action on to executor after timer elapses.  
+             Enqueues action on to context after timer elapses.  
             </summary>
         </member>
         <member name="M:Retlang.Core.Scheduler.ScheduleOnInterval(System.Action,System.Int64,System.Int64)">
             <summary>
-             Enqueues actions on to executor after schedule elapses.  
+             Enqueues actions on to context after schedule elapses.  
             </summary>
         </member>
         <member name="M:Retlang.Core.Scheduler.Remove(System.IDisposable)">
@@ -623,7 +624,7 @@
         </member>
         <member name="M:Retlang.Core.Scheduler.Enqueue(System.Action)">
             <summary>
-             Enqueues actions on to executor immediately.
+             Enqueues actions on to context immediately.
             </summary>
             <param name="action"></param>
         </member>
@@ -932,7 +933,7 @@
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor">
             <summary>
-            Create a thread fiber with the default action executor.
+            Create a thread fiber with the default executor.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IQueue)">
@@ -958,21 +959,21 @@
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.Enqueue(System.Action)">
             <summary>
-            Queue action.
+            Enqueue a single action.
             </summary>
             <param name="action"></param>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.RegisterSubscription(System.IDisposable)">
             <summary>
-            Add Disposable to be invoked when Fiber is disposed.
+             Register subscription to be unsubcribed from when the fiber is disposed.
             </summary>
-            <param name="subscription"></param>
+            <param name="toAdd"></param>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.DeregisterSubscription(System.IDisposable)">
             <summary>
-            Remove disposable.
+             Deregister a subscription.
             </summary>
-            <param name="subscription"></param>
+            <param name="toRemove"></param>
             <returns></returns>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.Schedule(System.Action,System.Int64)">
@@ -1013,7 +1014,7 @@
         </member>
         <member name="P:Retlang.Fibers.ThreadFiber.NumSubscriptions">
             <summary>
-            Number of disposables.
+             Number of subscriptions.
             </summary>
         </member>
         <member name="T:Retlang.Fibers.ExecutionState">
