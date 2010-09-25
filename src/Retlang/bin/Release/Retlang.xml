@@ -1039,7 +1039,7 @@
         </member>
         <member name="T:Retlang.Core.BusyWaitQueue">
             <summary>
-            Busy waits on lock to execute.  Can improve perforamance in certain situations.
+            Busy waits on lock to execute.  Can improve performance in certain situations.
             </summary>
         </member>
         <member name="M:Retlang.Core.BusyWaitQueue.#ctor(Retlang.Core.IExecutor,System.Int32,System.Int32)">
@@ -1047,8 +1047,8 @@
              BusyWaitQueue with custom executor
             </summary>
             <param name="executor"></param>
-            <param name="spinsBeforeSleepCheck"></param>
-            <param name="sleepInMs"></param>
+            <param name="spinsBeforeTimeCheck"></param>
+            <param name="msBeforeRealWait"></param>
         </member>
         <member name="M:Retlang.Core.BusyWaitQueue.#ctor(System.Int32,System.Int32)">
             <summary>
