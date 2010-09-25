@@ -89,11 +89,7 @@ namespace Retlang.Core
             {
                 Monitor.Wait(_lock);
             }
-            if (!_running)
-            {
-                return false;
-            }
-            return true;
+            return _running;
         }
 
         /// <summary>
