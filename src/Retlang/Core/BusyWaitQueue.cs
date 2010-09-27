@@ -13,34 +13,31 @@ namespace Retlang.Core
         private readonly object _lock = new object();
         private readonly IExecutor _executor;
         private readonly int _spinsBeforeTimeCheck;
-        private readonly int _msBeforeRealWait;
+        private readonly int _msBeforeBlockingWait;
 
         private bool _running = true;
 
         private List<Action> _actions = new List<Action>();
         private List<Action> _toPass = new List<Action>();
 
-        private int _spins;
-        private readonly Stopwatch _stopwatch = new Stopwatch();
-
         ///<summary>
-        /// BusyWaitQueue with custom executor
+        /// BusyWaitQueue with custom executor.
         ///</summary>
         ///<param name="executor"></param>
         ///<param name="spinsBeforeTimeCheck"></param>
-        ///<param name="msBeforeRealWait"></param>
-        public BusyWaitQueue(IExecutor executor, int spinsBeforeTimeCheck, int msBeforeRealWait)
+        ///<param name="msBeforeBlockingWait"></param>
+        public BusyWaitQueue(IExecutor executor, int spinsBeforeTimeCheck, int msBeforeBlockingWait)
         {
             _executor = executor;
             _spinsBeforeTimeCheck = spinsBeforeTimeCheck;
-            _msBeforeRealWait = msBeforeRealWait;
+            _msBeforeBlockingWait = msBeforeBlockingWait;
         }
 
         ///<summary>
-        /// BusyWaitQueue with default executor
+        /// BusyWaitQueue with default executor.
         ///</summary>
-        public BusyWaitQueue(int spinsBeforeSleep, int timeCheckInMs) 
-            : this(new DefaultExecutor(), spinsBeforeSleep, timeCheckInMs)
+        public BusyWaitQueue(int spinsBeforeTimeCheck, int msBeforeBlockingWait) 
+            : this(new DefaultExecutor(), spinsBeforeTimeCheck, msBeforeBlockingWait)
         {
         }
         
@@ -79,8 +76,9 @@ namespace Retlang.Core
         
         private List<Action> DequeueAll()
         {
-            _spins = 0;
-            _stopwatch.Restart();
+            var spins = 0;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             
             while (true)
             {
@@ -92,7 +90,7 @@ namespace Retlang.Core
                     var toReturn = TryDequeue();
                     if (toReturn != null) return toReturn;
 
-                    if (TimeForRealWait())
+                    if (TryBlockingWait(stopwatch, ref spins))
                     {
                         if (!_running) break;
                         toReturn = TryDequeue();
@@ -101,7 +99,6 @@ namespace Retlang.Core
                 }
                 finally
                 {
-                    _stopwatch.Stop();
                     Monitor.Exit(_lock);
                 }
             }
@@ -109,23 +106,21 @@ namespace Retlang.Core
             return null;
         }
 
-        private bool TimeForRealWait()
+        private bool TryBlockingWait(Stopwatch stopwatch, ref int spins)
         {
-            if (_spins++ <= _spinsBeforeTimeCheck)
+            if (spins++ <= _spinsBeforeTimeCheck)
             {
                 return false;
             }
 
-            _spins = 0;
-            _stopwatch.Stop();
-            if (_stopwatch.ElapsedMilliseconds > _msBeforeRealWait)
+            spins = 0;
+            if (stopwatch.ElapsedMilliseconds > _msBeforeBlockingWait)
             {
                 Monitor.Wait(_lock);
-                _stopwatch.Restart();
+                stopwatch.Restart();
                 return true;
             }
 
-            _stopwatch.Start();
             return false;
         }
 
@@ -135,8 +130,6 @@ namespace Retlang.Core
             {
                 Lists.Swap(ref _actions, ref _toPass);
                 _actions.Clear();
-
-                Monitor.PulseAll(_lock);
                 return _toPass;
             }
 
