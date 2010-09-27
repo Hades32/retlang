@@ -1044,15 +1044,15 @@
         </member>
         <member name="M:Retlang.Core.BusyWaitQueue.#ctor(Retlang.Core.IExecutor,System.Int32,System.Int32)">
             <summary>
-             BusyWaitQueue with custom executor
+             BusyWaitQueue with custom executor.
             </summary>
             <param name="executor"></param>
             <param name="spinsBeforeTimeCheck"></param>
-            <param name="msBeforeRealWait"></param>
+            <param name="msBeforeBlockingWait"></param>
         </member>
         <member name="M:Retlang.Core.BusyWaitQueue.#ctor(System.Int32,System.Int32)">
             <summary>
-             BusyWaitQueue with default executor
+             BusyWaitQueue with default executor.
             </summary>
         </member>
         <member name="M:Retlang.Core.BusyWaitQueue.Enqueue(System.Action)">
