@@ -108,7 +108,7 @@ namespace Retlang.Core
 
         private bool TryBlockingWait(Stopwatch stopwatch, ref int spins)
         {
-            if (spins++ <= _spinsBeforeTimeCheck)
+            if (spins++ < _spinsBeforeTimeCheck)
             {
                 return false;
             }
