@@ -6,8 +6,7 @@ copy Retlang\bin\Release\Retlang.xml docs\comments.xml
 cd docs 
 
 REM ********** Set path for .net framework2.0, sandcastle,hhc,hxcomp****************************
-set DXROOT=%ProgramFiles%\Sandcastle
-set PATH=%DXROOT%\ProductionTools;%ProgramFiles%\HTML Help Workshop;%ProgramFiles%\Microsoft Help 2.0 SDK;%PATH%
+set PATH=%DXROOT%ProductionTools;C:\Program Files (x86)\HTML Help Workshop;C:\Program Files (x86)\Microsoft Help 2.0 SDK;%PATH%
 
 if exist output rmdir output /s /q
 if exist chm rmdir chm /s /q
