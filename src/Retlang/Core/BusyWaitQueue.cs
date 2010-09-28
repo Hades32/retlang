@@ -77,8 +77,7 @@ namespace Retlang.Core
         private List<Action> DequeueAll()
         {
             var spins = 0;
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var stopwatch = Stopwatch.StartNew();
             
             while (true)
             {
