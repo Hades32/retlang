@@ -99,8 +99,8 @@ namespace Retlang.Core
                 finally
                 {
                     Monitor.Exit(_lock);
-                    Thread.Yield();
                 }
+                Thread.Yield();
             }
 
             return null;
