@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Retlang.Fibers
 {
@@ -26,16 +27,17 @@ namespace Retlang.Fibers
         {}
 
         /// <summary>
-        /// Unsubscribes from all subscriptions.
+        /// Clears all subscriptions, scheduled, and pending actions.
         /// </summary>
         public void Dispose()
         {
-            foreach (var subscription in _subscriptions.ToArray())
-            {
-                subscription.Dispose();
-            }
+            _scheduled.ToList().ForEach(x => x.Dispose());
+            _scheduled.Clear();
 
+            _subscriptions.ToList().ForEach(x => x.Dispose());
             _subscriptions.Clear();
+
+            _pending.Clear();
         }
 
         /// <summary>

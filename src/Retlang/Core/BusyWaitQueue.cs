@@ -99,6 +99,7 @@ namespace Retlang.Core
                 finally
                 {
                     Monitor.Exit(_lock);
+                    Thread.Yield();
                 }
             }
 
@@ -135,10 +136,6 @@ namespace Retlang.Core
             return null;
         }
 
-        /// <summary>
-        /// Remove all actions and execute.
-        /// </summary>
-        /// <returns></returns>
         private bool ExecuteNextBatch()
         {
             var toExecute = DequeueAll();

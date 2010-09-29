@@ -405,7 +405,7 @@
         </member>
         <member name="M:Retlang.Fibers.StubFiber.Dispose">
             <summary>
-            Unsubscribes from all subscriptions.
+            Clears all subscriptions, scheduled, and pending actions.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.StubFiber.Enqueue(System.Action)">
@@ -1070,12 +1070,6 @@
             <summary>
             Stop consuming actions.
             </summary>
-        </member>
-        <member name="M:Retlang.Core.BusyWaitQueue.ExecuteNextBatch">
-            <summary>
-            Remove all actions and execute.
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Retlang.Core.DefaultQueue">
             <summary>

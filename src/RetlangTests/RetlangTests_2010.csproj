@@ -78,6 +78,7 @@
     <Compile Include="PerfSettings.cs" />
     <Compile Include="PerfTests.cs" />
     <Compile Include="PerfTimer.cs" />
+    <Compile Include="BusyWaitQueueLatencyTests.cs" />
     <Compile Include="QueueChannelTests.cs" />
     <Compile Include="RequestReplyChannelTests.cs" />
     <Compile Include="StubFiberTests.cs" />

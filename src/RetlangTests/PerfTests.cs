@@ -47,47 +47,7 @@ namespace RetlangTests
         {
             RunBusyWaitQueue();
         }
-        
-        [Test, Explicit]
-        public void BusyWaitVsBounded()
-        {
-            Console.WriteLine("Starting Warm Up");
-            Console.WriteLine("\n== BusyWaitQueue ==");
-            RunBusyWaitQueue();
-
-            Console.WriteLine("\n== BoundedQueue ==");
-            RunBoundedQueue();
-            Console.WriteLine("\nEnding Warm Up");
-            
-            // Round 1
-            Console.WriteLine("\n== BusyWaitQueue ==");
-            RunBusyWaitQueue();
-
-            Console.WriteLine("\n== BoundedQueue ==");
-            RunBoundedQueue();
-
-            // Round 2
-            Console.WriteLine("\n== BusyWaitQueue ==");
-            RunBusyWaitQueue();
-
-            Console.WriteLine("\n== BoundedQueue ==");
-            RunBoundedQueue();
-
-            // Round 3
-            Console.WriteLine("\n== BusyWaitQueue ==");
-            RunBusyWaitQueue();
-
-            Console.WriteLine("\n== BoundedQueue ==");
-            RunBoundedQueue();
-
-            // Round 4
-            Console.WriteLine("\n== BusyWaitQueue ==");
-            RunBusyWaitQueue();
-
-            Console.WriteLine("\n== BoundedQueue ==");
-            RunBoundedQueue();
-        }
-
+      
         private static void RunBoundedQueue()
         {
             var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
