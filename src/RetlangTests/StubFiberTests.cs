@@ -12,7 +12,7 @@ namespace RetlangTests
         [Test]
         public void StubFiberPendingTasksShouldAllowEnqueueOfCommandsWhenExecutingAllPending()
         {
-            var fiber = new StubFiber { ExecutePendingImmediately = false };
+            var sut = new StubFiber { ExecutePendingImmediately = false };
 
             var fired1 = new object();
             var fired2 = new object();
@@ -23,40 +23,40 @@ namespace RetlangTests
             Action command1 = delegate
                                   {
                                       actionMarkers.Add(fired1);
-                                      fiber.Enqueue(() => actionMarkers.Add(fired3));
+                                      sut.Enqueue(() => actionMarkers.Add(fired3));
                                   };
 
             Action command2 = () => actionMarkers.Add(fired2);
 
-            fiber.Enqueue(command1);
-            fiber.Enqueue(command2);
+            sut.Enqueue(command1);
+            sut.Enqueue(command2);
 
-            fiber.ExecuteAllPendingUntilEmpty();
+            sut.ExecuteAllPendingUntilEmpty();
             Assert.AreEqual(new[] { fired1, fired2, fired3 }, actionMarkers.ToArray());
         }
 
         [Test]
         public void ScheduledTasksShouldBeExecutedOnceScheduleIntervalShouldBeExecutedEveryTimeExecuteScheduleAllIsCalled()
         {
-            var fiber = new StubFiber();
+            var sut = new StubFiber();
 
             var scheduleFired = 0;
             var scheduleOnIntervalFired = 0;
 
-            fiber.Schedule(() => scheduleFired++, 100);
-            var intervalSub = fiber.ScheduleOnInterval(() => scheduleOnIntervalFired++, 100, 100);
+            sut.Schedule(() => scheduleFired++, 100);
+            var intervalSub = sut.ScheduleOnInterval(() => scheduleOnIntervalFired++, 100, 100);
 
-            fiber.ExecuteAllScheduled();
+            sut.ExecuteAllScheduled();
             Assert.AreEqual(1, scheduleFired);
             Assert.AreEqual(1, scheduleOnIntervalFired);
 
-            fiber.ExecuteAllScheduled();
+            sut.ExecuteAllScheduled();
             Assert.AreEqual(1, scheduleFired);
             Assert.AreEqual(2, scheduleOnIntervalFired);
 
             intervalSub.Dispose();
 
-            fiber.ExecuteAllScheduled();
+            sut.ExecuteAllScheduled();
             Assert.AreEqual(1, scheduleFired);
             Assert.AreEqual(2, scheduleOnIntervalFired);
         }
@@ -66,11 +66,11 @@ namespace RetlangTests
         {
             var msgs = new List<int>();
 
-            var fiber = new StubFiber { ExecutePendingImmediately = true };
+            var sut = new StubFiber { ExecutePendingImmediately = true };
             var channel = new Channel<int>();
             const int count = 4;
 
-            channel.Subscribe(fiber, delegate(int x)
+            channel.Subscribe(sut, delegate(int x)
                                          {
                                              if (x == count)
                                              {
@@ -88,6 +88,27 @@ namespace RetlangTests
             {
                 Assert.AreEqual(i, msgs[i]);
             }
+        }
+
+        [Test]
+        public void DisposeShouldClearAllLists()
+        {
+            var sut = new StubFiber();
+            var channel = new Channel<int>();
+
+            channel.Subscribe(sut, x => { });
+            sut.Schedule(() => { }, 1000);
+            channel.Publish(2);
+
+            Assert.AreEqual(1, sut.Subscriptions.Count);
+            Assert.AreEqual(1, sut.Scheduled.Count);
+            Assert.AreEqual(1, sut.Pending.Count);
+
+            sut.Dispose();
+
+            Assert.AreEqual(0, sut.Subscriptions.Count);
+            Assert.AreEqual(0, sut.Scheduled.Count);
+            Assert.AreEqual(0, sut.Pending.Count);
         }
     }
 }

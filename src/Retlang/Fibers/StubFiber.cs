@@ -32,11 +32,7 @@ namespace Retlang.Fibers
         public void Dispose()
         {
             _scheduled.ToList().ForEach(x => x.Dispose());
-            _scheduled.Clear();
-
             _subscriptions.ToList().ForEach(x => x.Dispose());
-            _subscriptions.Clear();
-
             _pending.Clear();
         }
 
