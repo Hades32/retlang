@@ -8,7 +8,7 @@ namespace Retlang.Channels
     /// The class is thread safe.
     ///</summary>
     ///<typeparam name="T"></typeparam>
-    public interface ISnapshotChannel<T>
+    public interface ISnapshotChannel<T> : IPublisher<T>
     {
         ///<summary>
         /// Subscribes for an initial snapshot and then incremental update.
@@ -16,11 +16,6 @@ namespace Retlang.Channels
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="receive"></param>
         void PrimedSubscribe(IFiber fiber, Action<T> receive);
-        ///<summary>
-        /// Publishes the incremental update.
-        ///</summary>
-        ///<param name="update"></param>
-        void Publish(T update);
         ///<summary>
         /// Ressponds to the request for an initial snapshot.
         ///</summary>
