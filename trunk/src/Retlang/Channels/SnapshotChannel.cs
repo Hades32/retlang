@@ -52,9 +52,9 @@ namespace Retlang.Channels
         /// Publishes the incremental update.
         ///</summary>
         ///<param name="update"></param>
-        public void Publish(T update)
+        public bool Publish(T update)
         {
-            _updatesChannel.Publish(update);
+            return _updatesChannel.Publish(update);
         }
 
         ///<summary>
