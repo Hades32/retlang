@@ -75,8 +75,6 @@ namespace Retlang.Core
                 {
                     Lists.Swap(ref _actions, ref _toPass);
                     _actions.Clear();
-
-                    Monitor.PulseAll(_lock);
                     return _toPass;
                 }
                 return null;
