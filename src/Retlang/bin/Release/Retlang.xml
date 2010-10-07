@@ -343,18 +343,25 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Retlang.Channels.IPublisher`1">
+            <summary>
+            Channel publishing interface.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Retlang.Channels.IPublisher`1.Publish(`0)">
+            <summary>
+            Publish a message to all subscribers. Returns true if any subscribers are registered.
+            </summary>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
         <member name="M:Retlang.Channels.ISnapshotChannel`1.PrimedSubscribe(Retlang.Fibers.IFiber,System.Action{`0})">
             <summary>
              Subscribes for an initial snapshot and then incremental update.
             </summary>
             <param name="fiber">the target executor to receive the message</param>
             <param name="receive"></param>
-        </member>
-        <member name="M:Retlang.Channels.ISnapshotChannel`1.Publish(`0)">
-            <summary>
-             Publishes the incremental update.
-            </summary>
-            <param name="update"></param>
         </member>
         <member name="M:Retlang.Channels.ISnapshotChannel`1.ReplyToPrimingRequest(Retlang.Fibers.IFiber,System.Func{`0})">
             <summary>
@@ -829,19 +836,6 @@
              Allows for the registration and deregistration of subscriptions
             </summary>
         </member>
-        <member name="T:Retlang.Channels.IPublisher`1">
-            <summary>
-            Channel publishing interface.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Retlang.Channels.IPublisher`1.Publish(`0)">
-            <summary>
-            Publish a message to all subscribers. Returns true if any subscribers are registered.
-            </summary>
-            <param name="msg"></param>
-            <returns></returns>
-        </member>
         <member name="T:Retlang.Channels.IChannel`1">
             <summary>
             A channel provides a conduit for messages. It provides methods for publishing and subscribing to messages. 
@@ -933,14 +927,14 @@
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor">
             <summary>
-            Create a thread fiber with the default executor.
+            Create a thread fiber with the default queue.
             </summary>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(Retlang.Core.IQueue)">
             <summary>
-            Creates a thread fiber with a specified executor.
+            Creates a thread fiber with a specified queue.
             </summary>
-            <param name="executor"></param>
+            <param name="queue"></param>
         </member>
         <member name="M:Retlang.Fibers.ThreadFiber.#ctor(System.String)">
             <summary>
@@ -952,7 +946,7 @@
             <summary>
             Creates a thread fiber.
             </summary>
-            <param name="executor"></param>
+            <param name="queue"></param>
             <param name="threadName"></param>
             <param name="isBackground"></param>
             <param name="priority"></param>
