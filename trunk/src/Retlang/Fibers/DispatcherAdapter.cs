@@ -15,9 +15,9 @@ namespace Retlang.Fibers
             _priority = priority;
         }
 
-        public void Enqueue(Action method)
+        public void Enqueue(Action action)
         {
-            _dispatcher.BeginInvoke(method, _priority);
+            _dispatcher.BeginInvoke(action, _priority);
         }
     }
 }

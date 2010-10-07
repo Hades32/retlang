@@ -14,22 +14,22 @@ namespace Retlang.Fibers
         private readonly Subscriptions _subscriptions = new Subscriptions();
 
         private readonly Thread _thread;
-        private readonly IQueue _executor;
+        private readonly IQueue _queue;
         private readonly Scheduler _scheduler;
 
         /// <summary>
-        /// Create a thread fiber with the default executor.
+        /// Create a thread fiber with the default queue.
         /// </summary>
         public ThreadFiber() 
             : this(new DefaultQueue())
         {}
 
         /// <summary>
-        /// Creates a thread fiber with a specified executor.
+        /// Creates a thread fiber with a specified queue.
         /// </summary>
-        /// <param name="executor"></param>
-        public ThreadFiber(IQueue executor) 
-            : this(executor, "ThreadFiber-" + GetNextThreadId())
+        /// <param name="queue"></param>
+        public ThreadFiber(IQueue queue) 
+            : this(queue, "ThreadFiber-" + GetNextThreadId())
         {}
 
         /// <summary>
@@ -44,13 +44,13 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates a thread fiber.
         /// </summary>
-        /// <param name="executor"></param>
+        /// <param name="queue"></param>
         /// <param name="threadName"></param>
         /// <param name="isBackground"></param>
         /// <param name="priority"></param>
-        public ThreadFiber(IQueue executor, string threadName, bool isBackground = true, ThreadPriority priority = ThreadPriority.Normal)
+        public ThreadFiber(IQueue queue, string threadName, bool isBackground = true, ThreadPriority priority = ThreadPriority.Normal)
         {
-            _executor = executor;
+            _queue = queue;
             _thread = new Thread(RunThread);
             _thread.Name = threadName;
             _thread.IsBackground = isBackground;
@@ -73,7 +73,7 @@ namespace Retlang.Fibers
 
         private void RunThread()
         {
-            _executor.Run();
+            _queue.Run();
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-            _executor.Enqueue(action);
+            _queue.Enqueue(action);
         }
 
         ///<summary>
@@ -157,7 +157,7 @@ namespace Retlang.Fibers
         {
             _scheduler.Dispose();
             _subscriptions.Dispose();
-            _executor.Stop();
+            _queue.Stop();
         }
     }
 }
