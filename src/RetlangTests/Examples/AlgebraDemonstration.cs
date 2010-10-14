@@ -38,30 +38,15 @@ namespace RetlangTests.Examples
         // guarantee thread safety.
         private class Quadratic
         {
-            private readonly int _a;
-            private readonly int _b;
-            private readonly int _c;
+            public readonly int A;
+            public readonly int B;
+            public readonly int C;
 
             public Quadratic(int a, int b, int c)
             {
-                _a = a;
-                _b = b;
-                _c = c;
-            }
-
-            public int A
-            {
-                get { return _a; }
-            }
-
-            public int B
-            {
-                get { return _b; }
-            }
-
-            public int C
-            {
-                get { return _c; }
+                A = a;
+                B = b;
+                C = c;
             }
         }
 
@@ -101,19 +86,19 @@ namespace RetlangTests.Examples
         // solver threads.
         private class SolvedQuadratic
         {
-            private readonly Quadratic quadratic;
-            private readonly QuadraticSolutions solutions;
+            private readonly Quadratic _quadratic;
+            private readonly QuadraticSolutions _solutions;
 
             public SolvedQuadratic(Quadratic quadratic, QuadraticSolutions solutions)
             {
-                this.quadratic = quadratic;
-                this.solutions = solutions;
+                _quadratic = quadratic;
+                _solutions = solutions;
             }
 
             public override string ToString()
             {
                 return string.Format("The quadratic {0} * x^2 + {1} * x + {2} has zeroes at {3} and {4}.",
-                                     quadratic.A, quadratic.B, quadratic.C, solutions.SolutionOne, solutions.SolutionTwo);
+                    _quadratic.A, _quadratic.B, _quadratic.C, _solutions.SolutionOne, _solutions.SolutionTwo);
             }
         }
 
@@ -125,14 +110,12 @@ namespace RetlangTests.Examples
         private class QuadraticSource
         {
             // The class has its own thread to use for publishing.
-            private readonly ThreadFiber _threadFiber;
             private readonly IChannel<Quadratic>[] _channels;
             private readonly int _numberToGenerate;
             private readonly Random _random;
 
-            public QuadraticSource(ThreadFiber threadFiber, IChannel<Quadratic>[] channels, int numberToGenerate, int seed)
+            public QuadraticSource(IChannel<Quadratic>[] channels, int numberToGenerate, int seed)
             {
-                _threadFiber = threadFiber;
                 _channels = channels;
                 _numberToGenerate = numberToGenerate;
                 _random = new Random(seed);
@@ -140,26 +123,20 @@ namespace RetlangTests.Examples
 
             public void PublishQuadratics()
             {
-                for (var idx = 0; idx < _numberToGenerate; idx++)
+                for (var i = 0; i < _numberToGenerate; i++)
                 {
                     var quadratic = Next();
                     // As agreed, we publish to a topic that is defined
                     // by the square term of the quadratic.
                     _channels[quadratic.A].Publish(quadratic);
                 }
-                // Once all the quadratics have been published, stop.
-                _threadFiber.Dispose();
             }
 
             // This simply creates a pseudo-random quadratic.
             private Quadratic Next()
             {
                 // Insure we have a quadratic.  No zero for the square parameter.
-                var a = _random.Next(9) + 1;
-                var b = -_random.Next(100);
-                var c = _random.Next(10);
-
-                return new Quadratic(a, b, c);
+                return new Quadratic(_random.Next(9) + 1, -_random.Next(100), _random.Next(10));
             }
         }
 
@@ -190,7 +167,7 @@ namespace RetlangTests.Examples
                 var c = quadratic.C;
                 var imaginary = false;
 
-                double discriminant = ((b*b) - (4*a*c));
+                var discriminant = ((b * b) - (4 * a * c));
 
                 if (discriminant < 0)
                 {
@@ -200,8 +177,8 @@ namespace RetlangTests.Examples
 
                 var tmp = Math.Sqrt(discriminant);
 
-                var solutionOne = (-b + tmp)/(2*a);
-                var solutionTwo = (-b - tmp)/(2*a);
+                var solutionOne = (-b + tmp) / (2 * a);
+                var solutionTwo = (-b - tmp) / (2 * a);
 
                 return new QuadraticSolutions(solutionOne, solutionTwo, imaginary);
             }
@@ -213,16 +190,16 @@ namespace RetlangTests.Examples
         // the same socket.
         private class SolvedQuadraticSink
         {
-            private readonly ThreadFiber _fiber;
+            private readonly IFiber _fiber;
             private readonly int _numberToOutput;
-            private int _solutionsReceived = 0;
+            private int _solutionsReceived;
 
-            public SolvedQuadraticSink(ThreadFiber fiber, ISubscriber<SolvedQuadratic> solvedChannel,
-                                       int numberToOutput)
+            public SolvedQuadraticSink(IFiber fiber, ISubscriber<SolvedQuadratic> solvedChannel, int numberToOutput)
             {
-                solvedChannel.Subscribe(fiber, PrintSolution);
                 _fiber = fiber;
                 _numberToOutput = numberToOutput;
+
+                solvedChannel.Subscribe(fiber, PrintSolution);
             }
 
             private void PrintSolution(SolvedQuadratic solvedQuadratic)
@@ -242,51 +219,38 @@ namespace RetlangTests.Examples
         [Test]
         public void DoDemonstration()
         {
-            const int numberOfQuadratics = 10;
-
-
             // We create a source to generate the quadratics.
-            var sourceFiber = new ThreadFiber("source");
             var sinkFiber = new ThreadFiber("sink");
 
-          
-                // We create and store a reference to 10 solvers,
-                // one for each possible square term being published.
-                var quadraticChannels = new IChannel<Quadratic>[10];
+            // We create and store a reference to 10 solvers,
+            // one for each possible square term being published.
+            var quadraticChannels = new IChannel<Quadratic>[10];
 
-                // reference-preservation list to prevent GC'ing of solvers
-                var solvers = new List<QuadraticSolver>();
+            // reference-preservation list to prevent GC'ing of solvers
+            var solvers = new List<QuadraticSolver>();
+            var solvedChannel = new Channel<SolvedQuadratic>();
 
-                IChannel<SolvedQuadratic> solvedChannel = new Channel<SolvedQuadratic>();
+            for (var i = 0; i < quadraticChannels.Length; i++)
+            {
+                var fiber = new ThreadFiber("solver " + (i + 1));
+                fiber.Start();
 
-                for (var idx = 0; idx < numberOfQuadratics; idx++)
-                {
-                    var fiber = new ThreadFiber("solver " + (idx + 1));
-                    fiber.Start();
-                    
-                    quadraticChannels[idx] = new Channel<Quadratic>();
-                    solvers.Add(new QuadraticSolver(fiber, quadraticChannels[idx], solvedChannel));
-                }
+                quadraticChannels[i] = new Channel<Quadratic>();
+                solvers.Add(new QuadraticSolver(fiber, quadraticChannels[i], solvedChannel));
+            }
 
 
-                sourceFiber.Start();
+            var source = new QuadraticSource(quadraticChannels, quadraticChannels.Length, DateTime.Now.Millisecond);
 
-                var source =
-                    new QuadraticSource(sourceFiber, quadraticChannels, numberOfQuadratics, DateTime.Now.Millisecond);
+            // Finally a sink to output our results.
+            sinkFiber.Start();
+            new SolvedQuadraticSink(sinkFiber, solvedChannel, quadraticChannels.Length);
 
+            // This starts streaming the equations.
+            source.PublishQuadratics();
 
-                // Finally a sink to output our results.
-                sinkFiber.Start();
-                new SolvedQuadraticSink(sinkFiber, solvedChannel, numberOfQuadratics);
-
-                // This starts streaming the equations.
-                source.PublishQuadratics();
-
-                // We pause here to allow all the problems to be solved.
-                sourceFiber.Join();
-                sinkFiber.Join();
-            
-
+            // We pause here to allow all the problems to be solved.
+            sinkFiber.Join();
 
             Console.WriteLine("Demonstration complete.");
         }
