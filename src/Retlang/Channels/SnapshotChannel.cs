@@ -27,7 +27,7 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="receive"></param>
-        public void PrimedSubscribe(IFiber fiber, Action<T> receive)
+        public IDisposable PrimedSubscribe(IFiber fiber, Action<T> receive)
         {
             using (var reply = _requestChannel.SendRequest(new object()))
             {
@@ -44,7 +44,7 @@ namespace Retlang.Channels
 
                 receive(result);
 
-                _updatesChannel.Subscribe(fiber, receive);
+                return _updatesChannel.Subscribe(fiber, receive);
             }
         }
 
@@ -62,9 +62,9 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="reply">returns the snapshot update</param>
-        public void ReplyToPrimingRequest(IFiber fiber, Func<T> reply)
+        public IDisposable ReplyToPrimingRequest(IFiber fiber, Func<T> reply)
         {
-            _requestChannel.Subscribe(fiber, request => request.SendReply(reply()));
+            return _requestChannel.Subscribe(fiber, request => request.SendReply(reply()));
         }
     }
 }

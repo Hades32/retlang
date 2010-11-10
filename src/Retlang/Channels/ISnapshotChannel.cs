@@ -15,12 +15,12 @@ namespace Retlang.Channels
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="receive"></param>
-        void PrimedSubscribe(IFiber fiber, Action<T> receive);
+        IDisposable PrimedSubscribe(IFiber fiber, Action<T> receive);
         ///<summary>
         /// Ressponds to the request for an initial snapshot.
         ///</summary>
         ///<param name="fiber">the target executor to receive the message</param>
         ///<param name="reply">returns the snapshot update</param>
-        void ReplyToPrimingRequest(IFiber fiber, Func<T> reply);
+        IDisposable ReplyToPrimingRequest(IFiber fiber, Func<T> reply);
     }
 }
