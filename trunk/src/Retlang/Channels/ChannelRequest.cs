@@ -34,7 +34,7 @@ namespace Retlang.Channels
             }
         }
 
-        public bool Receive(int timeout, out M result)
+        public bool Receive(int timeoutInMs, out M result)
         {
             lock (_lock)
             {
@@ -48,7 +48,7 @@ namespace Retlang.Channels
                     result = default(M);
                     return false;
                 }
-                Monitor.Wait(_lock, timeout);
+                Monitor.Wait(_lock, timeoutInMs);
                 if (_resp.Count > 0)
                 {
                     result = _resp.Dequeue();

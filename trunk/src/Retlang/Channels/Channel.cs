@@ -25,19 +25,19 @@ namespace Retlang.Channels
         }
 
         /// <summary>
-        /// <see cref="ISubscriber{T}.SubscribeToBatch(IFiber,Action{IList{T}},int)"/>
+        /// <see cref="ISubscriber{T}.SubscribeToBatch(IFiber,Action{IList{T}},long)"/>
         /// </summary>
         /// <param name="fiber"></param>
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
+        public IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, long intervalInMs)
         {
             return SubscribeOnProducerThreads(new BatchSubscriber<T>(fiber, receive, intervalInMs));
         }
 
         /// <summary>
-        /// <see cref="ISubscriber{T}.SubscribeToKeyedBatch{K}(IFiber,Converter{T,K},Action{IDictionary{K,T}},int)"/>
+        /// <see cref="ISubscriber{T}.SubscribeToKeyedBatch{K}(IFiber,Converter{T,K},Action{IDictionary{K,T}},long)"/>
         /// </summary>
         /// <typeparam name="K"></typeparam>
         /// <param name="fiber"></param>
@@ -45,7 +45,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
+        public IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, long intervalInMs)
         {
             return SubscribeOnProducerThreads(new KeyedBatchSubscriber<K, T>(keyResolver, receive, fiber, intervalInMs));
         }
@@ -58,7 +58,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs)
+        public IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, long intervalInMs)
         {
             return SubscribeOnProducerThreads(new LastSubscriber<T>(receive, fiber, intervalInMs));
         }

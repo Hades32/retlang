@@ -11,9 +11,9 @@ namespace Retlang.Channels
         /// <summary>
         /// Receive a single response. Can be called repeatedly for multiple replies.
         /// </summary>
-        /// <param name="timeout"></param>
+        /// <param name="timeoutInMs"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        bool Receive(int timeout, out M result);
+        bool Receive(int timeoutInMs, out M result);
     }
 }

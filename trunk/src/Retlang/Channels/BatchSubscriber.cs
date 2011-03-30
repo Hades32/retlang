@@ -12,9 +12,11 @@ namespace Retlang.Channels
     public class BatchSubscriber<T> : BaseSubscription<T>
     {
         private readonly object _batchLock = new object();
+
         private readonly IFiber _fiber;
         private readonly Action<IList<T>> _receive;
-        private readonly int _interval;
+        private readonly long _intervalInMs;
+
         private List<T> _pending;
 
         /// <summary>
@@ -22,12 +24,12 @@ namespace Retlang.Channels
         /// </summary>
         /// <param name="fiber"></param>
         /// <param name="receive"></param>
-        /// <param name="interval"></param>
-        public BatchSubscriber(IFiber fiber, Action<IList<T>> receive, int interval)
+        /// <param name="intervalInMs"></param>
+        public BatchSubscriber(IFiber fiber, Action<IList<T>> receive, long intervalInMs)
         {
             _fiber = fiber;
             _receive = receive;
-            _interval = interval;
+            _intervalInMs = intervalInMs;
         }
 
         ///<summary>
@@ -49,7 +51,7 @@ namespace Retlang.Channels
                 if (_pending == null)
                 {
                     _pending = new List<T>();
-                    _fiber.Schedule(Flush, _interval);
+                    _fiber.Schedule(Flush, _intervalInMs);
                 }
                 _pending.Add(msg);
             }
