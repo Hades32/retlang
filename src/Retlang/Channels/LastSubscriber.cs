@@ -12,9 +12,9 @@ namespace Retlang.Channels
     {
         private readonly object _batchLock = new object();
 
-        private readonly IFiber _fiber;
         private readonly Action<T> _target;
-        private readonly int _flushIntervalInMs;
+        private readonly IFiber _fiber;
+        private readonly long _intervalInMs;
 
         private bool _flushPending;
         private T _pending;
@@ -24,12 +24,12 @@ namespace Retlang.Channels
         /// </summary>
         /// <param name="target"></param>
         /// <param name="fiber"></param>
-        /// <param name="flushIntervalInMs"></param>
-        public LastSubscriber(Action<T> target, IFiber fiber, int flushIntervalInMs)
+        /// <param name="intervalInMs"></param>
+        public LastSubscriber(Action<T> target, IFiber fiber, long intervalInMs)
         {
             _fiber = fiber;
             _target = target;
-            _flushIntervalInMs = flushIntervalInMs;
+            _intervalInMs = intervalInMs;
         }
 
         ///<summary>
@@ -50,20 +50,16 @@ namespace Retlang.Channels
             {
                 if (!_flushPending)
                 {
-                    _fiber.Schedule(Flush, _flushIntervalInMs);
+                    _fiber.Schedule(Flush, _intervalInMs);
                     _flushPending = true;
                 }
                 _pending = msg;
             }
         }
 
-        /// <summary>
-        /// Flushes on IFiber thread.
-        /// </summary>
         private void Flush()
         {
-            var toReturn = ClearPending();
-            _target(toReturn);
+            _target(ClearPending());
         }
 
         private T ClearPending()

@@ -50,7 +50,7 @@ namespace RetlangTests
       
         private static void RunBoundedQueue()
         {
-            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTimeInMs = 1000 };
             using (var fiber = new ThreadFiber(executor))
             {
                 fiber.Start();
@@ -107,7 +107,7 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithInt()
         {
-            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTime = 1000 };
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 10000, MaxEnqueueWaitTimeInMs = 1000 };
             using (var fiber = new ThreadFiber(executor))
             {
                 fiber.Start();
@@ -136,7 +136,7 @@ namespace RetlangTests
         [Test, Explicit]
         public void PointToPointPerfTestWithObject()
         {
-            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 100000, MaxEnqueueWaitTime = 1000 };
+            var executor = new BoundedQueue(new PerfExecutor()) { MaxDepth = 100000, MaxEnqueueWaitTimeInMs = 1000 };
             using (var fiber = new ThreadFiber(executor))
             {
                 fiber.Start();

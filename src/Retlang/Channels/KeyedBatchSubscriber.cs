@@ -14,10 +14,10 @@ namespace Retlang.Channels
     {
         private readonly object _batchLock = new object();
 
-        private readonly IFiber _fiber;
         private readonly Action<IDictionary<K, T>> _target;
-        private readonly int _flushIntervalInMs;
         private readonly Converter<T, K> _keyResolver;
+        private readonly IFiber _fiber;
+        private readonly long _intervalInMs;
 
         private Dictionary<K, T> _pending;
 
@@ -27,15 +27,13 @@ namespace Retlang.Channels
         /// <param name="keyResolver"></param>
         /// <param name="target"></param>
         /// <param name="fiber"></param>
-        /// <param name="flushIntervalInMs"></param>
-        public KeyedBatchSubscriber(Converter<T, K> keyResolver,
-                                    Action<IDictionary<K, T>> target,
-                                    IFiber fiber, int flushIntervalInMs)
+        /// <param name="intervalInMs"></param>
+        public KeyedBatchSubscriber(Converter<T, K> keyResolver, Action<IDictionary<K, T>> target, IFiber fiber, long intervalInMs)
         {
             _keyResolver = keyResolver;
             _fiber = fiber;
             _target = target;
-            _flushIntervalInMs = flushIntervalInMs;
+            _intervalInMs = intervalInMs;
         }
 
         ///<summary>
@@ -58,16 +56,13 @@ namespace Retlang.Channels
                 if (_pending == null)
                 {
                     _pending = new Dictionary<K, T>();
-                    _fiber.Schedule(Flush, _flushIntervalInMs);
+                    _fiber.Schedule(Flush, _intervalInMs);
                 }
                 _pending[key] = msg;
             }
         }
 
-        /// <summary>
-        /// Flushed from fiber
-        /// </summary>
-        public void Flush()
+        private void Flush()
         {
             var toReturn = ClearPending();
             if (toReturn != null)

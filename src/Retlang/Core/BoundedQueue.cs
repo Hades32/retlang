@@ -13,8 +13,6 @@ namespace Retlang.Core
         private readonly IExecutor _executor;
 
         private bool _running = true;
-        private int _maxQueueDepth = -1;
-        private int _maxEnqueueWaitTime;
 
         private List<Action> _actions = new List<Action>();
         private List<Action> _toPass = new List<Action>();
@@ -25,6 +23,7 @@ namespace Retlang.Core
         ///<param name="executor"></param>
         public BoundedQueue(IExecutor executor)
         {
+            MaxDepth = -1;
             _executor = executor;
         }
 
@@ -39,20 +38,12 @@ namespace Retlang.Core
         /// <summary>
         /// Max number of actions to be queued.
         /// </summary>
-        public int MaxDepth
-        {
-            get { return _maxQueueDepth; }
-            set { _maxQueueDepth = value; }
-        }
+        public int MaxDepth { get; set; }
 
         /// <summary>
         /// Max time to wait for space in the queue.
         /// </summary>
-        public int MaxEnqueueWaitTime
-        {
-            get { return _maxEnqueueWaitTime; }
-            set { _maxEnqueueWaitTime = value; }
-        }
+        public int MaxEnqueueWaitTimeInMs { get; set; }
 
         /// <summary>
         /// Enqueue action.
@@ -96,18 +87,18 @@ namespace Retlang.Core
             {
                 return false;
             }
-            while (_maxQueueDepth > 0 && _actions.Count + toAdd > _maxQueueDepth)
+            while (MaxDepth > 0 && _actions.Count + toAdd > MaxDepth)
             {
-                if (_maxEnqueueWaitTime <= 0)
+                if (MaxEnqueueWaitTimeInMs <= 0)
                 {
                     throw new QueueFullException(_actions.Count);
                 }
-                Monitor.Wait(_lock, _maxEnqueueWaitTime);
+                Monitor.Wait(_lock, MaxEnqueueWaitTimeInMs);
                 if (!_running)
                 {
                     return false;
                 }
-                if (_maxQueueDepth > 0 && _actions.Count + toAdd > _maxQueueDepth)
+                if (MaxDepth > 0 && _actions.Count + toAdd > MaxDepth)
                 {
                     throw new QueueFullException(_actions.Count);
                 }
@@ -144,11 +135,7 @@ namespace Retlang.Core
             return true;
         }
 
-        /// <summary>
-        /// Remove all actions and execute.
-        /// </summary>
-        /// <returns></returns>
-        public bool ExecuteNextBatch()
+        private bool ExecuteNextBatch()
         {
             var toExecute = DequeueAll();
             if (toExecute == null)

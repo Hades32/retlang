@@ -26,7 +26,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs">Time in Ms to batch actions. If 0 events will be delivered as fast as consumer can process</param>
         /// <returns></returns>
-        IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs);
+        IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, long intervalInMs);
 
         ///<summary>
         /// Batches actions based upon keyed values allowing for duplicates to be dropped. 
@@ -37,7 +37,7 @@ namespace Retlang.Channels
         ///<param name="intervalInMs"></param>
         ///<typeparam name="K"></typeparam>
         ///<returns></returns>
-        IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs);
+        IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, long intervalInMs);
 
         /// <summary>
         /// Subscription that delivers the latest message to the consuming thread.  If a newer message arrives before the consuming thread
@@ -47,7 +47,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs);
+        IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, long intervalInMs);
 
         /// <summary>
         /// Removes all subscribers.
