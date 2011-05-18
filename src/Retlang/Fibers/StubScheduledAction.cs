@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Retlang.Fibers
 {
@@ -36,7 +37,7 @@ namespace Retlang.Fibers
         ///<param name="timeTilEnqueueInMs"></param>
         ///<param name="registry"></param>
         public StubScheduledAction(Action action, long timeTilEnqueueInMs, List<StubScheduledAction> registry)
-            : this(action, timeTilEnqueueInMs, -1, registry)
+            : this(action, timeTilEnqueueInMs, Timeout.Infinite, registry)
         {
         }
 
@@ -62,7 +63,7 @@ namespace Retlang.Fibers
         public void Execute()
         {
             _action();
-            if (_intervalInMs == -1)
+            if (_intervalInMs == Timeout.Infinite)
             {
                 Dispose();
             }
