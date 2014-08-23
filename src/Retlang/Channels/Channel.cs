@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Retlang.Core;
 using Retlang.Fibers;
+using System;
+using System.Collections.Generic;
 
 namespace Retlang.Channels
 {
@@ -31,7 +31,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, long intervalInMs)
+        public IDisposable SubscribeToBatch(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new BatchSubscriber<T>(fiber, receive, intervalInMs));
         }
@@ -45,7 +45,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, long intervalInMs)
+        public IDisposable SubscribeToKeyedBatch<K>(IFiber fiber, Converter<T, K> keyResolver, Action<IDictionary<K, T>> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new KeyedBatchSubscriber<K, T>(keyResolver, receive, fiber, intervalInMs));
         }
@@ -58,7 +58,7 @@ namespace Retlang.Channels
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
         /// <returns></returns>
-        public IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, long intervalInMs)
+        public IDisposable SubscribeToLast(IFiber fiber, Action<T> receive, int intervalInMs)
         {
             return SubscribeOnProducerThreads(new LastSubscriber<T>(receive, fiber, intervalInMs));
         }

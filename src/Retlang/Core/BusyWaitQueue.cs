@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Retlang.Core
 {
@@ -36,11 +37,11 @@ namespace Retlang.Core
         ///<summary>
         /// BusyWaitQueue with default executor.
         ///</summary>
-        public BusyWaitQueue(int spinsBeforeTimeCheck, int msBeforeBlockingWait) 
+        public BusyWaitQueue(int spinsBeforeTimeCheck, int msBeforeBlockingWait)
             : this(new DefaultExecutor(), spinsBeforeTimeCheck, msBeforeBlockingWait)
         {
         }
-        
+
         /// <summary>
         /// Enqueue action.
         /// </summary>
@@ -59,7 +60,7 @@ namespace Retlang.Core
         /// </summary>
         public void Run()
         {
-            while (ExecuteNextBatch()) {}
+            while (ExecuteNextBatch()) { }
         }
 
         /// <summary>
@@ -73,17 +74,17 @@ namespace Retlang.Core
                 Monitor.PulseAll(_lock);
             }
         }
-        
-        private List<Action> DequeueAll()
+
+        private async Task<List<Action>> DequeueAll()
         {
             var spins = 0;
             var stopwatch = Stopwatch.StartNew();
-            
+
             while (true)
             {
                 try
                 {
-                    while (!Monitor.TryEnter(_lock)) {}
+                    while (!Monitor.TryEnter(_lock)) { }
 
                     if (!_running) break;
                     var toReturn = TryDequeue();
@@ -100,7 +101,7 @@ namespace Retlang.Core
                 {
                     Monitor.Exit(_lock);
                 }
-                Thread.Yield();
+                await Task.Delay(TimeSpan.FromSeconds(30));
             }
 
             return null;
@@ -138,7 +139,7 @@ namespace Retlang.Core
 
         private bool ExecuteNextBatch()
         {
-            var toExecute = DequeueAll();
+            var toExecute = DequeueAll().Result;
             if (toExecute == null)
             {
                 return false;

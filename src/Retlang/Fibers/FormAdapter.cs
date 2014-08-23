@@ -1,21 +1,18 @@
-﻿using System;
-using System.ComponentModel;
-using Retlang.Core;
-
+﻿
 namespace Retlang.Fibers
 {
-    internal class FormAdapter : IExecutionContext
-    {
-        private readonly ISynchronizeInvoke _invoker;
+    //internal class FormAdapter : IExecutionContext
+    //{
+    //    private readonly ISynchronizeInvoke _invoker;
 
-        public FormAdapter(ISynchronizeInvoke invoker)
-        {
-            _invoker = invoker;
-        }
+    //    public FormAdapter(ISynchronizeInvoke invoker)
+    //    {
+    //        _invoker = invoker;
+    //    }
 
-        public void Enqueue(Action action)
-        {
-            _invoker.BeginInvoke(action, null);
-        }
-    }
+    //    public void Enqueue(Action action)
+    //    {
+    //        _invoker.BeginInvoke(action, null);
+    //    }
+    //}
 }

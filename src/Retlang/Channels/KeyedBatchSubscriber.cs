@@ -17,7 +17,7 @@ namespace Retlang.Channels
         private readonly Action<IDictionary<K, T>> _target;
         private readonly Converter<T, K> _keyResolver;
         private readonly IFiber _fiber;
-        private readonly long _intervalInMs;
+        private readonly int _intervalInMs;
 
         private Dictionary<K, T> _pending;
 
@@ -28,7 +28,7 @@ namespace Retlang.Channels
         /// <param name="target"></param>
         /// <param name="fiber"></param>
         /// <param name="intervalInMs"></param>
-        public KeyedBatchSubscriber(Converter<T, K> keyResolver, Action<IDictionary<K, T>> target, IFiber fiber, long intervalInMs)
+        public KeyedBatchSubscriber(Converter<T, K> keyResolver, Action<IDictionary<K, T>> target, IFiber fiber, int intervalInMs)
         {
             _keyResolver = keyResolver;
             _fiber = fiber;

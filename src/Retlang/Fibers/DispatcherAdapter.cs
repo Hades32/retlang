@@ -1,23 +1,21 @@
-﻿using System;
-using System.Windows.Threading;
-using Retlang.Core;
+﻿using Retlang.Core;
+using System;
+using System.Threading;
 
 namespace Retlang.Fibers
 {
     internal class DispatcherAdapter : IExecutionContext
     {
-        private readonly Dispatcher _dispatcher;
-        private readonly DispatcherPriority _priority;
+        private readonly SynchronizationContext _dispatcher;
 
-        public DispatcherAdapter(Dispatcher dispatcher, DispatcherPriority priority)
+        public DispatcherAdapter(SynchronizationContext dispatcher)
         {
             _dispatcher = dispatcher;
-            _priority = priority;
         }
 
         public void Enqueue(Action action)
         {
-            _dispatcher.BeginInvoke(action, _priority);
+            _dispatcher.Post((_) => action(), null);
         }
     }
 }

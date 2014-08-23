@@ -6,13 +6,13 @@ namespace Retlang.Core
     internal class TimerAction : IDisposable
     {
         private readonly Action _action;
-        private readonly long _firstIntervalInMs;
-        private readonly long _intervalInMs;
+        private readonly int _firstIntervalInMs;
+        private readonly int _intervalInMs;
 
         private Timer _timer;
         private bool _cancelled;
 
-        public TimerAction(Action action, long firstIntervalInMs, long intervalInMs)
+        public TimerAction(Action action, int firstIntervalInMs, int intervalInMs)
         {
             _action = action;
             _firstIntervalInMs = firstIntervalInMs;

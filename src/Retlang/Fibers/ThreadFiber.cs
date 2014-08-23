@@ -1,6 +1,6 @@
+using Retlang.Core;
 using System;
 using System.Threading;
-using Retlang.Core;
 
 namespace Retlang.Fibers
 {
@@ -13,32 +13,16 @@ namespace Retlang.Fibers
         private static int THREAD_COUNT;
         private readonly Subscriptions _subscriptions = new Subscriptions();
 
-        private readonly Thread _thread;
+        private readonly IThread _thread;
         private readonly IQueue _queue;
         private readonly Scheduler _scheduler;
 
         /// <summary>
-        /// Create a thread fiber with the default queue.
-        /// </summary>
-        public ThreadFiber() 
-            : this(new DefaultQueue())
-        {}
-
-        /// <summary>
-        /// Creates a thread fiber with a specified queue.
-        /// </summary>
-        /// <param name="queue"></param>
-        public ThreadFiber(IQueue queue) 
-            : this(queue, "ThreadFiber-" + GetNextThreadId())
-        {}
-
-        /// <summary>
         /// Creates a thread fiber with a specified name.
         /// </summary>
-        /// /// <param name="threadName"></param>
-        public ThreadFiber(string threadName)
-            : this(new DefaultQueue(), threadName)
-        {}
+        public ThreadFiber(Func<Action, IThread> threadCreator)
+            : this(new DefaultQueue(), threadCreator)
+        { }
 
 
         /// <summary>
@@ -48,20 +32,17 @@ namespace Retlang.Fibers
         /// <param name="threadName"></param>
         /// <param name="isBackground"></param>
         /// <param name="priority"></param>
-        public ThreadFiber(IQueue queue, string threadName, bool isBackground = true, ThreadPriority priority = ThreadPriority.Normal)
+        public ThreadFiber(IQueue queue, Func<Action, IThread> threadCreator)
         {
             _queue = queue;
-            _thread = new Thread(RunThread);
-            _thread.Name = threadName;
-            _thread.IsBackground = isBackground;
-            _thread.Priority = priority;
+            _thread = threadCreator(RunThread);
             _scheduler = new Scheduler(this);
         }
 
         /// <summary>
         /// <see cref="IFiber"/>
         /// </summary>
-        public Thread Thread
+        public IThread Thread
         {
             get { return _thread; }
         }
@@ -118,7 +99,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public IDisposable Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, int firstInMs)
         {
             return _scheduler.Schedule(action, firstInMs);
         }
@@ -129,7 +110,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
-        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, int firstInMs, int regularInMs)
         {
             return _scheduler.ScheduleOnInterval(action, firstInMs, regularInMs);
         }

@@ -24,7 +24,7 @@ namespace Retlang.Fibers
         /// No Op
         /// </summary>
         public void Start()
-        {}
+        { }
 
         /// <summary>
         /// Clears all subscriptions, scheduled, and pending actions.
@@ -94,7 +94,7 @@ namespace Retlang.Fibers
         /// <param name="action"></param>
         /// <param name="firstInMs"></param>
         /// <returns></returns>
-        public IDisposable Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, int firstInMs)
         {
             var toAdd = new StubScheduledAction(action, firstInMs, _scheduled);
             _scheduled.Add(toAdd);
@@ -108,7 +108,7 @@ namespace Retlang.Fibers
         /// <param name="firstInMs"></param>
         /// <param name="regularInMs"></param>
         /// <returns></returns>
-        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, int firstInMs, int regularInMs)
         {
             var toAdd = new StubScheduledAction(action, firstInMs, regularInMs, _scheduled);
             _scheduled.Add(toAdd);

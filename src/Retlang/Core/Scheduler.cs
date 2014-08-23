@@ -24,7 +24,7 @@ namespace Retlang.Core
         ///<summary>
         /// Enqueues action on to context after timer elapses.  
         ///</summary>
-        public IDisposable Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, int firstInMs)
         {
             if (firstInMs <= 0)
             {
@@ -43,7 +43,7 @@ namespace Retlang.Core
         ///<summary>
         /// Enqueues actions on to context after schedule elapses.  
         ///</summary>
-        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, int firstInMs, int regularInMs)
         {
             var pending = new TimerAction(action, firstInMs, regularInMs);
             AddPending(pending);

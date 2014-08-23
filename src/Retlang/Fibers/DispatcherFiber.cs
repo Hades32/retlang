@@ -1,5 +1,5 @@
-﻿using System.Windows.Threading;
-using Retlang.Core;
+﻿using Retlang.Core;
+using System.Threading;
 
 namespace Retlang.Fibers
 {
@@ -14,8 +14,8 @@ namespace Retlang.Fibers
         /// <param name="dispatcher">The dispatcher.</param>
         /// <param name="priority">The priority.</param>
         /// <param name="executor">The executor.</param>
-        public DispatcherFiber(Dispatcher dispatcher, DispatcherPriority priority, IExecutor executor)
-            : base(new DispatcherAdapter(dispatcher, priority), executor)
+        public DispatcherFiber(SynchronizationContext dispatcher, IExecutor executor)
+            : base(new DispatcherAdapter(dispatcher), executor)
         {
         }
 
@@ -23,27 +23,7 @@ namespace Retlang.Fibers
         /// Constructs a Fiber that executes on dispatcher thread.
         /// </summary>
         /// <param name="dispatcher">The dispatcher.</param>
-        /// <param name="executor">The priority.</param>
-        public DispatcherFiber(Dispatcher dispatcher, IExecutor executor)
-            : this(dispatcher, DispatcherPriority.Normal, executor)
-        {
-        }
-
-        /// <summary>
-        /// Constructs a Fiber that executes on dispatcher thread.
-        /// </summary>
-        /// <param name="dispatcher">The dispatcher.</param>
-        /// <param name="priority">The priority.</param>
-        public DispatcherFiber(Dispatcher dispatcher, DispatcherPriority priority)
-            : this(dispatcher, priority, new DefaultExecutor())
-        {
-        }
-
-        /// <summary>
-        /// Constructs a Fiber that executes on dispatcher thread.
-        /// </summary>
-        /// <param name="dispatcher">The dispatcher.</param>
-        public DispatcherFiber(Dispatcher dispatcher)
+        public DispatcherFiber(SynchronizationContext dispatcher)
             : this(dispatcher, new DefaultExecutor())
         {
         }
@@ -52,18 +32,8 @@ namespace Retlang.Fibers
         /// Constructs a Fiber that executes on dispatcher thread of the
         /// current dispatcher.
         /// </summary>
-        /// <param name="priority">The priority.</param>
-        public DispatcherFiber(DispatcherPriority priority)
-            : this(Dispatcher.CurrentDispatcher, priority, new DefaultExecutor())
-        {
-        }
-
-        /// <summary>
-        /// Constructs a Fiber that executes on dispatcher thread of the
-        /// current dispatcher.
-        /// </summary>
         public DispatcherFiber()
-            : this(Dispatcher.CurrentDispatcher, new DefaultExecutor())
+            : this(SynchronizationContext.Current, new DefaultExecutor())
         {
         }
     }

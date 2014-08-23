@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Retlang.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Retlang.Core;
 
 namespace Retlang.Fibers
 {
@@ -86,7 +85,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.Schedule(Action,long)"/>
         /// </summary>
-        public IDisposable Schedule(Action action, long firstInMs)
+        public IDisposable Schedule(Action action, int firstInMs)
         {
             return _timer.Schedule(action, firstInMs);
         }
@@ -94,7 +93,7 @@ namespace Retlang.Fibers
         /// <summary>
         /// <see cref="IScheduler.ScheduleOnInterval(Action,long,long)"/>
         /// </summary>
-        public IDisposable ScheduleOnInterval(Action action, long firstInMs, long regularInMs)
+        public IDisposable ScheduleOnInterval(Action action, int firstInMs, int regularInMs)
         {
             return _timer.ScheduleOnInterval(action, firstInMs, regularInMs);
         }
@@ -106,7 +105,7 @@ namespace Retlang.Fibers
         {
             if (_started == ExecutionState.Running)
             {
-                throw new ThreadStateException("Already Started");
+                throw new Exception("ThreadStateException: Already Started");
             }
 
             lock (_lock)

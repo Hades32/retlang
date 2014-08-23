@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Retlang.Core;
 using Retlang.Fibers;
+using System;
+using System.Collections.Generic;
 
 namespace Retlang.Channels
 {
@@ -15,7 +15,7 @@ namespace Retlang.Channels
 
         private readonly IFiber _fiber;
         private readonly Action<IList<T>> _receive;
-        private readonly long _intervalInMs;
+        private readonly int _intervalInMs;
 
         private List<T> _pending;
 
@@ -25,7 +25,7 @@ namespace Retlang.Channels
         /// <param name="fiber"></param>
         /// <param name="receive"></param>
         /// <param name="intervalInMs"></param>
-        public BatchSubscriber(IFiber fiber, Action<IList<T>> receive, long intervalInMs)
+        public BatchSubscriber(IFiber fiber, Action<IList<T>> receive, int intervalInMs)
         {
             _fiber = fiber;
             _receive = receive;

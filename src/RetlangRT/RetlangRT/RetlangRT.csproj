@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B760A370-00F8-49E2-835A-A254BC9DD3E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RetlangRT</RootNamespace>
+    <AssemblyName>RetlangRT</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile151</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Retlang\Channels\BaseSubscription.cs">
+      <Link>Channels\BaseSubscription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\BatchSubscriber.cs">
+      <Link>Channels\BatchSubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\Channel.cs">
+      <Link>Channels\Channel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\ChannelRequest.cs">
+      <Link>Channels\ChannelRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\ChannelSubscription.cs">
+      <Link>Channels\ChannelSubscription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IChannel.cs">
+      <Link>Channels\IChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IProducerThreadSubscriber.cs">
+      <Link>Channels\IProducerThreadSubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IPublisher.cs">
+      <Link>Channels\IPublisher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IQueueChannel.cs">
+      <Link>Channels\IQueueChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IReply.cs">
+      <Link>Channels\IReply.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IReplySubscriber.cs">
+      <Link>Channels\IReplySubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IRequest.cs">
+      <Link>Channels\IRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IRequestPublisher.cs">
+      <Link>Channels\IRequestPublisher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\IRequestReplyChannel.cs">
+      <Link>Channels\IRequestReplyChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\ISnapshotChannel.cs">
+      <Link>Channels\ISnapshotChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\ISubscribable.cs">
+      <Link>Channels\ISubscribable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\ISubscriber.cs">
+      <Link>Channels\ISubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\KeyedBatchSubscriber.cs">
+      <Link>Channels\KeyedBatchSubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\LastSubscriber.cs">
+      <Link>Channels\LastSubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\QueueChannel.cs">
+      <Link>Channels\QueueChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\QueueConsumer.cs">
+      <Link>Channels\QueueConsumer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\RequestReplyChannel.cs">
+      <Link>Channels\RequestReplyChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\SnapshotChannel.cs">
+      <Link>Channels\SnapshotChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Channels\Unsubscriber.cs">
+      <Link>Channels\Unsubscriber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\BoundedQueue.cs">
+      <Link>Core\BoundedQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\BusyWaitQueue.cs">
+      <Link>Core\BusyWaitQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\DefaultExecutor.cs">
+      <Link>Core\DefaultExecutor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\DefaultQueue.cs">
+      <Link>Core\DefaultQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\DefaultThreadPool.cs">
+      <Link>Core\DefaultThreadPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IExecutionContext.cs">
+      <Link>Core\IExecutionContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IExecutor.cs">
+      <Link>Core\IExecutor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IPendingEvent.cs">
+      <Link>Core\IPendingEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IQueue.cs">
+      <Link>Core\IQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IScheduler.cs">
+      <Link>Core\IScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\ISchedulerRegistry.cs">
+      <Link>Core\ISchedulerRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\ISubscriptionRegistry.cs">
+      <Link>Core\ISubscriptionRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\IThreadPool.cs">
+      <Link>Core\IThreadPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\Lists.cs">
+      <Link>Core\Lists.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\PendingAction.cs">
+      <Link>Core\PendingAction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\QueueFullException.cs">
+      <Link>Core\QueueFullException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\RecurringEvent.cs">
+      <Link>Core\RecurringEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\Scheduler.cs">
+      <Link>Core\Scheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\SingleEvent.cs">
+      <Link>Core\SingleEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\Subscriptions.cs">
+      <Link>Core\Subscriptions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Core\TimerAction.cs">
+      <Link>Core\TimerAction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\DispatcherAdapter.cs">
+      <Link>Fibers\DispatcherAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\DispatcherFiber.cs">
+      <Link>Fibers\DispatcherFiber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\ExecutionState.cs">
+      <Link>Fibers\ExecutionState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\GuiFiber.cs">
+      <Link>Fibers\GuiFiber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\IFiber.cs">
+      <Link>Fibers\IFiber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\PoolFiber.cs">
+      <Link>Fibers\PoolFiber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\StubFiber.cs">
+      <Link>Fibers\StubFiber.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\StubScheduledAction.cs">
+      <Link>Fibers\StubScheduledAction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Retlang\Fibers\ThreadFiber.cs">
+      <Link>Fibers\ThreadFiber.cs</Link>
+    </Compile>
+    <Compile Include="Fibers\IThread.cs" />
+    <Compile Include="PortableHelpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

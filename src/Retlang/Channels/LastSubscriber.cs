@@ -1,6 +1,6 @@
-using System;
 using Retlang.Core;
 using Retlang.Fibers;
+using System;
 
 namespace Retlang.Channels
 {
@@ -14,7 +14,7 @@ namespace Retlang.Channels
 
         private readonly Action<T> _target;
         private readonly IFiber _fiber;
-        private readonly long _intervalInMs;
+        private readonly int _intervalInMs;
 
         private bool _flushPending;
         private T _pending;
@@ -25,7 +25,7 @@ namespace Retlang.Channels
         /// <param name="target"></param>
         /// <param name="fiber"></param>
         /// <param name="intervalInMs"></param>
-        public LastSubscriber(Action<T> target, IFiber fiber, long intervalInMs)
+        public LastSubscriber(Action<T> target, IFiber fiber, int intervalInMs)
         {
             _fiber = fiber;
             _target = target;
