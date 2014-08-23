@@ -243,6 +243,7 @@
       <Link>Fibers\ThreadFiber.cs</Link>
     </Compile>
     <Compile Include="Fibers\IThread.cs" />
+    <Compile Include="Fibers\TaskThread.cs" />
     <Compile Include="PortableHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

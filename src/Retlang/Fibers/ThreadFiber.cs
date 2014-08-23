@@ -20,6 +20,13 @@ namespace Retlang.Fibers
         /// <summary>
         /// Creates a thread fiber with a specified name.
         /// </summary>
+        public ThreadFiber()
+            : this(new DefaultQueue(), (action) => new TaskThread(action))
+        { }
+
+        /// <summary>
+        /// Creates a thread fiber with a specified name.
+        /// </summary>
         public ThreadFiber(Func<Action, IThread> threadCreator)
             : this(new DefaultQueue(), threadCreator)
         { }
