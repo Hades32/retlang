@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfExample", "WpfExample\Wp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetlangRT", "RetlangRT\RetlangRT\RetlangRT.csproj", "{B760A370-00F8-49E2-835A-A254BC9DD3E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPTest", "WPTest\WPTest\WPTest.csproj", "{379FD238-A013-41B3-9B47-7903108B313F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,24 @@ Global
 		{B760A370-00F8-49E2-835A-A254BC9DD3E9}.Release|ARM.Build.0 = Release|ARM
 		{B760A370-00F8-49E2-835A-A254BC9DD3E9}.Release|x86.ActiveCfg = Release|x86
 		{B760A370-00F8-49E2-835A-A254BC9DD3E9}.Release|x86.Build.0 = Release|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|ARM.ActiveCfg = Debug|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|ARM.Build.0 = Debug|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|ARM.Deploy.0 = Debug|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|x86.ActiveCfg = Debug|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|x86.Build.0 = Debug|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Debug|x86.Deploy.0 = Debug|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|ARM.ActiveCfg = Release|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|ARM.Build.0 = Release|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|ARM.Deploy.0 = Release|ARM
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|x86.ActiveCfg = Release|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|x86.Build.0 = Release|x86
+		{379FD238-A013-41B3-9B47-7903108B313F}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
