@@ -1,4 +1,5 @@
 This is a fork from http://code.google.com/p/retlang/
+Currently it's a (crude) adaption to be compatible with portable class library for use e.g. in Windows Phone.
 
 Retlang is a high performance C# threading library (see Jetlang for a version in Java). The library is intended for use in message based concurrency similar to event based actors in Scala. The library does not provide remote messaging capabilities. It is designed specifically for high performance in-memory messaging. 
 
